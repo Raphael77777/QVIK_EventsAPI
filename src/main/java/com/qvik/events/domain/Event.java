@@ -1,10 +1,21 @@
 package com.qvik.events.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /** Entity for table Event */
 @Entity
@@ -15,9 +26,10 @@ public class Event {
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "event_id", nullable = false, updatable = false)
     private long event_id;
-
+    @JsonFormat(pattern="yyyy-MM-dd-HH:mm")
     @Column(name = "start_date_time", nullable = false)
     private Date start_date_time;
+    @JsonFormat(pattern="yyyy-MM-dd-HH:mm")
     @Column(name = "end_date_time", nullable = false)
     private Date end_date_time;
     @Column(name = "short_description", nullable = false)
@@ -30,6 +42,7 @@ public class Event {
     private String image;
     @Column(name = "status", nullable = false)
     private String status;
+    @JsonFormat(pattern="yyyy-MM-dd-HH:mm:ss")
     @Column(name = "last_modified", nullable = false)
     private Date last_modified;
     @Column(name = "has_exhibitor", nullable = false)
