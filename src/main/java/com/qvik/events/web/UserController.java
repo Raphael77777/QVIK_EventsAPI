@@ -2,10 +2,7 @@ package com.qvik.events.web;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +15,7 @@ import com.qvik.events.domain.EventExhibitorRepository;
 import com.qvik.events.domain.EventPresenterRepository;
 import com.qvik.events.domain.EventRepository;
 import com.qvik.events.domain.EventRestaurantRepository;
+import com.qvik.events.domain.EventService;
 import com.qvik.events.domain.EventStageRepository;
 import com.qvik.events.domain.EventVenueRepository;
 import com.qvik.events.domain.Event_Exhibitor;
@@ -25,11 +23,21 @@ import com.qvik.events.domain.Event_Presenter;
 import com.qvik.events.domain.Event_Restaurant;
 import com.qvik.events.domain.Event_Stage;
 import com.qvik.events.domain.Event_Venue;
+import com.qvik.events.domain.Exhibitor;
 import com.qvik.events.domain.ExhibitorRepository;
+import com.qvik.events.domain.ExhibitorService;
+import com.qvik.events.domain.Presenter;
 import com.qvik.events.domain.PresenterRepository;
+import com.qvik.events.domain.PresenterService;
+import com.qvik.events.domain.Restaurant;
 import com.qvik.events.domain.RestaurantRepository;
+import com.qvik.events.domain.RestaurantService;
+import com.qvik.events.domain.Stage;
 import com.qvik.events.domain.StageRepository;
+import com.qvik.events.domain.StageService;
+import com.qvik.events.domain.Venue;
 import com.qvik.events.domain.VenueRepository;
+import com.qvik.events.domain.VenueService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,185 +58,142 @@ public class UserController {
 	private final StageRepository stageRepository;
 	private final VenueRepository venueRepository;
 
-	
+	private final EventService eventService;
+	private final VenueService venueService;
+	private final StageService stageService;
+	private final ExhibitorService exhibitorService;
+	private final PresenterService presenterService;
+	private final RestaurantService restaurantService;
+
 	@GetMapping(path = "/")
 	public String root() throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+		return "Main Page";
 	}
 
 	@GetMapping(path = "/events")
-	public String events() throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	public List<Event> events() {
+		return eventRepository.findAll();
 	}
 
-	@GetMapping(path = "/events-date")
+	// TODO: QUERY FOR SEARCH BY DATE
+	@GetMapping(path = "/events/date")
 	public String eventsDate(@RequestParam(name = "startDate") Date startDate) throws JsonProcessingException {
 		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
 	}
-	/*
-	 * @GetMapping(path = "/events-info") public String
-	 * eventsInfo(@RequestParam(name = "eventId") Integer eventId) throws
-	 * JsonProcessingException { return new
-	 * ObjectMapper().writeValueAsString(eventRepository.findAll()); }
-	 * 
-	 * @GetMapping(path = "/events-stage") public String
-	 * eventsStage(@RequestParam(name = "eventId") Integer eventId) throws
-	 * JsonProcessingException { return new
-	 * ObjectMapper().writeValueAsString(eventRepository.findAll()); }
-	 * 
-	 * @GetMapping(path = "/events-venue") public String
-	 * eventsVenue(@RequestParam(name = "eventId") Integer eventId) throws
-	 * JsonProcessingException { return new
-	 * ObjectMapper().writeValueAsString(eventRepository.findAll()); }
-	 * 
-	 * @GetMapping(path = "/events-exhibitor") public String
-	 * eventsExhibitor(@RequestParam(name = "eventId") Integer eventId) throws
-	 * JsonProcessingException { return new
-	 * ObjectMapper().writeValueAsString(eventRepository.findAll()); }
-	 * 
-	 * @GetMapping(path = "/events-presenter") public String
-	 * eventsPresenter(@RequestParam(name = "eventId") Integer eventId) throws
-	 * JsonProcessingException { return new
-	 * ObjectMapper().writeValueAsString(eventRepository.findAll()); }
-	 * 
-	 * @GetMapping(path = "/events-description") public String
-	 * eventsDescription(@RequestParam(name = "eventId") Integer eventId) throws
-	 * JsonProcessingException { return new
-	 * ObjectMapper().writeValueAsString(eventRepository.findAll()); }
-	 * 
-	 * @GetMapping(path = "/events-restaurant") public String
-	 * eventsRestaurant(@RequestParam(name = "eventId") Integer eventId) throws
-	 * JsonProcessingException { return new
-	 * ObjectMapper().writeValueAsString(eventRepository.findAll()); }
-	 */
 
-	
 	/*
-	 * TODO: CREATE EVENTSERVICE to handle search from DB
 	 * TODO: CREATE MAPPER for response body
-	 * TODO: EXCEPTION HANDLING
 	 * 
 	 */
 	@GetMapping(path = "/events/{eventId}")
-	public ResponseEntity<Event> eventsInfo(@PathVariable Long eventId) {
-		HttpStatus status = HttpStatus.OK;
-		Optional<Event> foundEvent = eventRepository.findById(eventId);
-		if (!foundEvent.isPresent()) {
-			status = HttpStatus.NOT_FOUND;
-			throw new IllegalArgumentException();
-		}
-		return ResponseEntity.status(status).body(foundEvent.get());
+	public Event eventsInfo(@PathVariable Long eventId) {
+		Event event = eventService.findEventByEventId(eventId);
+		return event;
 	}
 
 	@GetMapping(path = "/events/{eventId}/stages")
-	public ResponseEntity<List<Event_Stage>> eventsStage(@PathVariable Long eventId) {
-		HttpStatus status = HttpStatus.OK;
-		Optional<Event> foundEvent = eventRepository.findById(eventId);
-		if (!foundEvent.isPresent()) {
-			status = HttpStatus.NOT_FOUND;
-			throw new IllegalArgumentException();
-		}
-		return ResponseEntity.status(status).body(foundEvent.get().getEvent_stages());
+	public List<Event_Stage> eventsStage(@PathVariable Long eventId) {
+		Event event = eventService.findEventByEventId(eventId);
+		return event.getEvent_stages();
 	}
 
 	@GetMapping(path = "/events/{eventId}/venues")
-	public ResponseEntity<List<Event_Venue>> eventsVenue(@PathVariable Long eventId) {
-		HttpStatus status = HttpStatus.OK;
-		Optional<Event> foundEvent = eventRepository.findById(eventId);
-		if (!foundEvent.isPresent()) {
-			status = HttpStatus.NOT_FOUND;
-			throw new IllegalArgumentException();
-		}
-		return ResponseEntity.status(status).body(foundEvent.get().getEvent_venues());
+	public List<Event_Venue> eventsVenue(@PathVariable Long eventId) {
+		Event event = eventService.findEventByEventId(eventId);
+		return event.getEvent_venues();
 	}
 
 	@GetMapping(path = "/events/{eventId}/exhibitors")
-	public ResponseEntity<List<Event_Exhibitor>> eventsExhibitor(@PathVariable Long eventId) {
-		HttpStatus status = HttpStatus.OK;
-		Optional<Event> foundEvent = eventRepository.findById(eventId);
-		if (!foundEvent.isPresent()) {
-			status = HttpStatus.NOT_FOUND;
-			throw new IllegalArgumentException();
-		}
-		return ResponseEntity.status(status).body(foundEvent.get().getEvent_exhibitors());
+	public List<Event_Exhibitor> eventsExhibitor(@PathVariable Long eventId) {
+		Event event = eventService.findEventByEventId(eventId);
+		return event.getEvent_exhibitors();
 	}
 
 	@GetMapping(path = "/events/{eventId}/presenters")
-	public ResponseEntity<List<Event_Presenter>> eventsPresenter(@PathVariable Long eventId) {
-		HttpStatus status = HttpStatus.OK;
-		Optional<Event> foundEvent = eventRepository.findById(eventId);
-		if (!foundEvent.isPresent()) {
-			status = HttpStatus.NOT_FOUND;
-			throw new IllegalArgumentException();
-		}
-		return ResponseEntity.status(status).body(foundEvent.get().getEvent_presenters());
+	public List<Event_Presenter> eventsPresenter(@PathVariable Long eventId) {
+		Event event = eventService.findEventByEventId(eventId);
+		return event.getEvent_presenters();
 	}
 
 	@GetMapping(path = "/events/{eventId}/full-description")
-	public ResponseEntity<String> eventsFullDescription(@PathVariable Long eventId) {
-		HttpStatus status = HttpStatus.OK;
-		Optional<Event> foundEvent = eventRepository.findById(eventId);
-		if (!foundEvent.isPresent()) {
-			status = HttpStatus.NOT_FOUND;
-			throw new IllegalArgumentException();
-		}
-		return ResponseEntity.status(status).body(foundEvent.get().getFull_description());
+	public String eventsFullDescription(@PathVariable Long eventId) {
+		Event event = eventService.findEventByEventId(eventId);
+		return event.getFull_description();
 	}
 
 	@GetMapping(path = "/events/{eventId}/restaurants")
-	public ResponseEntity<List<Event_Restaurant>> eventsRestaurant(@PathVariable Long eventId) {
-		HttpStatus status = HttpStatus.OK;
-		Optional<Event> foundEvent = eventRepository.findById(eventId);
-		if (!foundEvent.isPresent()) {
-			status = HttpStatus.NOT_FOUND;
-			throw new IllegalArgumentException();
-		}
-		return ResponseEntity.status(status).body(foundEvent.get().getEvent_restaurants());
+	public List<Event_Restaurant> eventsRestaurant(@PathVariable Long eventId) {
+		Event event = eventService.findEventByEventId(eventId);
+		return event.getEvent_restaurants();
 	}
 
 	/*
 	 * TODO: Separate CONTROLLER
 	 */
-	@GetMapping(path = "/venues-info")
-	public String venusInfo(@RequestParam(name = "venueId") Integer venueId) throws JsonProcessingException {
+	@GetMapping(path = "/venues")
+	public List<Venue> venues() {
+		return venueRepository.findAll();
+	}
+
+	@GetMapping(path = "/venues/{venueId}")
+	public Venue venuesInfo(@PathVariable Long venueId) {
+		Venue venue = venueService.findVenueByVenueId(venueId);
+		return venue;
+	}
+
+	@GetMapping(path = "/venues/{venueId}/stages")
+	public List<Stage> venuesStage(@PathVariable Long venueId) {
+		Venue venue = venueService.findVenueByVenueId(venueId);
+		return venue.getStages();
+	}
+
+	// Need new DB MAPPING. VENUE_RESTAURANT//
+	@GetMapping(path = "/venues/{venueId}/restaurants")
+	public String venusRestaurant(@RequestParam(name = "venueId") Long venueId) throws JsonProcessingException {
 		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
 	}
 
-	@GetMapping(path = "/venues-stage")
-	public String venusStage(@RequestParam(name = "venueId") Integer venueId) throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	@GetMapping(path = "/stages")
+	public List<Stage> stage() {
+		return stageRepository.findAll();
 	}
 
-	@GetMapping(path = "/venues-restaurant")
-	public String venusRestaurant(@RequestParam(name = "venueId") Integer venueId) throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	@GetMapping(path = "/stages/{stageId}")
+	public Stage stagesInfo(@PathVariable Long stageId) {
+		Stage stage = stageService.findStageByStaageId(stageId);
+		return stage;
 	}
 
-	@GetMapping(path = "/stages-info")
-	public String stagesInfo(@RequestParam(name = "stageId") Integer stageId) throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	@GetMapping(path = "/exhibitors")
+	public List<Exhibitor> exhibitor() {
+		return exhibitorRepository.findAll();
 	}
 
-	@GetMapping(path = "/exhibitors-info")
-	public String exhibitorsInfo(@RequestParam(name = "exhibitorId") Integer exhibitorId)
-			throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	@GetMapping(path = "/exhibitors{exhibitorId}")
+	public Exhibitor exhibitorsInfo(@PathVariable Long exhibitorId) {
+		Exhibitor exhibitor = exhibitorService.findExhibitorByExhibitorId(exhibitorId);
+		return exhibitor;
 	}
 
-	@GetMapping(path = "/presenters-info")
-	public String presentersInfo(@RequestParam(name = "presenterId") Integer presenterId)
-			throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	@GetMapping(path = "/presenters")
+	public List<Presenter> presenter() {
+		return presenterRepository.findAll();
+	}
+
+	@GetMapping(path = "/presenters/{presenterId}")
+	public Presenter presentersInfo(@PathVariable Long presenterId) {
+		Presenter presenter = presenterService.findPresenterByPresenterId(presenterId);
+		return presenter;
 	}
 
 	@GetMapping(path = "/restaurants")
-	public String restaurants() throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(restaurantRepository.findAll());
+	public List<Restaurant> restaurants() {
+		return restaurantRepository.findAll();
 	}
 
-	@GetMapping(path = "/restaurants-info")
-	public String restaurantsInfo(@RequestParam(name = "restaurantId") Integer restaurantId)
-			throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	@GetMapping(path = "/restaurants/{restaurantId}")
+	public Restaurant restaurantsInfo(@PathVariable Long restaurantId) {
+		Restaurant restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
+		return restaurant;
 	}
 }
