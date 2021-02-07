@@ -169,7 +169,7 @@ public class UserController {
 		return exhibitorRepository.findAll();
 	}
 
-	@GetMapping(path = "/exhibitors{exhibitorId}")
+	@GetMapping(path = "/exhibitors/{exhibitorId}")
 	public Exhibitor exhibitorsInfo(@PathVariable Long exhibitorId) {
 		Exhibitor exhibitor = exhibitorService.findExhibitorByExhibitorId(exhibitorId);
 		return exhibitor;
