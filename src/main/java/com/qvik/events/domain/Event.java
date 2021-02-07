@@ -57,12 +57,12 @@ public class Event {
 	private LocalDate endDate;
 	
 	@Column(name = "short_description", nullable = false)
-	private String short_description;
+	private String shortDescription;
 	
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
-	private String full_description;
+	private String fullDescription;
 	
 	@Column(name = "category", nullable = false)
 	private String category;
@@ -76,21 +76,21 @@ public class Event {
 	private String status;
 	
 	@Column(name = "last_modified", nullable = false)
-	private LocalDateTime last_modified;
+	private LocalDateTime lastModified;
 	
 	@Column(name = "has_exhibitor", nullable = false)
-	private boolean has_exhibitor;
+	private boolean hasExhibitor;
 	
 	@Column(name = "has_restaurant", nullable = false)
-	private boolean has_restaurant;
+	private boolean hasRestaurant;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parent_event")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentEvent")
 	@JsonBackReference
-	private List<Event> sub_events;
+	private List<Event> subEvents;
 
 	@ManyToOne
 	@JoinColumn(name = "parent_event")
-	private Event parent_event;
+	private Event parentEvent;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
@@ -119,30 +119,30 @@ public class Event {
 		this.startTime = start_time;
 		this.endDate = end_date;
 		this.endTime = end_time;
-		this.short_description = short_description;
-		this.full_description = full_description;
+		this.shortDescription = short_description;
+		this.fullDescription = full_description;
 		this.category = category;
 		this.image = image;
 		this.status = status;
-		this.last_modified = last_modified;
-		this.has_exhibitor = has_exhibitor;
-		this.has_restaurant = has_restaurant;
+		this.lastModified = last_modified;
+		this.hasExhibitor = has_exhibitor;
+		this.hasRestaurant = has_restaurant;
 	}
 
 	@Override
 	public String toString() {
-		if (parent_event == null) {
+		if (parentEvent == null) {
 			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date="
-					+ endDate + ", short_description='" + short_description + '\'' + ", full_description='"
-					+ full_description + '\'' + ", category='" + category + '\'' + ", image='" + image + '\''
-					+ ", status='" + status + '\'' + ", last_modified=" + last_modified + ", has_exhibitor="
-					+ has_exhibitor + ", has_restaurant=" + has_restaurant + '}';
+					+ endDate + ", short_description='" + shortDescription + '\'' + ", full_description='"
+					+ fullDescription + '\'' + ", category='" + category + '\'' + ", image='" + image + '\''
+					+ ", status='" + status + '\'' + ", last_modified=" + lastModified + ", has_exhibitor="
+					+ hasExhibitor + ", has_restaurant=" + hasRestaurant + '}';
 		} else {
 			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date="
-					+ endDate + ", short_description='" + short_description + '\'' + ", full_description='"
-					+ full_description + '\'' + ", category='" + category + '\'' + ", image='" + image + '\''
-					+ ", status='" + status + '\'' + ", last_modified=" + last_modified + ", has_exhibitor="
-					+ has_exhibitor + ", has_restaurant=" + has_restaurant + ", parent_event=" + parent_event + '}';
+					+ endDate + ", short_description='" + shortDescription + '\'' + ", full_description='"
+					+ fullDescription + '\'' + ", category='" + category + '\'' + ", image='" + image + '\''
+					+ ", status='" + status + '\'' + ", last_modified=" + lastModified + ", has_exhibitor="
+					+ hasExhibitor + ", has_restaurant=" + hasRestaurant + ", parent_event=" + parentEvent + '}';
 		}
 	}
 }

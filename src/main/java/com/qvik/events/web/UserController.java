@@ -120,7 +120,7 @@ public class UserController {
 	@GetMapping(path = "/events/{eventId}/full-description")
 	public String eventsFullDescription(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
-		return event.getFull_description();
+		return event.getFullDescription();
 	}
 
 	@GetMapping(path = "/events/{eventId}/restaurants")

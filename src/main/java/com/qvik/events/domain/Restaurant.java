@@ -1,6 +1,7 @@
 package com.qvik.events.domain;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -47,30 +48,30 @@ public class Restaurant {
 	private String location;
 	
 	@Column(name = "open_date_time", nullable = false)
-	private Time open_date_time;
+	private LocalTime openTime;
 	
 	@Column(name = "close_date_time", nullable = false)
-	private Time close_date_time;
+	private LocalTime closeTime;
 	
 	@Column(name = "short_description", nullable = false)
-	private String short_description;
+	private String shortDescription;
 	
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
-	private String full_description;
+	private String fullDescription;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant")
 	@JsonBackReference
 	private List<Event_Restaurant> event_restaurants;
 
-	public Restaurant(String name, String location, Time open_date_time, Time close_date_time, String short_description,
+	public Restaurant(String name, String location, LocalTime open_time, LocalTime close_time, String short_description,
 			String full_description) {
 		this.name = name;
 		this.location = location;
-		this.open_date_time = open_date_time;
-		this.close_date_time = close_date_time;
-		this.short_description = short_description;
-		this.full_description = full_description;
+		this.openTime = open_time;
+		this.closeTime = close_time;
+		this.shortDescription = short_description;
+		this.fullDescription = full_description;
 	}
 }

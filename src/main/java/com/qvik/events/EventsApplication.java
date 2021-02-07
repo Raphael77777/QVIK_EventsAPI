@@ -98,8 +98,10 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Restaurant> restaurants = new ArrayList<>();
-                restaurants.add(new Restaurant("name", "San Fransisco", new Time(System.currentTimeMillis()), new Time(System.currentTimeMillis()), "Short", "Full description"));
-                restaurants.add(new Restaurant("name", "Chicago", new Time(System.currentTimeMillis()), new Time(System.currentTimeMillis()), "Short", "Full description"));
+                LocalTime open = LocalTime.parse("10:00");
+                
+                restaurants.add(new Restaurant("name", "San Fransisco", open, open.plusHours(7), "Short", "Full description"));
+                restaurants.add(new Restaurant("name", "Chicago", open, open.plusHours(7), "Short", "Full description"));
                 restaurantRepository.saveAll(restaurants);
 
                 for (Restaurant r : restaurantRepository.findAll()){
@@ -126,7 +128,7 @@ public class EventsApplication {
                 LocalTime time = LocalTime.now();
                 events.add(new Event(now.minusDays(3), time, now.plusDays(2), time.plusHours(1), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), false, false));
                 events.add(new Event(now.minusDays(2), time, now.plusDays(1), time.plusHours(2), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), false, false));
-                events.get(1).setParent_event(events.get(0));
+                events.get(1).setParentEvent(events.get(0));
                 eventRepository.saveAll(events);
 
                 for (Event e : eventRepository.findAll()){

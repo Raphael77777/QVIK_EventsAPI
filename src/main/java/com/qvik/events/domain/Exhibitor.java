@@ -49,12 +49,12 @@ public class Exhibitor {
 	private String contact;
 	
 	@Column(name = "short_description", nullable = false)
-	private String short_description;
+	private String shortDescription;
 	
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
-	private String full_description;
+	private String fullDescription;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "exhibitor")
 	@JsonBackReference
@@ -64,8 +64,8 @@ public class Exhibitor {
 		this.name = name;
 		this.location = location;
 		this.contact = contact;
-		this.short_description = short_description;
-		this.full_description = full_description;
+		this.shortDescription = short_description;
+		this.fullDescription = full_description;
 	}
 
 }
