@@ -30,10 +30,15 @@ public class Presenter {
 
 	@Column(name = "name", nullable = false)
 	private String name;
+	
 	@Column(name = "contact", nullable = false)
 	private String contact;
+	
 	@Column(name = "short_description", nullable = false)
 	private String short_description;
+	
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
 	private String full_description;
 

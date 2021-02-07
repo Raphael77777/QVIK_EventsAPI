@@ -1,21 +1,25 @@
 package com.qvik.events.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,27 +43,44 @@ public class Event {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "event_id", nullable = false, updatable = false)
 	private long event_id;
-	@JsonFormat(pattern = "yyyy-MM-dd-HH:mm")
-	@Column(name = "start_date_time", nullable = false)
-	private Date start_date_time;
-	@JsonFormat(pattern = "yyyy-MM-dd-HH:mm")
-	@Column(name = "end_date_time", nullable = false)
-	private Date end_date_time;
+	
+	@Column(name = "start_date", nullable = false)
+	private LocalDate startDate;
+	
+	@Column(name = "start_time", nullable = false)
+	private LocalTime startTime;
+	
+	@Column(name = "end_time", nullable = false)
+	private LocalTime endTime;
+	
+	@Column(name = "end_date", nullable = false)
+	private LocalDate endDate;
+	
 	@Column(name = "short_description", nullable = false)
 	private String short_description;
+	
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
 	private String full_description;
+	
 	@Column(name = "category", nullable = false)
 	private String category;
+	
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "image", nullable = false)
 	private String image;
+	
 	@Column(name = "status", nullable = false)
 	private String status;
-	@JsonFormat(pattern = "yyyy-MM-dd-HH:mm:ss")
+	
 	@Column(name = "last_modified", nullable = false)
-	private Date last_modified;
+	private LocalDateTime last_modified;
+	
 	@Column(name = "has_exhibitor", nullable = false)
 	private boolean has_exhibitor;
+	
 	@Column(name = "has_restaurant", nullable = false)
 	private boolean has_restaurant;
 
@@ -91,11 +112,13 @@ public class Event {
 	@JsonBackReference
 	private List<Event_Exhibitor> event_exhibitors;
 
-	public Event(Date start_date_time, Date end_date_time, String short_description, String full_description,
-			String category, String image, String status, Date last_modified, boolean has_exhibitor,
+	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String short_description, String full_description,
+			String category, String image, String status, LocalDateTime last_modified, boolean has_exhibitor,
 			boolean has_restaurant) {
-		this.start_date_time = start_date_time;
-		this.end_date_time = end_date_time;
+		this.startDate = start_date;
+		this.startTime = start_time;
+		this.endDate = end_date;
+		this.endTime = end_time;
 		this.short_description = short_description;
 		this.full_description = full_description;
 		this.category = category;
@@ -109,14 +132,14 @@ public class Event {
 	@Override
 	public String toString() {
 		if (parent_event == null) {
-			return "Event{" + "event_id=" + event_id + ", start_date_time=" + start_date_time + ", end_date_time="
-					+ end_date_time + ", short_description='" + short_description + '\'' + ", full_description='"
+			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date="
+					+ endDate + ", short_description='" + short_description + '\'' + ", full_description='"
 					+ full_description + '\'' + ", category='" + category + '\'' + ", image='" + image + '\''
 					+ ", status='" + status + '\'' + ", last_modified=" + last_modified + ", has_exhibitor="
 					+ has_exhibitor + ", has_restaurant=" + has_restaurant + '}';
 		} else {
-			return "Event{" + "event_id=" + event_id + ", start_date_time=" + start_date_time + ", end_date_time="
-					+ end_date_time + ", short_description='" + short_description + '\'' + ", full_description='"
+			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date="
+					+ endDate + ", short_description='" + short_description + '\'' + ", full_description='"
 					+ full_description + '\'' + ", category='" + category + '\'' + ", image='" + image + '\''
 					+ ", status='" + status + '\'' + ", last_modified=" + last_modified + ", has_exhibitor="
 					+ has_exhibitor + ", has_restaurant=" + has_restaurant + ", parent_event=" + parent_event + '}';

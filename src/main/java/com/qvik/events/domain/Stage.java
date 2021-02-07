@@ -30,10 +30,13 @@ public class Stage {
 
 	@Column(name = "name", nullable = false)
 	private String name;
+	
 	@Column(name = "location", nullable = false)
 	private String location;
+	
 	@Column(name = "capacity", nullable = false)
 	private Integer capacity;
+	
 	@Column(name = "type", nullable = false)
 	private String type;
 

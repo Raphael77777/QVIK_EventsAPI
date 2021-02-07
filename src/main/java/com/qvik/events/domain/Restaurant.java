@@ -1,5 +1,20 @@
 package com.qvik.events.domain;
 
+import java.sql.Time;
+import java.util.List;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
@@ -8,10 +23,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.sql.Time;
-import java.util.List;
 
 /** Entity for table Restaurant */
 @Entity
@@ -31,14 +42,21 @@ public class Restaurant {
 
 	@Column(name = "name", nullable = false)
 	private String name;
+	
 	@Column(name = "location", nullable = false)
 	private String location;
+	
 	@Column(name = "open_date_time", nullable = false)
 	private Time open_date_time;
+	
 	@Column(name = "close_date_time", nullable = false)
 	private Time close_date_time;
+	
 	@Column(name = "short_description", nullable = false)
 	private String short_description;
+	
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
 	private String full_description;
 

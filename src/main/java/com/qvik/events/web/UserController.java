@@ -1,5 +1,7 @@
 package com.qvik.events.web;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -74,11 +76,11 @@ public class UserController {
 	public List<Event> events() {
 		return eventRepository.findAll();
 	}
-
-	// TODO: QUERY FOR SEARCH BY DATE
-	@GetMapping(path = "/events/date")
-	public String eventsDate(@RequestParam(name = "startDate") Date startDate) throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	//TODO : Should renamed path. required=false. if param==null {redirect to /events}
+	@GetMapping(path = "/events/start") 
+	public List<Event> eventsDate(@RequestParam(name = "date") String date) throws ParseException {
+		List<Event> events = eventService.findEventsByStartDate(date);
+		return events;
 	}
 
 	/*

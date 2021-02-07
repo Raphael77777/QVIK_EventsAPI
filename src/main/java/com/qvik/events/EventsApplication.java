@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,8 +122,10 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Event> events = new ArrayList<>();
-                events.add(new Event(new Time(System.currentTimeMillis()), new Time(System.currentTimeMillis()), "Short", "Full description", "music", "#url", "OPEN", new Time(System.currentTimeMillis()), false, false));
-                events.add(new Event(new Time(System.currentTimeMillis()), new Time(System.currentTimeMillis()), "Short", "Full description", "music", "#url", "OPEN", new Time(System.currentTimeMillis()), false, false));
+                LocalDate now = LocalDate.now();
+                LocalTime time = LocalTime.now();
+                events.add(new Event(now.minusDays(3), time, now.plusDays(2), time.plusHours(1), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), false, false));
+                events.add(new Event(now.minusDays(2), time, now.plusDays(1), time.plusHours(2), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), false, false));
                 events.get(1).setParent_event(events.get(0));
                 eventRepository.saveAll(events);
 
