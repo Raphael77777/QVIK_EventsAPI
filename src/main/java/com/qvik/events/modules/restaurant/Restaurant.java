@@ -70,4 +70,19 @@ public class Restaurant {
 		this.shortDescription = short_description;
 		this.fullDescription = full_description;
 	}
+
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Restaurant{" +
+				"restaurant_id=" + restaurant_id +
+				", name='" + name + '\'' +
+				", location='" + location + '\'' +
+				", openTime=" + openTime +
+				", closeTime=" + closeTime +
+				", shortDescription='" + shortDescription + '\'' +
+				", fullDescription='" + fullDescription + '\'' +
+				", venue=" + venue +
+				'}';
+	}
 }

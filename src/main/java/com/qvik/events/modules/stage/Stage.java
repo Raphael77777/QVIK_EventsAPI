@@ -66,4 +66,17 @@ public class Stage {
 		this.capacity = capacity;
 		this.type = type;
 	}
+
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Stage{" +
+				"stage_id=" + stage_id +
+				", name='" + name + '\'' +
+				", location='" + location + '\'' +
+				", capacity=" + capacity +
+				", type='" + type + '\'' +
+				", venue=" + venue +
+				'}';
+	}
 }

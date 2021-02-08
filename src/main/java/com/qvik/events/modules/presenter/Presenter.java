@@ -53,4 +53,15 @@ public class Presenter {
 		this.fullDescription = full_description;
 	}
 
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Presenter{" +
+				"presenter_id=" + presenter_id +
+				", name='" + name + '\'' +
+				", contact='" + contact + '\'' +
+				", shortDescription='" + shortDescription + '\'' +
+				", fullDescription='" + fullDescription + '\'' +
+				'}';
+	}
 }

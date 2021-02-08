@@ -49,4 +49,14 @@ public class Event_Presenter {
 		this.description = description;
 	}
 
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Event_Presenter{" +
+				"event_presenter_id=" + event_presenter_id +
+				", event=" + event +
+				", presenter=" + presenter +
+				", description='" + description + '\'' +
+				'}';
+	}
 }

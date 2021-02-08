@@ -48,4 +48,15 @@ public class Event_Stage {
 	public Event_Stage(String description) {
 		this.description = description;
 	}
+
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Event_Stage{" +
+				"event_stage_id=" + event_stage_id +
+				", event=" + event +
+				", stage=" + stage +
+				", description='" + description + '\'' +
+				'}';
+	}
 }

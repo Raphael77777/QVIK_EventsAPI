@@ -68,4 +68,16 @@ public class Venue {
 		this.address = address;
 		this.contact = contact;
 	}
+
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Venue{" +
+				"venue_id=" + venue_id +
+				", name='" + name + '\'' +
+				", city='" + city + '\'' +
+				", address='" + address + '\'' +
+				", contact='" + contact + '\'' +
+				'}';
+	}
 }

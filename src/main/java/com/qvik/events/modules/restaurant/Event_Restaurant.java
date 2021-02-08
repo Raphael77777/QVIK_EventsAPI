@@ -48,4 +48,15 @@ public class Event_Restaurant {
 	public Event_Restaurant(String description) {
 		this.description = description;
 	}
+
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Event_Restaurant{" +
+				"event_restaurant_id=" + event_restaurant_id +
+				", event=" + event +
+				", restaurant=" + restaurant +
+				", description='" + description + '\'' +
+				'}';
+	}
 }

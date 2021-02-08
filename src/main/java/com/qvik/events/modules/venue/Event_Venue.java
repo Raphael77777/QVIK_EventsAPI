@@ -48,4 +48,15 @@ public class Event_Venue {
 	public Event_Venue(String description) {
 		this.description = description;
 	}
+
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Event_Venue{" +
+				"event_venue_id=" + event_venue_id +
+				", event=" + event +
+				", venue=" + venue +
+				", description='" + description + '\'' +
+				'}';
+	}
 }

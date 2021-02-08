@@ -68,4 +68,16 @@ public class Exhibitor {
 		this.fullDescription = full_description;
 	}
 
+	//TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Exhibitor{" +
+				"exhibitor_id=" + exhibitor_id +
+				", name='" + name + '\'' +
+				", location='" + location + '\'' +
+				", contact='" + contact + '\'' +
+				", shortDescription='" + shortDescription + '\'' +
+				", fullDescription='" + fullDescription + '\'' +
+				'}';
+	}
 }

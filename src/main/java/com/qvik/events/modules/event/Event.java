@@ -134,6 +134,7 @@ public class Event {
 		this.hasRestaurant = has_restaurant;
 	}
 
+	//TODO : Temporary output to be removed at the end of development
 	@Override
 	public String toString() {
 		if (parentEvent == null) {
