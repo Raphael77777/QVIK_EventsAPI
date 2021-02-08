@@ -1,4 +1,4 @@
-package com.qvik.events.config;
+package com.qvik.events.modules.event;
 
 public class StartDateNotFoundException extends RuntimeException {
 	public StartDateNotFoundException(String date) {

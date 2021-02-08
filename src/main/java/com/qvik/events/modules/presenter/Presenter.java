@@ -1,4 +1,4 @@
-package com.qvik.events.domain;
+package com.qvik.events.modules.presenter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 

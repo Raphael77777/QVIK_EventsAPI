@@ -1,12 +1,9 @@
-package com.qvik.events.domain;
+package com.qvik.events.modules.event;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
-import com.qvik.events.config.EventNotFoundException;
-import com.qvik.events.config.StartDateNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

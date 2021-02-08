@@ -1,4 +1,4 @@
-package com.qvik.events.config;
+package com.qvik.events.modules.stage;
 
 public class StageNotFoundException extends RuntimeException {
 	

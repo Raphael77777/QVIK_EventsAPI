@@ -1,8 +1,6 @@
-package com.qvik.events.domain;
+package com.qvik.events.modules.venue;
 
 import org.springframework.stereotype.Service;
-
-import com.qvik.events.config.VenueNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,8 +1,7 @@
-package com.qvik.events.domain;
+package com.qvik.events.modules.stage;
 
 import org.springframework.stereotype.Service;
 
-import com.qvik.events.config.StageNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service

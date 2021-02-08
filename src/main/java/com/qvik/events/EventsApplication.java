@@ -1,6 +1,11 @@
 package com.qvik.events;
 
-import com.qvik.events.domain.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -9,12 +14,28 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import com.qvik.events.modules.event.Event;
+import com.qvik.events.modules.event.EventRepository;
+import com.qvik.events.modules.exhibitor.EventExhibitorRepository;
+import com.qvik.events.modules.exhibitor.Event_Exhibitor;
+import com.qvik.events.modules.exhibitor.Exhibitor;
+import com.qvik.events.modules.exhibitor.ExhibitorRepository;
+import com.qvik.events.modules.presenter.EventPresenterRepository;
+import com.qvik.events.modules.presenter.Event_Presenter;
+import com.qvik.events.modules.presenter.Presenter;
+import com.qvik.events.modules.presenter.PresenterRepository;
+import com.qvik.events.modules.restaurant.EventRestaurantRepository;
+import com.qvik.events.modules.restaurant.Event_Restaurant;
+import com.qvik.events.modules.restaurant.Restaurant;
+import com.qvik.events.modules.restaurant.RestaurantRepository;
+import com.qvik.events.modules.stage.EventStageRepository;
+import com.qvik.events.modules.stage.Event_Stage;
+import com.qvik.events.modules.stage.Stage;
+import com.qvik.events.modules.stage.StageRepository;
+import com.qvik.events.modules.venue.EventVenueRepository;
+import com.qvik.events.modules.venue.Event_Venue;
+import com.qvik.events.modules.venue.Venue;
+import com.qvik.events.modules.venue.VenueRepository;
 
 @SpringBootApplication
 @EnableTransactionManagement

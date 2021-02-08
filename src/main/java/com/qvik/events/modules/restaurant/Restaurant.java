@@ -1,4 +1,4 @@
-package com.qvik.events.domain;
+package com.qvik.events.modules.restaurant;
 
 import java.sql.Time;
 import java.time.LocalTime;

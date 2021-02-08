@@ -1,4 +1,4 @@
-package com.qvik.events.config;
+package com.qvik.events.modules.venue;
 
 public class VenueNotFoundException extends RuntimeException {
 

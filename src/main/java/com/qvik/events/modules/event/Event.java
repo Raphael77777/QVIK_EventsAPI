@@ -1,4 +1,4 @@
-package com.qvik.events.domain;
+package com.qvik.events.modules.event;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +20,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.qvik.events.modules.exhibitor.Event_Exhibitor;
+import com.qvik.events.modules.presenter.Event_Presenter;
+import com.qvik.events.modules.restaurant.Event_Restaurant;
+import com.qvik.events.modules.stage.Event_Stage;
+import com.qvik.events.modules.venue.Event_Venue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

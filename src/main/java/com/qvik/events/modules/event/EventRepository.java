@@ -1,4 +1,4 @@
-package com.qvik.events.domain;
+package com.qvik.events.modules.event;
 
 import java.time.LocalDate;
 import java.util.List;

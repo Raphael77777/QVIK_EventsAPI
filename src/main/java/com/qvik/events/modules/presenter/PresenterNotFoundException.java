@@ -1,4 +1,4 @@
-package com.qvik.events.config;
+package com.qvik.events.modules.presenter;
 
 public class PresenterNotFoundException extends RuntimeException {
 	public PresenterNotFoundException(Long id) {

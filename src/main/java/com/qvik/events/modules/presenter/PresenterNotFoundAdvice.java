@@ -1,4 +1,4 @@
-package com.qvik.events.config;
+package com.qvik.events.modules.presenter;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

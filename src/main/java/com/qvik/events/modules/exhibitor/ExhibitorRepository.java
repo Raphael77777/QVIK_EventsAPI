@@ -1,4 +1,4 @@
-package com.qvik.events.domain;
+package com.qvik.events.modules.exhibitor;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;

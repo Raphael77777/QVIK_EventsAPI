@@ -1,4 +1,4 @@
-package com.qvik.events.config;
+package com.qvik.events.modules.restaurant;
 
 public class RestaurantNotFoundException extends RuntimeException  {
 	

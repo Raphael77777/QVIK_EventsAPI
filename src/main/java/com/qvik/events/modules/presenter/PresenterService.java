@@ -1,8 +1,5 @@
-package com.qvik.events.domain;
-
+package com.qvik.events.modules.presenter;
 import org.springframework.stereotype.Service;
-
-import com.qvik.events.config.PresenterNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
