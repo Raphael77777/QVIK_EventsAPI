@@ -120,9 +120,11 @@ public class EventsApplication {
                 /************************************************************************************************************/
                 List<Restaurant> restaurants = new ArrayList<>();
                 LocalTime open = LocalTime.parse("10:00");
-                
+
                 restaurants.add(new Restaurant("name", "San Fransisco", open, open.plusHours(7), "Short", "Full description"));
+                restaurants.get(restaurants.size()-1).setVenue(venues.get(restaurants.size()-1));
                 restaurants.add(new Restaurant("name", "Chicago", open, open.plusHours(7), "Short", "Full description"));
+                restaurants.get(restaurants.size()-1).setVenue(venues.get(restaurants.size()-1));
                 restaurantRepository.saveAll(restaurants);
 
                 for (Restaurant r : restaurantRepository.findAll()){

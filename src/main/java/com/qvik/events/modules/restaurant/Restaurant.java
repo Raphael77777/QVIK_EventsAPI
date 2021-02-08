@@ -4,20 +4,11 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import com.qvik.events.modules.venue.Venue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -60,6 +51,11 @@ public class Restaurant {
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
 	private String fullDescription;
+
+	@ManyToOne
+	@JsonBackReference
+	@JoinColumn(name = "venue_id")
+	private Venue venue;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant")
 	@JsonBackReference
