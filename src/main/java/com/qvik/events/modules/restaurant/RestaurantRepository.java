@@ -11,5 +11,5 @@ import java.util.List;
 /** Repository for entity Restaurant */
 @RepositoryRestResource
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
-    List<Restaurant> findByVenueEquals (Venue venue);
+    List<Restaurant> findByVenueEquals (Venue venue);	
 }

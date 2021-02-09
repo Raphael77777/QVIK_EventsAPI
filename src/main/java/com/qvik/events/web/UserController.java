@@ -82,7 +82,7 @@ public class UserController {
 	}
 
 	/*
-	 * TODO: CREATE MAPPER for response body
+	 * TODO: CREATE MAPPER for response body -> Need discussion w FrontEnd
 	 * 
 	 */
 	@GetMapping(path = "/events/{eventId}")
@@ -111,14 +111,14 @@ public class UserController {
 
 	@GetMapping(path = "/events/{eventId}/presenters")
 	public List<Event_Presenter> eventsPresenter(@PathVariable Long eventId) {
-		Event event = eventService.findEventByEventId(eventId);
+		Event event = eventService.findEventByEventId(eventId);		
 		return event.getEvent_presenters();
 	}
 
 	@GetMapping(path = "/events/{eventId}/full-description")
-	public String eventsFullDescription(@PathVariable Long eventId) {
+	public String eventsFullDescription(@PathVariable Long eventId) throws JsonProcessingException {
 		Event event = eventService.findEventByEventId(eventId);
-		return event.getFullDescription();
+		return new ObjectMapper().writeValueAsString(event.getFullDescription());
 	}
 
 	@GetMapping(path = "/events/{eventId}/restaurants")
@@ -146,11 +146,12 @@ public class UserController {
 		Venue venue = venueService.findVenueByVenueId(venueId);
 		return venue.getStages();
 	}
-
-	// Need new DB MAPPING. VENUE_RESTAURANT//
+	
 	@GetMapping(path = "/venues/{venueId}/restaurants")
-	public String venusRestaurant(@RequestParam(name = "venueId") Long venueId) throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(eventRepository.findAll());
+	public List<Restaurant> venusRestaurant(@PathVariable Long venueId)  {
+		Venue venue = venueService.findVenueByVenueId(venueId);
+		List<Restaurant> restaurants = restaurantRepository.findByVenueEquals(venue);
+		return restaurants;
 	}
 
 	@GetMapping(path = "/stages")
