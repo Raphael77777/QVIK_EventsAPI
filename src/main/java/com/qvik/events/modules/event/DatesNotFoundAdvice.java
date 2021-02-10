@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class StartDateNotFoundAdvice {
+public class DatesNotFoundAdvice {
 	@ResponseBody
-	@ExceptionHandler(StartDateNotFoundException.class)
+	@ExceptionHandler(DatesNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	String startDateNotFoundHandler(StartDateNotFoundException ex) {
+	String startDateNotFoundHandler(DatesNotFoundException ex) {
 		return ex.getMessage();
 	}
 

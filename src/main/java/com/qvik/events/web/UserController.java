@@ -74,10 +74,17 @@ public class UserController {
 	public List<Event> events() {
 		return eventRepository.findAll();
 	}
-	//TODO : Should renamed path. required=false. if param==null {redirect to /events}
-	@GetMapping(path = "/events/start") 
-	public List<Event> eventsDate(@RequestParam(name = "date") String date) throws ParseException {
-		List<Event> events = eventService.findEventsByStartDate(date);
+
+	@GetMapping(path = "/events/date")
+	public List<Event> eventsDate(@RequestParam(name = "start") String startDate,
+			@RequestParam(name = "end", required = false) String endDate) {
+		List<Event> events = eventService.findEventsByDates(startDate, endDate);
+		return events;
+	}
+
+	@GetMapping(path = "/ongoing-events")
+	public List<Event> eventsOngoing(@RequestParam(name = "at") String date) {
+		List<Event> events = eventService.findOnGoingEvents(date);
 		return events;
 	}
 
@@ -111,7 +118,7 @@ public class UserController {
 
 	@GetMapping(path = "/events/{eventId}/presenters")
 	public List<Event_Presenter> eventsPresenter(@PathVariable Long eventId) {
-		Event event = eventService.findEventByEventId(eventId);		
+		Event event = eventService.findEventByEventId(eventId);
 		return event.getEvent_presenters();
 	}
 
@@ -146,9 +153,9 @@ public class UserController {
 		Venue venue = venueService.findVenueByVenueId(venueId);
 		return venue.getStages();
 	}
-	
+
 	@GetMapping(path = "/venues/{venueId}/restaurants")
-	public List<Restaurant> venusRestaurant(@PathVariable Long venueId)  {
+	public List<Restaurant> venusRestaurant(@PathVariable Long venueId) {
 		Venue venue = venueService.findVenueByVenueId(venueId);
 		List<Restaurant> restaurants = restaurantRepository.findByVenueEquals(venue);
 		return restaurants;

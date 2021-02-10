@@ -11,4 +11,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface EventRepository extends JpaRepository<Event, Long> {
 
 	List<Event> findByStartDateOrderByStartDateDesc(LocalDate startDate);
+
+	List<Event> findByStartDateAndEndDateOrderByStartDateDesc(LocalDate startDate, LocalDate endDate);
 }
