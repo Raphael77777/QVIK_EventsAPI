@@ -1,10 +1,10 @@
 package com.qvik.events.web;
 
-import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,27 +13,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.event.EventRepository;
 import com.qvik.events.modules.event.EventService;
-import com.qvik.events.modules.exhibitor.EventExhibitorRepository;
 import com.qvik.events.modules.exhibitor.Event_Exhibitor;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorRepository;
 import com.qvik.events.modules.exhibitor.ExhibitorService;
-import com.qvik.events.modules.presenter.EventPresenterRepository;
 import com.qvik.events.modules.presenter.Event_Presenter;
 import com.qvik.events.modules.presenter.Presenter;
 import com.qvik.events.modules.presenter.PresenterRepository;
 import com.qvik.events.modules.presenter.PresenterService;
-import com.qvik.events.modules.restaurant.EventRestaurantRepository;
 import com.qvik.events.modules.restaurant.Event_Restaurant;
 import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.restaurant.RestaurantRepository;
 import com.qvik.events.modules.restaurant.RestaurantService;
-import com.qvik.events.modules.stage.EventStageRepository;
 import com.qvik.events.modules.stage.Event_Stage;
 import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.stage.StageRepository;
 import com.qvik.events.modules.stage.StageService;
-import com.qvik.events.modules.venue.EventVenueRepository;
 import com.qvik.events.modules.venue.Event_Venue;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
@@ -44,14 +39,11 @@ import lombok.RequiredArgsConstructor;
 /** Controller used for user requests */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/")
 public class UserController {
 
-	private final EventExhibitorRepository eventExhibitorRepository;
-	private final EventPresenterRepository eventPresenterRepository;
+	
 	private final EventRepository eventRepository;
-	private final EventRestaurantRepository eventRestaurantRepository;
-	private final EventStageRepository eventStageRepository;
-	private final EventVenueRepository eventVenueRepository;
 	private final ExhibitorRepository exhibitorRepository;
 	private final PresenterRepository presenterRepository;
 	private final RestaurantRepository restaurantRepository;
@@ -83,15 +75,11 @@ public class UserController {
 	}
 
 	@GetMapping(path = "/ongoing-events")
-	public List<Event> eventsOngoing(@RequestParam(name = "at") String date) {
+	public List<Event> eventsOngoing(@RequestParam(name = "on") String date) {
 		List<Event> events = eventService.findOnGoingEvents(date);
 		return events;
 	}
-
-	/*
-	 * TODO: CREATE MAPPER for response body -> Need discussion w FrontEnd
-	 * 
-	 */
+	
 	@GetMapping(path = "/events/{eventId}")
 	public Event eventsInfo(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
@@ -134,9 +122,7 @@ public class UserController {
 		return event.getEvent_restaurants();
 	}
 
-	/*
-	 * TODO: Separate CONTROLLER
-	 */
+	
 	@GetMapping(path = "/venues")
 	public List<Venue> venues() {
 		return venueRepository.findAll();
@@ -168,7 +154,7 @@ public class UserController {
 
 	@GetMapping(path = "/stages/{stageId}")
 	public Stage stagesInfo(@PathVariable Long stageId) {
-		Stage stage = stageService.findStageByStaageId(stageId);
+		Stage stage = stageService.findStageByStageId(stageId);
 		return stage;
 	}
 

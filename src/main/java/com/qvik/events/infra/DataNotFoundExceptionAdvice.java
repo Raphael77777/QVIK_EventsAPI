@@ -1,4 +1,6 @@
-package com.qvik.events.modules.event;
+package com.qvik.events.infra;
+
+import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -7,12 +9,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class DatesNotFoundAdvice {
+public class DataNotFoundExceptionAdvice {
+
 	@ResponseBody
-	@ExceptionHandler(DatesNotFoundException.class)
+	@ExceptionHandler(DataNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	String startDateNotFoundHandler(DatesNotFoundException ex) {
-		return ex.getMessage();
+	HashMap<String, String> dataNotFoundHandler(DataNotFoundException ex) {
+		HashMap <String, String> error = new HashMap<>();
+		error.put("status", "404");
+		error.put("message", ex.getMessage());		
+		return error;
 	}
 
 }

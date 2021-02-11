@@ -2,6 +2,8 @@ package com.qvik.events.modules.stage;
 
 import org.springframework.stereotype.Service;
 
+import com.qvik.events.infra.DataNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -10,8 +12,8 @@ public class StageService {
 	
 	private final StageRepository stageRepository;
 	
-	public Stage findStageByStaageId(Long id) {
-		return stageRepository.findById(id).orElseThrow(() -> new StageNotFoundException(id));
+	public Stage findStageByStageId(Long id) {
+		return stageRepository.findById(id).orElseThrow(() -> new DataNotFoundException());
 	}
 
 }

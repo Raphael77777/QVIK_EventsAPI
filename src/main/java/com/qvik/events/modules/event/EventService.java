@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.qvik.events.infra.DataNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -15,7 +17,7 @@ public class EventService {
 	private final EventRepository eventRepository;
 
 	public Event findEventByEventId(Long id) {
-		return eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
+		return eventRepository.findById(id).orElseThrow(() -> new DataNotFoundException());
 	}
 
 	public List<Event> findEventsByDates(String startDate, String endDate) {
@@ -30,7 +32,7 @@ public class EventService {
 			events = eventRepository.findByStartDateOrderByStartDateDesc(localStartDate);
 		}
 		if (events.size() == 0) {
-			throw new DatesNotFoundException();
+			throw new DataNotFoundException();
 		}
 		return events;
 	}
@@ -42,13 +44,14 @@ public class EventService {
 		for (Event e : events) {
 			LocalDate startDate = e.getStartDate();
 			LocalDate endDate = e.getEndDate();
-			if ((givenDate.isEqual(startDate)||givenDate.isAfter(startDate)) && (givenDate.isEqual(endDate)||givenDate.isBefore(endDate))) {
+			if ((givenDate.isEqual(startDate) || givenDate.isAfter(startDate))
+					&& (givenDate.isEqual(endDate) || givenDate.isBefore(endDate))) {
 				ongoingEvents.add(e);
 			}
 		}
 
 		if (ongoingEvents.size() == 0) {
-			throw new DatesNotFoundException();
+			throw new DataNotFoundException();
 		}
 
 		return ongoingEvents;

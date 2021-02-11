@@ -149,8 +149,8 @@ public class EventsApplication {
                 List<Event> events = new ArrayList<>();
                 LocalDate now = LocalDate.now();
                 LocalTime time = LocalTime.now();
-                events.add(new Event(now.minusDays(3), time, now.plusDays(2), time.plusHours(1), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), false, false));
-                events.add(new Event(now.minusDays(1), time, now.plusDays(1), time.plusHours(2), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), false, false));
+                events.add(new Event(now.minusDays(3), time, now.plusDays(2), time.plusHours(1), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), true, true));
+                events.add(new Event(now.minusDays(1), time, now.plusDays(1), time.plusHours(2), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), true, true));
                 events.get(1).setParentEvent(events.get(0));
                 eventRepository.saveAll(events);
 

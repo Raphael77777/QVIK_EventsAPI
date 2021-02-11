@@ -2,6 +2,8 @@ package com.qvik.events.modules.exhibitor;
 
 import org.springframework.stereotype.Service;
 
+import com.qvik.events.infra.DataNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -11,7 +13,7 @@ public class ExhibitorService {
 	private final ExhibitorRepository exhibitorRepository;
 	
 	public Exhibitor findExhibitorByExhibitorId(Long id) {
-		return exhibitorRepository.findById(id).orElseThrow(() -> new ExhibitorNotFoundException(id));
+		return exhibitorRepository.findById(id).orElseThrow(() -> new DataNotFoundException());
 	}
 
 }

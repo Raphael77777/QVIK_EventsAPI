@@ -2,6 +2,8 @@ package com.qvik.events.modules.restaurant;
 
 import org.springframework.stereotype.Service;
 
+import com.qvik.events.infra.DataNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -11,6 +13,6 @@ public class RestaurantService {
 	private final RestaurantRepository restaurantRepository;
 	
 	public Restaurant findRestaurantByRestaurantId(Long id) {
-		return restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
+		return restaurantRepository.findById(id).orElseThrow(() -> new DataNotFoundException());
 	}
 }
