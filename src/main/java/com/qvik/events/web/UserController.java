@@ -59,11 +59,6 @@ public class UserController {
 	private final PresenterService presenterService;
 	private final RestaurantService restaurantService;
 
-	@GetMapping(path = "/")
-	public String root() {
-		return "Main Page";
-	}
-
 	/*
 	 * Event APIs
 	 */
