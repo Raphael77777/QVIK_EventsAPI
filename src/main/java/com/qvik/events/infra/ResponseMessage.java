@@ -1,19 +1,20 @@
 package com.qvik.events.infra;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.data.rest.webmvc.support.ExceptionMessage;
 import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import lombok.Getter;
 
-@Getter
+@Getter 
+@JsonInclude(Include.NON_NULL)
 public class ResponseMessage {
 
-	private int code;
+	private int status; 
 	private String message;
 	private Object data;
+	private String description;
 
 	public ResponseMessage() {
 		super();
@@ -21,9 +22,15 @@ public class ResponseMessage {
 
 	public ResponseMessage(HttpStatus httpStatus) {
 		super();
-		this.code = httpStatus.value();
+		this.status = httpStatus.value();
 		this.message = httpStatus.getReasonPhrase();
 
+	}
+	
+	public ResponseMessage(HttpStatus httpStatus, Exception e) {
+		super();
+		this.status = httpStatus.value();
+		this.message = e.getMessage();
 	}
 
 	public void add(Object object) {

@@ -58,7 +58,7 @@ public class UserController {
 	private final RestaurantService restaurantService;
 
 	@GetMapping(path = "/")
-	public String root() throws JsonProcessingException {
+	public String root() {
 		return "Main Page";
 	}
 
@@ -103,7 +103,7 @@ public class UserController {
 	@GetMapping(path = "/events/{eventId}/venues")
 	public ResponseMessage eventsVenue(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
-		List<Event_Venue> eventVenues =event.getEvent_venues();
+		List<Event_Venue> eventVenues = event.getEvent_venues();
 		return convertToResponseMessage(eventVenues);
 	}
 
@@ -210,5 +210,4 @@ public class UserController {
 		Restaurant restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
 		return convertToResponseMessage(restaurant);
 	}
-
 }

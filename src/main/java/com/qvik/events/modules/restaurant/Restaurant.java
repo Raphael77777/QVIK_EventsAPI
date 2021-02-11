@@ -1,14 +1,28 @@
 package com.qvik.events.modules.restaurant;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.qvik.events.modules.venue.Venue;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -34,19 +48,23 @@ public class Restaurant {
 
 	@Column(name = "name", nullable = false)
 	private String name;
-	
+
 	@Column(name = "location", nullable = false)
 	private String location;
 	
-	@Column(name = "open_date_time", nullable = false)
+	@JsonSerialize(using = LocalTimeSerializer.class)
+	@JsonFormat(pattern = "HH:mm:ss")
+	@Column(name = "open_time", nullable = false)
 	private LocalTime openTime;
 	
-	@Column(name = "close_date_time", nullable = false)
+	@JsonSerialize(using = LocalTimeSerializer.class)
+	@JsonFormat(pattern = "HH:mm:ss")
+	@Column(name = "close_time", nullable = false)
 	private LocalTime closeTime;
-	
+
 	@Column(name = "short_description", nullable = false)
 	private String shortDescription;
-	
+
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
@@ -71,18 +89,11 @@ public class Restaurant {
 		this.fullDescription = full_description;
 	}
 
-	//TODO : Temporary output to be removed at the end of development
+	// TODO : Temporary output to be removed at the end of development
 	@Override
 	public String toString() {
-		return "Restaurant{" +
-				"restaurant_id=" + restaurant_id +
-				", name='" + name + '\'' +
-				", location='" + location + '\'' +
-				", openTime=" + openTime +
-				", closeTime=" + closeTime +
-				", shortDescription='" + shortDescription + '\'' +
-				", fullDescription='" + fullDescription + '\'' +
-				", venue=" + venue +
-				'}';
+		return "Restaurant{" + "restaurant_id=" + restaurant_id + ", name='" + name + '\'' + ", location='" + location
+				+ '\'' + ", openTime=" + openTime + ", closeTime=" + closeTime + ", shortDescription='"
+				+ shortDescription + '\'' + ", fullDescription='" + fullDescription + '\'' + ", venue=" + venue + '}';
 	}
 }

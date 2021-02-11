@@ -5,14 +5,17 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+@EnableWebMvc
 @ControllerAdvice
-public class DataNotFoundExceptionAdvice {
-
+public class GlobalControllerExceptionHandler {
+	
 	@ResponseBody
-	@ExceptionHandler(DataNotFoundException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	ResponseMessage dataNotFoundHandler(DataNotFoundException ex) {
+	@ExceptionHandler
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public ResponseMessage requestHandlingNoHandlerFound(final NoHandlerFoundException ex) {
 		ResponseMessage error = new ResponseMessage(HttpStatus.NOT_FOUND, ex);
 		return error;
 	}
