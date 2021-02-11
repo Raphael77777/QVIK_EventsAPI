@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,11 +64,9 @@ public class UserController {
 		return "Main Page";
 	}
 
-	private ResponseMessage convertToResponseMessage(Object object) {
-		ResponseMessage message = new ResponseMessage(HttpStatus.OK);
-		message.add(object);
-		return message;
-	}
+	/*
+	 * Event APIs
+	 */
 
 	@GetMapping(path = "/events")
 	public ResponseMessage events() {
@@ -137,6 +137,9 @@ public class UserController {
 		return convertToResponseMessage(eventRestaurants);
 	}
 
+	/*
+	 * Venue APIs
+	 */
 	@GetMapping(path = "/venues")
 	public ResponseMessage venues() {
 		List<Venue> venues = venueRepository.findAll();
@@ -163,6 +166,9 @@ public class UserController {
 		return convertToResponseMessage(restaurants);
 	}
 
+	/*
+	 * Stage APIs
+	 */
 	@GetMapping(path = "/stages")
 	public ResponseMessage stage() {
 		List<Stage> stages = stageRepository.findAll();
@@ -175,6 +181,9 @@ public class UserController {
 		return convertToResponseMessage(stage);
 	}
 
+	/*
+	 * Exhibitor APIs
+	 */
 	@GetMapping(path = "/exhibitors")
 	public ResponseMessage exhibitor() {
 		List<Exhibitor> exhibitors = exhibitorRepository.findAll();
@@ -187,6 +196,9 @@ public class UserController {
 		return convertToResponseMessage(exhibitor);
 	}
 
+	/*
+	 * Presenter APIs
+	 */
 	@GetMapping(path = "/presenters")
 	public ResponseMessage presenter() {
 		List<Presenter> presenters = presenterRepository.findAll();
@@ -199,6 +211,9 @@ public class UserController {
 		return convertToResponseMessage(presenter);
 	}
 
+	/*
+	 * Restaurant APIs
+	 */
 	@GetMapping(path = "/restaurants")
 	public ResponseMessage restaurants() {
 		List<Restaurant> restaurants = restaurantRepository.findAll();
@@ -209,5 +224,24 @@ public class UserController {
 	public ResponseMessage restaurantsInfo(@PathVariable Long restaurantId) {
 		Restaurant restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
 		return convertToResponseMessage(restaurant);
+	}
+
+	/*
+	 * Convert Data to ResponseMessage.clas
+	 */
+	private ResponseMessage convertToResponseMessage(Object object) {
+		ResponseMessage message = new ResponseMessage(HttpStatus.OK);
+		message.add(object);
+		return message;
+	}
+
+	/*
+	 * Controller level exception handler
+	 */
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseMessage badRequestErrorHandling(Exception ex) {
+		ResponseMessage error = new ResponseMessage(HttpStatus.BAD_REQUEST, ex);
+		return error;
 	}
 }

@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class DataNotFoundExceptionAdvice {
-
+	/*
+	 *  Custom Exception Handler
+	 */
 	@ResponseBody
 	@ExceptionHandler(DataNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)

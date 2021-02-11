@@ -14,7 +14,6 @@ public class ResponseMessage {
 	private int status; 
 	private String message;
 	private Object data;
-	private String description;
 
 	public ResponseMessage() {
 		super();

@@ -11,7 +11,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
-	
+	/*
+	 * 404 NOT FOUND exception handler using DispatcherServlet 
+	 */
 	@ResponseBody
 	@ExceptionHandler
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
@@ -19,5 +21,6 @@ public class GlobalControllerExceptionHandler {
 		ResponseMessage error = new ResponseMessage(HttpStatus.NOT_FOUND, ex);
 		return error;
 	}
+
 
 }
