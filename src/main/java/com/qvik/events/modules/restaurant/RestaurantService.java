@@ -13,6 +13,6 @@ public class RestaurantService {
 	private final RestaurantRepository restaurantRepository;
 	
 	public Restaurant findRestaurantByRestaurantId(Long id) {
-		return restaurantRepository.findById(id).orElseThrow(() -> new DataNotFoundException());
+		return restaurantRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Restaurant not found with ID: " + id));
 	}
 }

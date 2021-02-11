@@ -14,11 +14,11 @@ public class DataNotFoundExceptionAdvice {
 	@ResponseBody
 	@ExceptionHandler(DataNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	HashMap<String, String> dataNotFoundHandler(DataNotFoundException ex) {
-		HashMap <String, String> error = new HashMap<>();
-		error.put("status", "404");
+	HashMap<String, Object> dataNotFoundHandler(DataNotFoundException ex) {
+		HashMap <String, Object> error = new HashMap<>();
+		error.put("code", 404);
 		error.put("message", ex.getMessage());		
 		return error;
 	}
-
+	
 }

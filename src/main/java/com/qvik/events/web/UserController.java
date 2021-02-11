@@ -1,7 +1,10 @@
 package com.qvik.events.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qvik.events.infra.ResponseMessage;
 import com.qvik.events.modules.event.Event;
-import com.qvik.events.modules.event.EventRepository;
 import com.qvik.events.modules.event.EventService;
 import com.qvik.events.modules.exhibitor.Event_Exhibitor;
 import com.qvik.events.modules.exhibitor.Exhibitor;
@@ -42,8 +44,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/")
 public class UserController {
 
-	
-	private final EventRepository eventRepository;
 	private final ExhibitorRepository exhibitorRepository;
 	private final PresenterRepository presenterRepository;
 	private final RestaurantRepository restaurantRepository;
@@ -62,132 +62,153 @@ public class UserController {
 		return "Main Page";
 	}
 
+	private ResponseMessage convertToResponseMessage(Object object) {
+		ResponseMessage message = new ResponseMessage(HttpStatus.OK);
+		message.add(object);
+		return message;
+	}
+
 	@GetMapping(path = "/events")
-	public List<Event> events() {
-		return eventRepository.findAll();
+	public ResponseMessage events() {
+		List<Event> events = eventService.findAllEvents();
+		return convertToResponseMessage(events);
 	}
 
 	@GetMapping(path = "/events/date")
-	public List<Event> eventsDate(@RequestParam(name = "start") String startDate,
+	public ResponseMessage eventsDate(@RequestParam(name = "start") String startDate,
 			@RequestParam(name = "end", required = false) String endDate) {
 		List<Event> events = eventService.findEventsByDates(startDate, endDate);
-		return events;
+		return convertToResponseMessage(events);
 	}
 
 	@GetMapping(path = "/ongoing-events")
-	public List<Event> eventsOngoing(@RequestParam(name = "on") String date) {
+	public ResponseMessage eventsOngoing(@RequestParam(name = "on") String date) {
 		List<Event> events = eventService.findOnGoingEvents(date);
-		return events;
+		return convertToResponseMessage(events);
 	}
-	
+
 	@GetMapping(path = "/events/{eventId}")
-	public Event eventsInfo(@PathVariable Long eventId) {
+	public ResponseMessage eventsInfo(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
-		return event;
+		return convertToResponseMessage(event);
 	}
 
 	@GetMapping(path = "/events/{eventId}/stages")
-	public List<Event_Stage> eventsStage(@PathVariable Long eventId) {
+	public ResponseMessage eventsStage(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
-		return event.getEvent_stages();
+		List<Event_Stage> eventStages = event.getEvent_stages();
+		return convertToResponseMessage(eventStages);
 	}
 
 	@GetMapping(path = "/events/{eventId}/venues")
-	public List<Event_Venue> eventsVenue(@PathVariable Long eventId) {
+	public ResponseMessage eventsVenue(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
-		return event.getEvent_venues();
+		List<Event_Venue> eventVenues =event.getEvent_venues();
+		return convertToResponseMessage(eventVenues);
 	}
 
 	@GetMapping(path = "/events/{eventId}/exhibitors")
-	public List<Event_Exhibitor> eventsExhibitor(@PathVariable Long eventId) {
+	public ResponseMessage eventsExhibitor(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
-		return event.getEvent_exhibitors();
+		List<Event_Exhibitor> eventExhibitors = event.getEvent_exhibitors();
+		return convertToResponseMessage(eventExhibitors);
 	}
 
 	@GetMapping(path = "/events/{eventId}/presenters")
-	public List<Event_Presenter> eventsPresenter(@PathVariable Long eventId) {
+	public ResponseMessage eventsPresenter(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
-		return event.getEvent_presenters();
+		List<Event_Presenter> eventPresenters = event.getEvent_presenters();
+		return convertToResponseMessage(eventPresenters);
 	}
 
 	@GetMapping(path = "/events/{eventId}/full-description")
-	public String eventsFullDescription(@PathVariable Long eventId) throws JsonProcessingException {
+	public ResponseMessage eventsFullDescription(@PathVariable Long eventId) throws JsonProcessingException {
 		Event event = eventService.findEventByEventId(eventId);
-		return new ObjectMapper().writeValueAsString(event.getFullDescription());
+		String desc = event.getFullDescription();
+		Map<String, String> response = new HashMap<>();
+		response.put("fullDescription", desc);
+		return convertToResponseMessage(response);
 	}
 
 	@GetMapping(path = "/events/{eventId}/restaurants")
-	public List<Event_Restaurant> eventsRestaurant(@PathVariable Long eventId) {
+	public ResponseMessage eventsRestaurant(@PathVariable Long eventId) {
 		Event event = eventService.findEventByEventId(eventId);
-		return event.getEvent_restaurants();
+		List<Event_Restaurant> eventRestaurants = event.getEvent_restaurants();
+		return convertToResponseMessage(eventRestaurants);
 	}
 
-	
 	@GetMapping(path = "/venues")
-	public List<Venue> venues() {
-		return venueRepository.findAll();
+	public ResponseMessage venues() {
+		List<Venue> venues = venueRepository.findAll();
+		return convertToResponseMessage(venues);
 	}
 
 	@GetMapping(path = "/venues/{venueId}")
-	public Venue venuesInfo(@PathVariable Long venueId) {
+	public ResponseMessage venuesInfo(@PathVariable Long venueId) {
 		Venue venue = venueService.findVenueByVenueId(venueId);
-		return venue;
+		return convertToResponseMessage(venue);
 	}
 
 	@GetMapping(path = "/venues/{venueId}/stages")
-	public List<Stage> venuesStage(@PathVariable Long venueId) {
+	public ResponseMessage venuesStage(@PathVariable Long venueId) {
 		Venue venue = venueService.findVenueByVenueId(venueId);
-		return venue.getStages();
+		List<Stage> venueStages = venue.getStages();
+		return convertToResponseMessage(venueStages);
 	}
 
 	@GetMapping(path = "/venues/{venueId}/restaurants")
-	public List<Restaurant> venusRestaurant(@PathVariable Long venueId) {
+	public ResponseMessage venusRestaurant(@PathVariable Long venueId) {
 		Venue venue = venueService.findVenueByVenueId(venueId);
 		List<Restaurant> restaurants = restaurantRepository.findByVenueEquals(venue);
-		return restaurants;
+		return convertToResponseMessage(restaurants);
 	}
 
 	@GetMapping(path = "/stages")
-	public List<Stage> stage() {
-		return stageRepository.findAll();
+	public ResponseMessage stage() {
+		List<Stage> stages = stageRepository.findAll();
+		return convertToResponseMessage(stages);
 	}
 
 	@GetMapping(path = "/stages/{stageId}")
-	public Stage stagesInfo(@PathVariable Long stageId) {
+	public ResponseMessage stagesInfo(@PathVariable Long stageId) {
 		Stage stage = stageService.findStageByStageId(stageId);
-		return stage;
+		return convertToResponseMessage(stage);
 	}
 
 	@GetMapping(path = "/exhibitors")
-	public List<Exhibitor> exhibitor() {
-		return exhibitorRepository.findAll();
+	public ResponseMessage exhibitor() {
+		List<Exhibitor> exhibitors = exhibitorRepository.findAll();
+		return convertToResponseMessage(exhibitors);
 	}
 
 	@GetMapping(path = "/exhibitors/{exhibitorId}")
-	public Exhibitor exhibitorsInfo(@PathVariable Long exhibitorId) {
+	public ResponseMessage exhibitorsInfo(@PathVariable Long exhibitorId) {
 		Exhibitor exhibitor = exhibitorService.findExhibitorByExhibitorId(exhibitorId);
-		return exhibitor;
+		return convertToResponseMessage(exhibitor);
 	}
 
 	@GetMapping(path = "/presenters")
-	public List<Presenter> presenter() {
-		return presenterRepository.findAll();
+	public ResponseMessage presenter() {
+		List<Presenter> presenters = presenterRepository.findAll();
+		return convertToResponseMessage(presenters);
 	}
 
 	@GetMapping(path = "/presenters/{presenterId}")
-	public Presenter presentersInfo(@PathVariable Long presenterId) {
+	public ResponseMessage presentersInfo(@PathVariable Long presenterId) {
 		Presenter presenter = presenterService.findPresenterByPresenterId(presenterId);
-		return presenter;
+		return convertToResponseMessage(presenter);
 	}
 
 	@GetMapping(path = "/restaurants")
-	public List<Restaurant> restaurants() {
-		return restaurantRepository.findAll();
+	public ResponseMessage restaurants() {
+		List<Restaurant> restaurants = restaurantRepository.findAll();
+		return convertToResponseMessage(restaurants);
 	}
 
 	@GetMapping(path = "/restaurants/{restaurantId}")
-	public Restaurant restaurantsInfo(@PathVariable Long restaurantId) {
+	public ResponseMessage restaurantsInfo(@PathVariable Long restaurantId) {
 		Restaurant restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
-		return restaurant;
+		return convertToResponseMessage(restaurant);
 	}
+
 }

@@ -13,7 +13,7 @@ public class ExhibitorService {
 	private final ExhibitorRepository exhibitorRepository;
 	
 	public Exhibitor findExhibitorByExhibitorId(Long id) {
-		return exhibitorRepository.findById(id).orElseThrow(() -> new DataNotFoundException());
+		return exhibitorRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Exhibitor not found with ID: " + id));
 	}
 
 }

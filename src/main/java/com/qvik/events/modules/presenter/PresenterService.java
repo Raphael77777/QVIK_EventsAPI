@@ -12,6 +12,6 @@ public class PresenterService {
 	private final PresenterRepository presenterRepository;
 	
 	public Presenter findPresenterByPresenterId(Long id) {
-		return presenterRepository.findById(id).orElseThrow(() -> new DataNotFoundException());
+		return presenterRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Presenter not found with ID: " + id));
 	}
 }
