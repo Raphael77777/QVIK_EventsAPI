@@ -59,6 +59,18 @@ public class UserController {
 	private final PresenterService presenterService;
 	private final RestaurantService restaurantService;
 
+	
+	/*
+	 * Main page shows links to API Docs & API Definition 
+	 */
+	@GetMapping(path = "/")
+	public ResponseMessage home() {
+		Map<String, String> links = new HashMap<>();
+		links.put("API Docs", "https://qvik.herokuapp.com/api-docs");
+		links.put("API Definition", "https://qvik.herokuapp.com/swagger-ui.html");
+		return convertToResponseMessage(links);
+	}
+	
 	/*
 	 * Event APIs
 	 */
