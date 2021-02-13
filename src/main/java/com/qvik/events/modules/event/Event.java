@@ -102,6 +102,9 @@ public class Event {
 
 	@Column(name = "has_restaurant", nullable = false)
 	private boolean hasRestaurant;
+	
+	@Column(name = "has_presenter", nullable = false)
+	private boolean hasPresenter;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentEvent")
 	@JsonBackReference
@@ -133,7 +136,7 @@ public class Event {
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time,
 			String short_description, String full_description, String category, String image, String status,
-			LocalDateTime last_modified, boolean has_exhibitor, boolean has_restaurant) {
+			LocalDateTime last_modified, boolean has_exhibitor, boolean has_restaurant, boolean has_presenter) {
 		this.startDate = start_date;
 		this.startTime = start_time;
 		this.endDate = end_date;
@@ -146,6 +149,7 @@ public class Event {
 		this.lastModified = last_modified;
 		this.hasExhibitor = has_exhibitor;
 		this.hasRestaurant = has_restaurant;
+		this.hasPresenter =has_presenter;
 	}
 
 	// TODO : Temporary output to be removed at the end of development
@@ -156,13 +160,13 @@ public class Event {
 					+ ", short_description='" + shortDescription + '\'' + ", full_description='" + fullDescription
 					+ '\'' + ", category='" + category + '\'' + ", image='" + image + '\'' + ", status='" + status
 					+ '\'' + ", last_modified=" + lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant="
-					+ hasRestaurant + '}';
+					+ hasRestaurant + ", has_presenter=" + hasPresenter +'}';
 		} else {
 			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date=" + endDate
 					+ ", short_description='" + shortDescription + '\'' + ", full_description='" + fullDescription
 					+ '\'' + ", category='" + category + '\'' + ", image='" + image + '\'' + ", status='" + status
 					+ '\'' + ", last_modified=" + lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant="
-					+ hasRestaurant + ", parent_event=" + parentEvent + '}';
+					+ hasRestaurant + ", parent_event=" + parentEvent + ", has_presenter=" + hasPresenter +'}';
 		}
 	}
 }
