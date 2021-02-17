@@ -74,9 +74,9 @@ public class Event {
 	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
 
-	@Column(name = "short_description", nullable = false)
-	private String shortDescription;
-
+	@Column(name = "title", nullable = false)
+	private String title;
+	
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
@@ -135,14 +135,13 @@ public class Event {
 	private List<Event_Exhibitor> event_exhibitors;
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time,
-			String short_description, String full_description, String category, String image, String status,
+			String title, String category, String image, String status,
 			LocalDateTime last_modified, boolean has_exhibitor, boolean has_restaurant, boolean has_presenter) {
 		this.startDate = start_date;
 		this.startTime = start_time;
 		this.endDate = end_date;
 		this.endTime = end_time;
-		this.shortDescription = short_description;
-		this.fullDescription = full_description;
+		this.title = title;
 		this.category = category;
 		this.image = image;
 		this.status = status;
@@ -157,13 +156,13 @@ public class Event {
 	public String toString() {
 		if (parentEvent == null) {
 			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date=" + endDate
-					+ ", short_description='" + shortDescription + '\'' + ", full_description='" + fullDescription
+					+ ", title='" + title + '\'' + ", full_description='" + fullDescription
 					+ '\'' + ", category='" + category + '\'' + ", image='" + image + '\'' + ", status='" + status
 					+ '\'' + ", last_modified=" + lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant="
 					+ hasRestaurant + ", has_presenter=" + hasPresenter +'}';
 		} else {
 			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date=" + endDate
-					+ ", short_description='" + shortDescription + '\'' + ", full_description='" + fullDescription
+					+ ", title='" + title + '\'' + ", full_description='" + fullDescription
 					+ '\'' + ", category='" + category + '\'' + ", image='" + image + '\'' + ", status='" + status
 					+ '\'' + ", last_modified=" + lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant="
 					+ hasRestaurant + ", parent_event=" + parentEvent + ", has_presenter=" + hasPresenter +'}';

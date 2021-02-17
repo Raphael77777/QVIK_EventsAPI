@@ -79,10 +79,12 @@ public class EventsApplication {
 
             /** Switch to statement with FALSE to disable the INSERTION of demo data ! */
             if(true) {
+            	
+            	String fullDescription = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. ";
 
                 List<Venue> venues = new ArrayList<>();
-                venues.add( new Venue("name", "San Fransisco", "Street", "+358 52 45 63 96"));
-                venues.add( new Venue("name", "Chicago", "Street", "+358 52 45 78 96"));
+                venues.add( new Venue("Suvialahti", "Helsinki", "Street", "+358 52 45 63 96"));
+                venues.add( new Venue("The Senate Square", "Helsinki", "Street", "+358 52 45 78 96"));
                 venueRepository.saveAll(venues);
 
                 for (Venue v : venueRepository.findAll()) {
@@ -93,9 +95,9 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Stage> stages = new ArrayList<>();
-                stages.add(new Stage("name", "San Fransisco", 350, "Big stage"));
+                stages.add(new Stage("Spray Paint Wall", "Helsinki", 350, "Big stage"));
                 stages.get(stages.size()-1).setVenue(venues.get(stages.size()-1));
-                stages.add(new Stage("name", "Chicago", 150, "Small stage"));
+                stages.add(new Stage("Stage Name", "Helsinki", 150, "Small stage"));
                 stages.get(stages.size()-1).setVenue(venues.get(stages.size()-1));
                 stageRepository.saveAll(stages);
 
@@ -107,8 +109,8 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Presenter> presenters = new ArrayList<>();
-                presenters.add(new Presenter("name", "San Fransisco", "Short", "Full description"));
-                presenters.add(new Presenter("name", "Chicago", "Short", "Full description"));
+                presenters.add(new Presenter("Pablo Picasso", "pablo@email.com", "I am an artist.", "Full description"));
+                presenters.add(new Presenter("Vincent van Gogh", "vincent@email.com", "I am an artist", "Full description"));
                 presenterRepository.saveAll(presenters);
 
                 for (Presenter p : presenterRepository.findAll()){
@@ -147,11 +149,14 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Event> events = new ArrayList<>();
-                LocalDate now = LocalDate.now();
-                LocalTime time = LocalTime.now();
-                events.add(new Event(now.minusDays(3), time, now.plusDays(2), time.plusHours(1), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(now.minusDays(1), time, now.plusDays(1), time.plusHours(2), "Short", "Full description", "music", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                LocalDate today = LocalDate.now();
+                LocalTime start = LocalTime.parse("10:00:00");
+                
+                events.add(new Event(today.minusDays(1), start, today.plusDays(1), start.plusHours(7), "Night of Arts", "music", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(today.minusDays(1), start.plusHours(1), today.minusDays(1), start.plusHours(2), "Wall of Paint", "music", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.get(0).setFullDescription(fullDescription);
                 events.get(1).setParentEvent(events.get(0));
+                events.get(1).setFullDescription(fullDescription);
                 eventRepository.saveAll(events);
 
                 for (Event e : eventRepository.findAll()){
