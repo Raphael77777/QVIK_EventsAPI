@@ -161,12 +161,12 @@ public class EventsApplication {
                 
                 events.add(new Event(today.minusDays(1), start, today.plusDays(1), start.plusHours(7), "Night of Arts", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
                 events.add(new Event(today.minusDays(1), start.plusHours(1), today.minusDays(1), start.plusHours(2), "Wall of Paint", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(today.minusDays(1), start.plusHours(2), today.minusDays(1), start.plusHours(3), "Paint the streets", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(today, start, today, start.plusHours(2), "Paint the streets", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
                 events.get(0).setFullDescription(fullDescription);
                 events.get(1).setParentEvent(events.get(0));
                 events.get(1).setFullDescription(fullDescription);
                 events.get(2).setParentEvent(events.get(0));
-                events.get(2).setFullDescription(fullDescription);
+                events.get(2).setFullDescription(fullDescription);               
                 eventRepository.saveAll(events);
 
                 for (Event e : eventRepository.findAll()){
@@ -228,7 +228,7 @@ public class EventsApplication {
                 for (int i = 0; i < events.size(); i++){
                     Event_Venue event_venue = new Event_Venue("Description");
                     event_venue.setEvent(events.get(i));
-                    event_venue.setVenue(venues.get(i));
+                    event_venue.setVenue(venues.get(0));
                     event_venues.add(event_venue);
                 }
                 eventVenueRepository.saveAll(event_venues);
