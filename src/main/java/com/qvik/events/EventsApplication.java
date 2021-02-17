@@ -85,6 +85,7 @@ public class EventsApplication {
                 List<Venue> venues = new ArrayList<>();
                 venues.add( new Venue("Suvialahti", "Helsinki", "Street", "+358 52 45 63 96"));
                 venues.add( new Venue("The Senate Square", "Helsinki", "Street", "+358 52 45 78 96"));
+                venues.add( new Venue("Metsäkeskus", "Helsinki", "Street", "+358 52 45 78 96"));
                 venueRepository.saveAll(venues);
 
                 for (Venue v : venueRepository.findAll()) {
@@ -96,6 +97,8 @@ public class EventsApplication {
                 /************************************************************************************************************/
                 List<Stage> stages = new ArrayList<>();
                 stages.add(new Stage("Spray Paint Wall", "Helsinki", 350, "Big stage"));
+                stages.get(stages.size()-1).setVenue(venues.get(stages.size()-1));
+                stages.add(new Stage("Stage Name", "Helsinki", 150, "Small stage"));
                 stages.get(stages.size()-1).setVenue(venues.get(stages.size()-1));
                 stages.add(new Stage("Stage Name", "Helsinki", 150, "Small stage"));
                 stages.get(stages.size()-1).setVenue(venues.get(stages.size()-1));
@@ -111,6 +114,7 @@ public class EventsApplication {
                 List<Presenter> presenters = new ArrayList<>();
                 presenters.add(new Presenter("Pablo Picasso", "pablo@email.com", "I am an artist.", "Full description"));
                 presenters.add(new Presenter("Vincent van Gogh", "vincent@email.com", "I am an artist", "Full description"));
+                presenters.add(new Presenter("Andy Warhol", "andy@email.com", "I am an artist", "Full description"));
                 presenterRepository.saveAll(presenters);
 
                 for (Presenter p : presenterRepository.findAll()){
@@ -123,9 +127,11 @@ public class EventsApplication {
                 List<Restaurant> restaurants = new ArrayList<>();
                 LocalTime open = LocalTime.parse("10:00");
 
-                restaurants.add(new Restaurant("name", "San Fransisco", open, open.plusHours(7), "Short", "Full description"));
+                restaurants.add(new Restaurant("Good Pizza", "Helsinki", open, open.plusHours(7), "Short", "Full description"));
                 restaurants.get(restaurants.size()-1).setVenue(venues.get(restaurants.size()-1));
-                restaurants.add(new Restaurant("name", "Chicago", open, open.plusHours(7), "Short", "Full description"));
+                restaurants.add(new Restaurant("Good Burger", "Espoo", open, open.plusHours(7), "Short", "Full description"));
+                restaurants.get(restaurants.size()-1).setVenue(venues.get(restaurants.size()-1));
+                restaurants.add(new Restaurant("Good Sushi", "Helsinki", open, open.plusHours(7), "Short", "Full description"));
                 restaurants.get(restaurants.size()-1).setVenue(venues.get(restaurants.size()-1));
                 restaurantRepository.saveAll(restaurants);
 
@@ -137,8 +143,9 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Exhibitor> exhibitors = new ArrayList<>();
-                exhibitors.add(new Exhibitor("name", "San Fransisco", "#google.com", "Short", "Full description"));
-                exhibitors.add(new Exhibitor("name", "Chicago", "#elon.com", "Short", "Full description"));
+                exhibitors.add(new Exhibitor("Qvik", "Helsinki", "#qvik.com", "Short", "Full description"));
+                exhibitors.add(new Exhibitor("Google", "California", "#google.com", "Short", "Full description"));
+                exhibitors.add(new Exhibitor("Tesla", "tesla ", "#elon.com", "Short", "Full description"));
                 exhibitorRepository.saveAll(exhibitors);
 
                 for (Exhibitor e : exhibitorRepository.findAll()){
@@ -152,11 +159,14 @@ public class EventsApplication {
                 LocalDate today = LocalDate.now();
                 LocalTime start = LocalTime.parse("10:00:00");
                 
-                events.add(new Event(today.minusDays(1), start, today.plusDays(1), start.plusHours(7), "Night of Arts", "music", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(today.minusDays(1), start.plusHours(1), today.minusDays(1), start.plusHours(2), "Wall of Paint", "music", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(today.minusDays(1), start, today.plusDays(1), start.plusHours(7), "Night of Arts", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(today.minusDays(1), start.plusHours(1), today.minusDays(1), start.plusHours(2), "Wall of Paint", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(today.minusDays(1), start.plusHours(2), today.minusDays(1), start.plusHours(3), "Paint the streets", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
                 events.get(0).setFullDescription(fullDescription);
                 events.get(1).setParentEvent(events.get(0));
                 events.get(1).setFullDescription(fullDescription);
+                events.get(2).setParentEvent(events.get(0));
+                events.get(2).setFullDescription(fullDescription);
                 eventRepository.saveAll(events);
 
                 for (Event e : eventRepository.findAll()){

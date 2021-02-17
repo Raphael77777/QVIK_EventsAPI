@@ -1,4 +1,4 @@
-package com.qvik.events.infra;
+package com.qvik.events.infra.exception;
 
 public class DataNotFoundException extends RuntimeException  {
 	

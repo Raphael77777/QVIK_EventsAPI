@@ -2,7 +2,7 @@ package com.qvik.events.modules.restaurant;
 
 import org.springframework.stereotype.Service;
 
-import com.qvik.events.infra.DataNotFoundException;
+import com.qvik.events.infra.exception.DataNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

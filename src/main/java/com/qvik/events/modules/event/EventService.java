@@ -2,10 +2,19 @@ package com.qvik.events.modules.event;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.qvik.events.infra.DataNotFoundException;
+import com.qvik.events.infra.exception.DataNotFoundException;
+import com.qvik.events.infra.response.Event_DetailsDTO;
+import com.qvik.events.infra.response.Parent_EventDTO;
+import com.qvik.events.infra.response.Sub_EventDTO;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -13,13 +22,59 @@ import lombok.RequiredArgsConstructor;
 public class EventService {
 
 	private final EventRepository eventRepository;
+	private final ModelMapper modelMapper;
 
-	public List<Event> findAllEvents(){
-		return eventRepository.findAll();
+	
+	
+	/*
+	 *  TO DO: TEST & REFACTORING
+	 */
+	public Map<String, Object> findAllEvents() {
+		List<Event> events = eventRepository.findAll();
+		Map<String, Object> eventData = new LinkedHashMap<>();
+		List<Sub_EventDTO> subevents = new ArrayList<>();
+		for (Event e : events) {
+			if (e.getSubEvents().size() != 0) { // root event
+				/*List<Event_VenueDTO> eventVenues = new ArrayList<>();
+				for (Event_Venue ev : e.getEvent_venues()) {
+					eventVenues.add(modelMapper.map(ev, Event_VenueDTO.class));
+				}*/
+				Parent_EventDTO parentEvent = modelMapper.map(e, Parent_EventDTO.class);
+				//parentEvent.setEvent_venues(eventVenues);
+				eventData.put("Parent Event", parentEvent);
+
+			} else if (e.getParentEvent() != null) { // sub events
+				/*List<Event_StageDTO> eventStages = new ArrayList<>();
+
+				for (Event_Stage es : e.getEvent_stages()) {
+					eventStages.add(modelMapper.map(es, Event_StageDTO.class));
+				}*/
+				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
+				subevents.add(subEvent);
+
+			}
+			eventData.put("Sub events", subevents);
+
+		}
+
+		return eventData;
 	}
 	
-	public Event findEventByEventId(Long id) {
-		return eventRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Event not found with ID: " + id));
+	
+	/*
+	 *  TO DO: TEST & REFACTORING
+	 */
+	public Event_DetailsDTO findEventByEventId(Long id) {
+		Optional<Event> event = eventRepository.findById(id);
+		Event_DetailsDTO details = null;
+		
+		if(event.isPresent()) {
+			details = modelMapper.map(event.get(), Event_DetailsDTO.class);
+			
+		}
+		event.orElseThrow(() -> new DataNotFoundException("Event not found with ID: " + id));
+		
+		return details;
 	}
 
 	public List<Event> findEventsByDates(String startDate, String endDate) {

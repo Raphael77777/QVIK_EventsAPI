@@ -64,15 +64,15 @@ public class Event {
 	@Column(name = "start_time", nullable = false)
 	private LocalTime startTime;
 	
-	@JsonSerialize(using = LocalTimeSerializer.class)
-	@JsonFormat(pattern = "HH:mm:ss")
-	@Column(name = "end_time", nullable = false)
-	private LocalTime endTime;
-	
 	@JsonSerialize(using = LocalDateSerializer.class)
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
+	
+	@JsonSerialize(using = LocalTimeSerializer.class)
+	@JsonFormat(pattern = "HH:mm:ss")
+	@Column(name = "end_time", nullable = false)
+	private LocalTime endTime;
 
 	@Column(name = "title", nullable = false)
 	private String title;

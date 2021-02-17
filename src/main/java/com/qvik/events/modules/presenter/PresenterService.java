@@ -1,7 +1,7 @@
 package com.qvik.events.modules.presenter;
 import org.springframework.stereotype.Service;
 
-import com.qvik.events.infra.DataNotFoundException;
+import com.qvik.events.infra.exception.DataNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

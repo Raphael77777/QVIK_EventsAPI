@@ -13,27 +13,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.qvik.events.infra.ResponseMessage;
+import com.qvik.events.infra.response.Event_DetailsDTO;
+import com.qvik.events.infra.response.ResponseMessage;
 import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.event.EventService;
-import com.qvik.events.modules.exhibitor.Event_Exhibitor;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorRepository;
 import com.qvik.events.modules.exhibitor.ExhibitorService;
-import com.qvik.events.modules.presenter.Event_Presenter;
 import com.qvik.events.modules.presenter.Presenter;
 import com.qvik.events.modules.presenter.PresenterRepository;
 import com.qvik.events.modules.presenter.PresenterService;
-import com.qvik.events.modules.restaurant.Event_Restaurant;
 import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.restaurant.RestaurantRepository;
 import com.qvik.events.modules.restaurant.RestaurantService;
-import com.qvik.events.modules.stage.Event_Stage;
 import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.stage.StageRepository;
 import com.qvik.events.modules.stage.StageService;
-import com.qvik.events.modules.venue.Event_Venue;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
 import com.qvik.events.modules.venue.VenueService;
@@ -77,7 +72,7 @@ public class UserController {
 
 	@GetMapping(path = "/events")
 	public ResponseMessage events() {
-		List<Event> events = eventService.findAllEvents();
+		Map<String, Object> events = eventService.findAllEvents();
 		return convertToResponseMessage(events);
 	}
 
@@ -96,13 +91,13 @@ public class UserController {
 
 	@GetMapping(path = "/events/{eventId}")
 	public ResponseMessage eventsInfo(@PathVariable Long eventId) {
-		Event event = eventService.findEventByEventId(eventId);
+		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
 		return convertToResponseMessage(event);
 	}
 
-	@GetMapping(path = "/events/{eventId}/stages")
+	/*@GetMapping(path = "/events/{eventId}/stages")
 	public ResponseMessage eventsStage(@PathVariable Long eventId) {
-		Event event = eventService.findEventByEventId(eventId);
+		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
 		List<Event_Stage> eventStages = event.getEvent_stages();
 		return convertToResponseMessage(eventStages);
 	}
@@ -142,7 +137,7 @@ public class UserController {
 		Event event = eventService.findEventByEventId(eventId);
 		List<Event_Restaurant> eventRestaurants = event.getEvent_restaurants();
 		return convertToResponseMessage(eventRestaurants);
-	}
+	}*/
 
 	/*
 	 * Venue APIs

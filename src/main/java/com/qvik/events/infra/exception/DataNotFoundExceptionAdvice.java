@@ -1,10 +1,12 @@
-package com.qvik.events.infra;
+package com.qvik.events.infra.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.qvik.events.infra.response.ResponseMessage;
 
 @ControllerAdvice
 public class DataNotFoundExceptionAdvice {
