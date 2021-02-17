@@ -72,10 +72,23 @@ public class UserController {
 
 	@GetMapping(path = "/events")
 	public ResponseMessage events() {
-		Map<String, Object> events = eventService.findAllEvents();
+		Map<String, Object> events = eventService.findAllEvents();		
 		return convertToResponseMessage(events);
 	}
-
+	
+	@GetMapping(path = "/ongoing-events")
+	public ResponseMessage eventsOngoing(@RequestParam(name = "on") String date) {
+		Map<String, Object> events = eventService.findOnGoingEvents(date);
+		return convertToResponseMessage(events);
+	}
+	
+	@GetMapping(path = "/events/{eventId}")
+	public ResponseMessage eventsInfo(@PathVariable Long eventId) {
+		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
+		return convertToResponseMessage(event);
+	}
+	
+	// I DON'T KNOW IF THIS METHOD IS NECESSARY?? - 17.02.2021 Tei
 	@GetMapping(path = "/events/date")
 	public ResponseMessage eventsDate(@RequestParam(name = "start") String startDate,
 			@RequestParam(name = "end", required = false) String endDate) {
@@ -83,21 +96,12 @@ public class UserController {
 		return convertToResponseMessage(events);
 	}
 
-	@GetMapping(path = "/ongoing-events")
-	public ResponseMessage eventsOngoing(@RequestParam(name = "on") String date) {
-		List<Event> events = eventService.findOnGoingEvents(date);
-		return convertToResponseMessage(events);
-	}
+	
+	/* THESE EVENT APIS need TO BE CORRECTED.
 
-	@GetMapping(path = "/events/{eventId}")
-	public ResponseMessage eventsInfo(@PathVariable Long eventId) {
-		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
-		return convertToResponseMessage(event);
-	}
-
-	/*@GetMapping(path = "/events/{eventId}/stages")
+	@GetMapping(path = "/events/{eventId}/stages")
 	public ResponseMessage eventsStage(@PathVariable Long eventId) {
-		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
+		Event event event = eventService.findEventByEventId(eventId);
 		List<Event_Stage> eventStages = event.getEvent_stages();
 		return convertToResponseMessage(eventStages);
 	}
