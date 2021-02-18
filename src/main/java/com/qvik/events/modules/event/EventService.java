@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +28,12 @@ public class EventService {
 	}
 
 	public Event_DetailsDTO findEventByEventId(Long id) {
-		Event event = eventRepository.findEventWithEventVenuesAndEventStagesAndEventPresentersByEventId(id);
 
-		if (event == null) {
+		Event event = eventRepository.findEventWithEventVenuesAndEventStagesAndEventPresentersByEventId(id);
+		
+		if(event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
-		}
+		} 
 		Event_DetailsDTO details = modelMapper.map(event, Event_DetailsDTO.class);
 
 		return details;
