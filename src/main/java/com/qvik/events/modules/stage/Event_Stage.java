@@ -2,6 +2,7 @@ package com.qvik.events.modules.stage;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,11 +35,11 @@ public class Event_Stage {
 	@Column(name = "event_stage_id", nullable = false, updatable = false)
 	private long event_stage_id;
 
-	@ManyToOne
+	@ManyToOne (fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id")
 	private Event event;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "stage_id")
 	private Stage stage;
 

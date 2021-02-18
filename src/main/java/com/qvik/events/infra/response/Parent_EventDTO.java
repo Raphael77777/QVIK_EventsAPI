@@ -8,6 +8,6 @@ import lombok.Data;
 public class Parent_EventDTO extends Event_BaseDTO {	
 
 	
-	private List<Event_VenueDTO> event_venues;
+	private List<Event_VenueDTO> eventVenues;
 
 }
