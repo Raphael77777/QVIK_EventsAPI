@@ -86,12 +86,12 @@ public class EventService {
 		for (Event e : events) {
 			if (e.getSubEvents().size() != 0) { // root event
 				Parent_EventDTO parentEvent = modelMapper.map(e, Parent_EventDTO.class);
-				eventData.put("Parent Event", parentEvent);
+				eventData.put("parentEvent", parentEvent);
 			} else if (e.getParentEvent() != null) { // sub events
 				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
 				subevents.add(subEvent);
 			}
-			eventData.put("Sub events", subevents);
+			eventData.put("subEvents", subevents);
 		}
 		return eventData;
 	}
