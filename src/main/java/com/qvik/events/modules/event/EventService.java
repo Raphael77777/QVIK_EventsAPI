@@ -14,6 +14,7 @@ import com.qvik.events.infra.response.Parent_EventDTO;
 import com.qvik.events.infra.response.Sub_EventDTO;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class EventService {
 		return mapEventListToDTOs(events);
 	}
 
+	@Transactional
 	public Event_DetailsDTO findEventByEventId(Long id) {
 
 		Event event = eventRepository.findEventWithEventVenuesAndEventStagesAndEventPresentersByEventId(id);
