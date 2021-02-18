@@ -1,6 +1,7 @@
 package com.qvik.events.infra.response;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import lombok.Data;
 
@@ -11,9 +12,9 @@ public class Event_DetailsDTO extends Event_BaseDTO {
 	
 	private String fullDescription;
 	
-	private List<Event_VenueDTO> eventVenues;
+	private Set<Event_VenueDTO> eventVenues = new HashSet<>();
 
-	private List<Event_StageDTO> eventStages;
+	private Set<Event_StageDTO> eventStages = new HashSet<>();
 
-	private List<Event_PresenterDTO> eventPresenters;
+	private Set<Event_PresenterDTO> eventPresenters = new HashSet<>();
 }
