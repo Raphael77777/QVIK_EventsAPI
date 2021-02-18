@@ -30,14 +30,12 @@ public class EventService {
 	}
 
 	public Event_DetailsDTO findEventByEventId(Long id) {
-		Optional<Event> event = eventRepository.findById(id);
-		Event_DetailsDTO details = null;
+		Event event = eventRepository.findEventWithEventVenuesAndEventStagesAndEventPresentersByEventId(id);
 
-		if (event.isPresent()) {
-			details = modelMapper.map(event.get(), Event_DetailsDTO.class);
-
+		if (event == null) {
+			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
-		event.orElseThrow(() -> new DataNotFoundException("Event not found with ID: " + id));
+		Event_DetailsDTO details = modelMapper.map(event, Event_DetailsDTO.class);
 
 		return details;
 	}
@@ -80,7 +78,6 @@ public class EventService {
 		return events;
 	}
 
-	
 	/* Map List of Events to DTO */
 	public Map<String, Object> mapEventListToDTOs(List<Event> events) {
 		Map<String, Object> eventData = new LinkedHashMap<>();

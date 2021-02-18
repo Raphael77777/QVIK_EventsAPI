@@ -11,9 +11,9 @@ public class Event_DetailsDTO extends Event_BaseDTO {
 	
 	private String fullDescription;
 	
-	private List<Event_VenueDTO> event_venues;
+	private List<Event_VenueDTO> eventVenues;
 
-	private List<Event_StageDTO> event_stages;
+	private List<Event_StageDTO> eventStages;
 
-	private List<Event_PresenterDTO> event_presenters;
+	private List<Event_PresenterDTO> eventPresenters;
 }

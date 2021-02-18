@@ -185,9 +185,9 @@ public class EventsApplication {
                 }
                 eventPresenterRepository.saveAll(event_presenters);
 
-                for (Event_Presenter e : eventPresenterRepository.findAll()){
+                /*for (Event_Presenter e : eventPresenterRepository.findAll()){
                     log.info(e.toString());
-                }
+                }*/
 
                 log.info("PID 9-747 : EVENT-PRESENTER SAVED !");
 
@@ -233,9 +233,9 @@ public class EventsApplication {
                 }
                 eventVenueRepository.saveAll(event_venues);
 
-                for (Event_Venue e : eventVenueRepository.findAll()){
+                /*for (Event_Venue e : eventVenueRepository.findAll()){
                     log.info(e.toString());
-                }
+                }*/
 
                 log.info("PID 9-750 : EVENT-VENUE SAVED !");
 
@@ -249,9 +249,9 @@ public class EventsApplication {
                 }
                 eventStageRepository.saveAll(event_stages);
 
-                for (Event_Stage e : eventStageRepository.findAll()){
+                /*for (Event_Stage e : eventStageRepository.findAll()){
                     log.info(e.toString());
-                }
+                }*/
 
                 log.info("PID 9-751 : EVENT-SATGE SAVED !");
             }

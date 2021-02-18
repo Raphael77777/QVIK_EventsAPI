@@ -3,7 +3,9 @@ package com.qvik.events.modules.event;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -20,11 +22,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.qvik.events.modules.exhibitor.Event_Exhibitor;
 import com.qvik.events.modules.presenter.Event_Presenter;
 import com.qvik.events.modules.restaurant.Event_Restaurant;
@@ -52,31 +49,23 @@ public class Event {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "event_id", nullable = false, updatable = false)
-	private long event_id;
-	
-	@JsonSerialize(using = LocalDateSerializer.class)
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	private long eventId;
+
 	@Column(name = "start_date", nullable = false)
 	private LocalDate startDate;
-	
-	@JsonSerialize(using = LocalTimeSerializer.class)
-	@JsonFormat(pattern = "HH:mm:ss")
+
 	@Column(name = "start_time", nullable = false)
 	private LocalTime startTime;
-	
-	@JsonSerialize(using = LocalDateSerializer.class)
-	@JsonFormat(pattern = "yyyy-MM-dd")
+
 	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
-	
-	@JsonSerialize(using = LocalTimeSerializer.class)
-	@JsonFormat(pattern = "HH:mm:ss")
+
 	@Column(name = "end_time", nullable = false)
 	private LocalTime endTime;
 
 	@Column(name = "title", nullable = false)
 	private String title;
-	
+
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "full_description", nullable = false)
@@ -93,7 +82,6 @@ public class Event {
 	@Column(name = "status", nullable = false)
 	private String status;
 
-	@JsonSerialize(using = LocalDateTimeSerializer.class) @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Column(name = "last_modified", nullable = false)
 	private LocalDateTime lastModified;
 
@@ -102,7 +90,7 @@ public class Event {
 
 	@Column(name = "has_restaurant", nullable = false)
 	private boolean hasRestaurant;
-	
+
 	@Column(name = "has_presenter", nullable = false)
 	private boolean hasPresenter;
 
@@ -116,27 +104,27 @@ public class Event {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Venue> event_venues;
+	private Set<Event_Venue> eventVenues = new HashSet<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Stage> event_stages;
+	private Set <Event_Stage> eventStages = new HashSet<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Presenter> event_presenters;
+	private Set <Event_Presenter> eventPresenters = new HashSet<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Restaurant> event_restaurants;
+	private List<Event_Restaurant> eventRestaurants;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Exhibitor> event_exhibitors;
+	private List<Event_Exhibitor> eventCxhibitors;
 
-	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time,
-			String title, String category, String image, String status,
-			LocalDateTime last_modified, boolean has_exhibitor, boolean has_restaurant, boolean has_presenter) {
+	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String title,
+			String category, String image, String status, LocalDateTime last_modified, boolean has_exhibitor,
+			boolean has_restaurant, boolean has_presenter) {
 		this.startDate = start_date;
 		this.startTime = start_time;
 		this.endDate = end_date;
@@ -148,24 +136,24 @@ public class Event {
 		this.lastModified = last_modified;
 		this.hasExhibitor = has_exhibitor;
 		this.hasRestaurant = has_restaurant;
-		this.hasPresenter =has_presenter;
+		this.hasPresenter = has_presenter;
 	}
 
 	// TODO : Temporary output to be removed at the end of development
 	@Override
 	public String toString() {
 		if (parentEvent == null) {
-			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date=" + endDate
-					+ ", title='" + title + '\'' + ", full_description='" + fullDescription
-					+ '\'' + ", category='" + category + '\'' + ", image='" + image + '\'' + ", status='" + status
-					+ '\'' + ", last_modified=" + lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant="
-					+ hasRestaurant + ", has_presenter=" + hasPresenter +'}';
+			return "Event{" + "event_id=" + eventId + ", start_date=" + startDate + ", end_date=" + endDate
+					+ ", title='" + title + '\'' + ", full_description='" + fullDescription + '\'' + ", category='"
+					+ category + '\'' + ", image='" + image + '\'' + ", status='" + status + '\'' + ", last_modified="
+					+ lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant=" + hasRestaurant
+					+ ", has_presenter=" + hasPresenter + '}';
 		} else {
-			return "Event{" + "event_id=" + event_id + ", start_date=" + startDate + ", end_date=" + endDate
-					+ ", title='" + title + '\'' + ", full_description='" + fullDescription
-					+ '\'' + ", category='" + category + '\'' + ", image='" + image + '\'' + ", status='" + status
-					+ '\'' + ", last_modified=" + lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant="
-					+ hasRestaurant + ", parent_event=" + parentEvent + ", has_presenter=" + hasPresenter +'}';
+			return "Event{" + "event_id=" + eventId + ", start_date=" + startDate + ", end_date=" + endDate
+					+ ", title='" + title + '\'' + ", full_description='" + fullDescription + '\'' + ", category='"
+					+ category + '\'' + ", image='" + image + '\'' + ", status='" + status + '\'' + ", last_modified="
+					+ lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant=" + hasRestaurant
+					+ ", parent_event=" + parentEvent + ", has_presenter=" + hasPresenter + '}';
 		}
 	}
 }

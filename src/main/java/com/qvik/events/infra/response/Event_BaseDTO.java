@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class Event_BaseDTO {
 	
-	private long event_id;
+	private long eventId;
 
 	@JsonSerialize(using = LocalDateSerializer.class)
 	@JsonFormat(pattern = "yyyy-MM-dd")

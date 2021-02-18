@@ -2,6 +2,7 @@ package com.qvik.events.modules.presenter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,11 +35,11 @@ public class Event_Presenter {
 	@Column(name = "event_presenter_id", nullable = false, updatable = false)
 	private long event_presenter_id;
 
-	@ManyToOne
+	@ManyToOne (fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id")
 	private Event event;
 
-	@ManyToOne
+	@ManyToOne (fetch = FetchType.LAZY)
 	@JoinColumn(name = "presenter_id")
 	private Presenter presenter;
 
