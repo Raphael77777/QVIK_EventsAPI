@@ -32,10 +32,15 @@ import com.qvik.events.modules.stage.EventStageRepository;
 import com.qvik.events.modules.stage.Event_Stage;
 import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.stage.StageRepository;
+import com.qvik.events.modules.tag.EventTagRepository;
+import com.qvik.events.modules.tag.Event_Tag;
+import com.qvik.events.modules.tag.Tag;
+import com.qvik.events.modules.tag.TagRepository;
 import com.qvik.events.modules.venue.EventVenueRepository;
 import com.qvik.events.modules.venue.Event_Venue;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
+
 
 @SpringBootApplication
 @EnableTransactionManagement
@@ -55,11 +60,13 @@ public class EventsApplication {
                                           EventRestaurantRepository eventRestaurantRepository,
                                           EventStageRepository eventStageRepository,
                                           EventVenueRepository eventVenueRepository,
+                                          EventTagRepository eventTagRepository,
                                           ExhibitorRepository exhibitorRepository,
                                           PresenterRepository presenterRepository,
                                           RestaurantRepository restaurantRepository,
                                           StageRepository stageRepository,
-                                          VenueRepository venueRepository) {
+                                          VenueRepository venueRepository,
+                                          TagRepository tagRepository) {
         return (args) -> {
             if(true){
                 /** Cleaning DB before insertion of demo data*/
@@ -69,23 +76,39 @@ public class EventsApplication {
                 eventRestaurantRepository.deleteAll();
                 eventStageRepository.deleteAll();
                 eventVenueRepository.deleteAll();
+                eventTagRepository.deleteAll();
                 exhibitorRepository.deleteAll();
                 presenterRepository.deleteAll();
                 restaurantRepository.deleteAll();
                 stageRepository.deleteAll();
                 venueRepository.deleteAll();
+                tagRepository.deleteAll();
                 log.info("PID 9-740 : DATABASE CLEANED !");
             }
 
             /** Switch to statement with FALSE to disable the INSERTION of demo data ! */
             if(true) {
             	
-            	String fullDescription = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. ";
+            	String fullDescription = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus.";
 
+            	List<Tag> tags = new ArrayList<>();
+            	tags.add(new Tag("No Smoking"));
+            	tags.add(new Tag("Child-friendly"));
+            	tags.add(new Tag("English speaker"));
+            	tags.add(new Tag("Online event"));
+            	tags.add(new Tag("Webinar"));
+            	tags.add(new Tag("Startup"));            	
+            	tagRepository.saveAll(tags);
+
+                log.info("PID 9-740 : TAG SAVED !");
+
+                /************************************************************************************************************/
+            	
                 List<Venue> venues = new ArrayList<>();
-                venues.add( new Venue("Suvialahti", "Helsinki", "Street", "+358 52 45 63 96"));
-                venues.add( new Venue("The Senate Square", "Helsinki", "Street", "+358 52 45 78 96"));
-                venues.add( new Venue("Metsäkeskus", "Helsinki", "Street", "+358 52 45 78 96"));
+                venues.add( new Venue("Suvilahti", "Helsinki", "Kaasutehtaankatu 1", "+358 52 45 63 96"));
+                venues.add( new Venue("The Senate Square", "Helsinki", "00170 Helsinki", "+358 52 45 78 96"));
+                venues.add( new Venue("Messukeskuksen ", "Helsinki", "Messuaukio 1", "+358 52 45 78 96"));
+                venues.add( new Venue("Finlandia-talo", "Helsinki", "Mannerheimintie 13", "+358 52 45 78 96"));
                 venueRepository.saveAll(venues);
 
                 for (Venue v : venueRepository.findAll()) {
@@ -97,11 +120,15 @@ public class EventsApplication {
                 /************************************************************************************************************/
                 List<Stage> stages = new ArrayList<>();
                 stages.add(new Stage("Spray Paint Wall", "Helsinki", 350, "Big stage"));
-                stages.get(stages.size()-1).setVenue(venues.get(stages.size()-1));
-                stages.add(new Stage("Stage Name", "Helsinki", 150, "Small stage"));
-                stages.get(stages.size()-1).setVenue(venues.get(stages.size()-1));
-                stages.add(new Stage("Stage Name", "Helsinki", 150, "Small stage"));
-                stages.get(stages.size()-1).setVenue(venues.get(stages.size()-1));
+                stages.get(stages.size()-1).setVenue(venueRepository.findByName("Suvilahti"));
+                stages.add(new Stage("Instrument Room (building 8)", "Helsinki", 150, "Small stage"));
+                stages.get(stages.size()-1).setVenue(venueRepository.findByName("Suvilahti"));
+                stages.add(new Stage("Purification plant (building 6)", "Helsinki", 150, "Small stage"));
+                stages.get(stages.size()-1).setVenue(venueRepository.findByName("Suvilahti"));
+                stages.add(new Stage("Hall 1", "Helsinki", 150, "Small hall"));
+                stages.get(stages.size()-1).setVenue(venueRepository.findByName("Suvilahti"));
+                stages.add(new Stage("Glass Gallary", "Helsinki", 500, "Big Gallary"));
+                stages.get(stages.size()-1).setVenue(venueRepository.findByName("Suvilahti"));
                 stageRepository.saveAll(stages);
 
                 for (Stage s : stageRepository.findAll()){
@@ -112,9 +139,12 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Presenter> presenters = new ArrayList<>();
-                presenters.add(new Presenter("Pablo Picasso", "pablo@email.com", "I am an artist.", "Full description"));
-                presenters.add(new Presenter("Vincent van Gogh", "vincent@email.com", "I am an artist", "Full description"));
-                presenters.add(new Presenter("Andy Warhol", "andy@email.com", "I am an artist", "Full description"));
+                presenters.add(new Presenter("Jan Pellervo Vapaavuori", "jan@email.com", "I am Helsinki Mayor", "Full description"));
+                presenters.add(new Presenter("Li Andersson ", "li@email.com", "I am a minister", "Full description"));                             
+                presenters.add(new Presenter("Pekka Lundmark", "Pekka@email.com", "I am an entrepreneur", "Full description"));
+                presenters.add(new Presenter("Mark Zuckerberg", "Mark@email.com", "I am an entrepreneur", "Full description"));
+                presenters.add(new Presenter("Elon Musk", "elon@email.com", "I am an entrepreneur", "Full description"));
+                
                 presenterRepository.saveAll(presenters);
 
                 for (Presenter p : presenterRepository.findAll()){
@@ -156,17 +186,24 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Event> events = new ArrayList<>();
-                LocalDate today = LocalDate.now();
-                LocalTime start = LocalTime.parse("10:00:00");
+                LocalDate testDate = LocalDate.parse("2021-05-10");
+                LocalTime testTime = LocalTime.parse("10:00:00");
                 
-                events.add(new Event(today.minusDays(1), start, today.plusDays(1), start.plusHours(7), "Night of Arts", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(today.minusDays(1), start.plusHours(1), today.minusDays(1), start.plusHours(2), "Wall of Paint", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(today, start, today, start.plusHours(2), "Paint the streets", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate.minusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(7), "Night of Arts", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate.minusDays(1), testTime.plusHours(1), testDate.minusDays(1), testTime.plusHours(2), "Wall of Paint", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate.minusDays(1), testTime.plusHours(2), testDate.minusDays(1), testTime.plusHours(3), "Art Business", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate, testTime, testDate, testTime.plusHours(2), "Paint the streets", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate.plusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(1), "Design in IT industry", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
                 events.get(0).setFullDescription(fullDescription);
                 events.get(1).setParentEvent(events.get(0));
                 events.get(1).setFullDescription(fullDescription);
                 events.get(2).setParentEvent(events.get(0));
-                events.get(2).setFullDescription(fullDescription);               
+                events.get(2).setFullDescription(fullDescription);    
+                events.get(3).setParentEvent(events.get(0));
+                events.get(3).setFullDescription(fullDescription); 
+                events.get(4).setParentEvent(events.get(0));
+                events.get(4).setFullDescription(fullDescription); 
+              
                 eventRepository.saveAll(events);
 
                 for (Event e : eventRepository.findAll()){
@@ -174,6 +211,19 @@ public class EventsApplication {
                 }
 
                 log.info("PID 9-746 : EVENTS SAVED !");
+                
+                /************************************************************************************************************/
+                List<Event_Tag> event_tags = new ArrayList<>();                
+                for (int i = 0; i < events.size(); i++){
+                    Event_Tag event_tag = new Event_Tag();
+                    event_tag.setEvent(events.get(i));
+                    event_tag.setTag(tags.get(i));
+                    event_tags.add(event_tag);
+                }
+                eventTagRepository.saveAll(event_tags);
+
+                log.info("PID 9-747 : EVENT-TAG SAVED !");
+
 
                 /************************************************************************************************************/
                 List<Event_Presenter> event_presenters = new ArrayList<>();
@@ -193,9 +243,9 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Event_Exhibitor> event_exhibitors = new ArrayList<>();
-                for (int i = 0; i < events.size(); i++){
+                for (int i = 0; i < exhibitors.size(); i++){
                     Event_Exhibitor event_exhibitor = new Event_Exhibitor("Description");
-                    event_exhibitor.setEvent(events.get(i));
+                    event_exhibitor.setEvent(events.get(0));
                     event_exhibitor.setExhibitor(exhibitors.get(i));
                     event_exhibitors.add(event_exhibitor);
                 }
@@ -209,9 +259,9 @@ public class EventsApplication {
 
                 /************************************************************************************************************/
                 List<Event_Restaurant> event_restaurants = new ArrayList<>();
-                for (int i = 0; i < events.size(); i++){
+                for (int i = 0; i < restaurants.size(); i++){
                     Event_Restaurant event_restaurant = new Event_Restaurant("Description");
-                    event_restaurant.setEvent(events.get(i));
+                    event_restaurant.setEvent(events.get(0));
                     event_restaurant.setRestaurant(restaurants.get(i));
                     event_restaurants.add(event_restaurant);
                 }
@@ -228,7 +278,7 @@ public class EventsApplication {
                 for (int i = 0; i < events.size(); i++){
                     Event_Venue event_venue = new Event_Venue("Description");
                     event_venue.setEvent(events.get(i));
-                    event_venue.setVenue(venues.get(0));
+                    event_venue.setVenue(venueRepository.findByName("Suvilahti"));
                     event_venues.add(event_venue);
                 }
                 eventVenueRepository.saveAll(event_venues);
@@ -257,5 +307,4 @@ public class EventsApplication {
             }
         };
     }
-
 }

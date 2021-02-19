@@ -7,4 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 /** Repository for entity Venue */
 @RepositoryRestResource
 public interface VenueRepository extends JpaRepository<Venue, Long> {
+
+	Venue findByName(String name);
 }
