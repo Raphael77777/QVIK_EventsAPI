@@ -8,5 +8,5 @@ import java.util.Set;
 @Data
 public class VenuesDTO {
 
-	private Set<Event_VenueDTO> eventVenues = new HashSet<>();
+	private Set<Event_VenueDetailsDTO> eventVenues = new HashSet<>();
 }
