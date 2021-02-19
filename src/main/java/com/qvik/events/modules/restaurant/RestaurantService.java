@@ -5,13 +5,15 @@ import org.springframework.stereotype.Service;
 import com.qvik.events.infra.exception.DataNotFoundException;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
 
 	private final RestaurantRepository restaurantRepository;
-	
+
+	@Transactional
 	public Restaurant findRestaurantByRestaurantId(Long id) {
 		return restaurantRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Restaurant not found with ID: " + id));
 	}

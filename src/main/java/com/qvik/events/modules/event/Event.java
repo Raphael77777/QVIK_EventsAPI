@@ -120,7 +120,7 @@ public class Event {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Exhibitor> eventCxhibitors;
+	private List<Event_Exhibitor> eventExhibitors;
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String title,
 			String category, String image, String status, LocalDateTime last_modified, boolean has_exhibitor,

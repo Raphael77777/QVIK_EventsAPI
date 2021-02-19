@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.qvik.events.infra.response.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.qvik.events.infra.response.Event_DetailsDTO;
-import com.qvik.events.infra.response.ResponseMessage;
 import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.event.EventService;
 import com.qvik.events.modules.exhibitor.Exhibitor;
@@ -69,7 +69,6 @@ public class UserController {
 	/*
 	 * Event APIs
 	 */
-
 	@GetMapping(path = "/events")
 	public ResponseMessage events() {
 		Map<String, Object> events = eventService.findAllEvents();		
@@ -96,52 +95,44 @@ public class UserController {
 		return convertToResponseMessage(events);
 	}
 
-	
-	/* THESE EVENT APIS need TO BE CORRECTED.
-
 	@GetMapping(path = "/events/{eventId}/stages")
 	public ResponseMessage eventsStage(@PathVariable Long eventId) {
-		Event event event = eventService.findEventByEventId(eventId);
-		List<Event_Stage> eventStages = event.getEvent_stages();
-		return convertToResponseMessage(eventStages);
+		StagesDTO stagesDTO = eventService.findEventStagesByEventId(eventId);
+		return convertToResponseMessage(stagesDTO);
 	}
 
 	@GetMapping(path = "/events/{eventId}/venues")
 	public ResponseMessage eventsVenue(@PathVariable Long eventId) {
-		Event event = eventService.findEventByEventId(eventId);
-		List<Event_Venue> eventVenues = event.getEvent_venues();
-		return convertToResponseMessage(eventVenues);
+		VenuesDTO venuesDTO = eventService.findEventVenuesByEventId(eventId);
+		return convertToResponseMessage(venuesDTO);
 	}
 
 	@GetMapping(path = "/events/{eventId}/exhibitors")
 	public ResponseMessage eventsExhibitor(@PathVariable Long eventId) {
-		Event event = eventService.findEventByEventId(eventId);
-		List<Event_Exhibitor> eventExhibitors = event.getEvent_exhibitors();
-		return convertToResponseMessage(eventExhibitors);
+		ExhibitorsDTO exhibitorsDTO = eventService.findEventExhibitorsByEventId(eventId);
+		return convertToResponseMessage(exhibitorsDTO);
 	}
 
 	@GetMapping(path = "/events/{eventId}/presenters")
 	public ResponseMessage eventsPresenter(@PathVariable Long eventId) {
-		Event event = eventService.findEventByEventId(eventId);
-		List<Event_Presenter> eventPresenters = event.getEvent_presenters();
-		return convertToResponseMessage(eventPresenters);
+		PresentersDTO presentersDTO = eventService.findEventPresentersByEventId(eventId);
+		return convertToResponseMessage(presentersDTO);
+	}
+
+	@GetMapping(path = "/events/{eventId}/restaurants")
+	public ResponseMessage eventsRestaurant(@PathVariable Long eventId) {
+		RestaurantsDTO restaurantsDTO = eventService.findEventRestaurantsByEventId(eventId);
+		return convertToResponseMessage(restaurantsDTO);
 	}
 
 	@GetMapping(path = "/events/{eventId}/full-description")
 	public ResponseMessage eventsFullDescription(@PathVariable Long eventId) throws JsonProcessingException {
-		Event event = eventService.findEventByEventId(eventId);
+		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
 		String desc = event.getFullDescription();
 		Map<String, String> response = new HashMap<>();
 		response.put("fullDescription", desc);
 		return convertToResponseMessage(response);
 	}
-
-	@GetMapping(path = "/events/{eventId}/restaurants")
-	public ResponseMessage eventsRestaurant(@PathVariable Long eventId) {
-		Event event = eventService.findEventByEventId(eventId);
-		List<Event_Restaurant> eventRestaurants = event.getEvent_restaurants();
-		return convertToResponseMessage(eventRestaurants);
-	}*/
 
 	/*
 	 * Venue APIs
@@ -233,7 +224,7 @@ public class UserController {
 	}
 
 	/*
-	 * Convert Data to ResponseMessage.clas
+	 * Convert Data to ResponseMessage.class
 	 */
 	private ResponseMessage convertToResponseMessage(Object object) {
 		ResponseMessage message = new ResponseMessage(HttpStatus.OK);

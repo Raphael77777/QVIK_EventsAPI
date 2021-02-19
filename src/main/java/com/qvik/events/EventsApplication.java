@@ -253,7 +253,7 @@ public class EventsApplication {
                     log.info(e.toString());
                 }*/
 
-                log.info("PID 9-751 : EVENT-SATGE SAVED !");
+                log.info("PID 9-751 : EVENT-STAGE SAVED !");
             }
         };
     }

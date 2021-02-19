@@ -19,4 +19,19 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	
 	@EntityGraph(attributePaths = {"eventVenues", "eventStages", "eventPresenters"})
 	Event findEventWithEventVenuesAndEventStagesAndEventPresentersByEventId(Long id);
+
+	@EntityGraph(attributePaths = {"eventStages"})
+	Event findEventWithEventStagesByEventId(Long id);
+
+	@EntityGraph(attributePaths = {"eventVenues"})
+	Event findEventWithEventVenuesByEventId(Long id);
+
+	@EntityGraph(attributePaths = {"eventPresenters"})
+	Event findEventWithEventPresentersByEventId(Long id);
+
+	@EntityGraph(attributePaths = {"eventExhibitors"})
+	Event findEventWithEventExhibitorsByEventId(Long id);
+
+	@EntityGraph(attributePaths = {"eventRestaurants"})
+	Event findEventWithEventRestaurantsByEventId(Long id);
 }
