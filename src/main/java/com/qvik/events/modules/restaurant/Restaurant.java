@@ -71,7 +71,6 @@ public class Restaurant {
 	private String fullDescription;
 
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "venue_id")
 	private Venue venue;
 

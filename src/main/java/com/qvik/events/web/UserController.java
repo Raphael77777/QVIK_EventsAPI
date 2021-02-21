@@ -54,7 +54,6 @@ public class UserController {
 	private final PresenterService presenterService;
 	private final RestaurantService restaurantService;
 
-	
 	/*
 	 * Main page shows links to API Docs & API Definition 
 	 */
@@ -95,15 +94,15 @@ public class UserController {
 		return convertToResponseMessage(events);
 	}
 
-	@GetMapping(path = "/events/{eventId}/stages")
+	@GetMapping(path = "/events/{eventId}/stage")
 	public ResponseMessage eventsStage(@PathVariable Long eventId) {
-		StagesDTO stagesDTO = eventService.findEventStagesByEventId(eventId);
+		StagesDTO stagesDTO = eventService.findEventStageByEventId(eventId);
 		return convertToResponseMessage(stagesDTO);
 	}
 
-	@GetMapping(path = "/events/{eventId}/venues")
+	@GetMapping(path = "/events/{eventId}/venue")
 	public ResponseMessage eventsVenue(@PathVariable Long eventId) {
-		VenuesDTO venuesDTO = eventService.findEventVenuesByEventId(eventId);
+		VenuesDTO venuesDTO = eventService.findEventVenueByEventId(eventId);
 		return convertToResponseMessage(venuesDTO);
 	}
 

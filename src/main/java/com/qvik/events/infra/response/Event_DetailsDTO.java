@@ -9,15 +9,8 @@ import lombok.Data;
 public class Event_DetailsDTO extends Event_BaseDTO {
 	
 	private String image;
-	
 	private String fullDescription;
-	
-
-	private Set<Event_VenueDTO> eventVenues = new HashSet<>();
-
-	private Set<Event_StageDTO> eventStages = new HashSet<>();
 
 	private Set<Event_PresenterDTO> eventPresenters = new HashSet<>();
-
 
 }

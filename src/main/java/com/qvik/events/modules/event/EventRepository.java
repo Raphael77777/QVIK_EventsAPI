@@ -17,14 +17,14 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
 	List<Event> findByStartDateAndEndDateOrderByStartDateDesc(LocalDate startDate, LocalDate endDate);
 	
-	@EntityGraph(attributePaths = {"eventVenues", "eventStages", "eventPresenters"})
-	Event findEventWithEventVenuesAndEventStagesAndEventPresentersByEventId(Long id);
+	@EntityGraph(attributePaths = {"venue", "stage", "eventPresenters"})
+	Event findEventWithVenueAndStageAndEventPresentersByEventId(Long id);
 
-	@EntityGraph(attributePaths = {"eventStages"})
-	Event findEventWithEventStagesByEventId(Long id);
+	@EntityGraph(attributePaths = {"stage"})
+	Event findEventWithStageByEventId(Long id);
 
-	@EntityGraph(attributePaths = {"eventVenues"})
-	Event findEventWithEventVenuesByEventId(Long id);
+	@EntityGraph(attributePaths = {"venue"})
+	Event findEventWithVenueByEventId(Long id);
 
 	@EntityGraph(attributePaths = {"eventPresenters"})
 	Event findEventWithEventPresentersByEventId(Long id);

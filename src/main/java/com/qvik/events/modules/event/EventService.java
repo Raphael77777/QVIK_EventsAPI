@@ -29,20 +29,27 @@ public class EventService {
 	@Transactional
 	public Event_DetailsDTO findEventByEventId(Long id) {
 
-		Event event = eventRepository.findEventWithEventVenuesAndEventStagesAndEventPresentersByEventId(id);
+		Event event = eventRepository.findEventWithVenueAndStageAndEventPresentersByEventId(id);
 		
 		if(event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
-		} 
-		Event_DetailsDTO details = modelMapper.map(event, Event_DetailsDTO.class);
+		}
+
+		Event_DetailsDTO details = null;
+
+		if (event.getSubEvents().size() != 0) { 				// root event
+			details = modelMapper.map(event, Event_DetailsWithVenueDTO.class);
+		} else if (event.getParentEvent() != null) { 			// sub events
+			details = modelMapper.map(event, Event_DetailsWithStageDTO.class);
+		}
 
 		return details;
 	}
 
 	@Transactional
-	public StagesDTO findEventStagesByEventId(Long id) {
+	public StagesDTO findEventStageByEventId(Long id) {
 
-		Event event = eventRepository.findEventWithEventStagesByEventId(id);
+		Event event = eventRepository.findEventWithStageByEventId(id);
 
 		if(event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
@@ -66,9 +73,9 @@ public class EventService {
 	}
 
 	@Transactional
-	public VenuesDTO findEventVenuesByEventId(Long id) {
+	public VenuesDTO findEventVenueByEventId(Long id) {
 
-		Event event = eventRepository.findEventWithEventVenuesByEventId(id);
+		Event event = eventRepository.findEventWithVenueByEventId(id);
 
 		if(event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);

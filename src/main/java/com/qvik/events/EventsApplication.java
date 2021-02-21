@@ -1,19 +1,5 @@
 package com.qvik.events;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.event.EventRepository;
 import com.qvik.events.modules.exhibitor.EventExhibitorRepository;
@@ -28,18 +14,27 @@ import com.qvik.events.modules.restaurant.EventRestaurantRepository;
 import com.qvik.events.modules.restaurant.Event_Restaurant;
 import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.restaurant.RestaurantRepository;
-import com.qvik.events.modules.stage.EventStageRepository;
-import com.qvik.events.modules.stage.Event_Stage;
 import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.stage.StageRepository;
 import com.qvik.events.modules.tag.EventTagRepository;
 import com.qvik.events.modules.tag.Event_Tag;
 import com.qvik.events.modules.tag.Tag;
 import com.qvik.events.modules.tag.TagRepository;
-import com.qvik.events.modules.venue.EventVenueRepository;
-import com.qvik.events.modules.venue.Event_Venue;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SpringBootApplication
@@ -58,8 +53,6 @@ public class EventsApplication {
                                           EventPresenterRepository eventPresenterRepository,
                                           EventRepository eventRepository,
                                           EventRestaurantRepository eventRestaurantRepository,
-                                          EventStageRepository eventStageRepository,
-                                          EventVenueRepository eventVenueRepository,
                                           EventTagRepository eventTagRepository,
                                           ExhibitorRepository exhibitorRepository,
                                           PresenterRepository presenterRepository,
@@ -74,8 +67,6 @@ public class EventsApplication {
                 eventPresenterRepository.deleteAll();
                 eventRepository.deleteAll();
                 eventRestaurantRepository.deleteAll();
-                eventStageRepository.deleteAll();
-                eventVenueRepository.deleteAll();
                 eventTagRepository.deleteAll();
                 exhibitorRepository.deleteAll();
                 presenterRepository.deleteAll();
@@ -109,6 +100,7 @@ public class EventsApplication {
                 venues.add( new Venue("The Senate Square", "Helsinki", "00170 Helsinki", "+358 52 45 78 96"));
                 venues.add( new Venue("Messukeskuksen ", "Helsinki", "Messuaukio 1", "+358 52 45 78 96"));
                 venues.add( new Venue("Finlandia-talo", "Helsinki", "Mannerheimintie 13", "+358 52 45 78 96"));
+                venues.add( new Venue("Temppeliaukio Church", "Helsinki", "Temppeliaukio  13", "+358 52 45 78 96"));
                 venueRepository.saveAll(venues);
 
                 for (Venue v : venueRepository.findAll()) {
@@ -194,15 +186,25 @@ public class EventsApplication {
                 events.add(new Event(testDate.minusDays(1), testTime.plusHours(2), testDate.minusDays(1), testTime.plusHours(3), "Art Business", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
                 events.add(new Event(testDate, testTime, testDate, testTime.plusHours(2), "Paint the streets", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
                 events.add(new Event(testDate.plusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(1), "Design in IT industry", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+
                 events.get(0).setFullDescription(fullDescription);
+                events.get(0).setVenue(venues.get(0));
+
                 events.get(1).setParentEvent(events.get(0));
                 events.get(1).setFullDescription(fullDescription);
+                events.get(1).setStage(stages.get(1));
+
                 events.get(2).setParentEvent(events.get(0));
-                events.get(2).setFullDescription(fullDescription);    
+                events.get(2).setFullDescription(fullDescription);
+                events.get(2).setStage(stages.get(2));
+
                 events.get(3).setParentEvent(events.get(0));
-                events.get(3).setFullDescription(fullDescription); 
+                events.get(3).setFullDescription(fullDescription);
+                events.get(3).setStage(stages.get(3));
+
                 events.get(4).setParentEvent(events.get(0));
-                events.get(4).setFullDescription(fullDescription); 
+                events.get(4).setFullDescription(fullDescription);
+                events.get(4).setStage(stages.get(4));
               
                 eventRepository.saveAll(events);
 
@@ -273,7 +275,7 @@ public class EventsApplication {
 
                 log.info("PID 9-749 : EVENT-RESTAURANT SAVED !");
 
-                /************************************************************************************************************/
+                /***********************************************************************************************************
                 List<Event_Venue> event_venues = new ArrayList<>();
                 for (int i = 0; i < events.size(); i++){
                     Event_Venue event_venue = new Event_Venue("Description");
@@ -281,15 +283,15 @@ public class EventsApplication {
                     event_venue.setVenue(venueRepository.findByName("Suvilahti"));
                     event_venues.add(event_venue);
                 }
-                eventVenueRepository.saveAll(event_venues);
+                eventVenueRepository.saveAll(event_venues);*/
 
                 /*for (Event_Venue e : eventVenueRepository.findAll()){
                     log.info(e.toString());
                 }*/
 
-                log.info("PID 9-750 : EVENT-VENUE SAVED !");
+                /**log.info("PID 9-750 : EVENT-VENUE SAVED !");*/
 
-                /************************************************************************************************************/
+                /***********************************************************************************************************
                 List<Event_Stage> event_stages = new ArrayList<>();
                 for (int i = 0; i < events.size(); i++){
                     Event_Stage event_stage = new Event_Stage("Description");
@@ -297,13 +299,13 @@ public class EventsApplication {
                     event_stage.setStage(stages.get(i));
                     event_stages.add(event_stage);
                 }
-                eventStageRepository.saveAll(event_stages);
+                eventStageRepository.saveAll(event_stages);*/
 
                 /*for (Event_Stage e : eventStageRepository.findAll()){
                     log.info(e.toString());
                 }*/
 
-                log.info("PID 9-751 : EVENT-STAGE SAVED !");
+                /**log.info("PID 9-751 : EVENT-STAGE SAVED !");*/
             }
         };
     }

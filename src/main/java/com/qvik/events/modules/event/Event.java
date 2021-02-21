@@ -1,40 +1,21 @@
 package com.qvik.events.modules.event;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.qvik.events.modules.exhibitor.Event_Exhibitor;
+import com.qvik.events.modules.presenter.Event_Presenter;
+import com.qvik.events.modules.restaurant.Event_Restaurant;
+import com.qvik.events.modules.stage.Stage;
+import com.qvik.events.modules.tag.Event_Tag;
+import com.qvik.events.modules.venue.Venue;
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.qvik.events.modules.exhibitor.Event_Exhibitor;
-import com.qvik.events.modules.presenter.Event_Presenter;
-import com.qvik.events.modules.restaurant.Event_Restaurant;
-import com.qvik.events.modules.stage.Event_Stage;
-import com.qvik.events.modules.tag.Event_Tag;
-import com.qvik.events.modules.venue.Event_Venue;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /** Entity for table Event */
 @Entity
@@ -103,13 +84,13 @@ public class Event {
 	@JoinColumn(name = "parent_event")
 	private Event parentEvent;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-	@JsonBackReference
-	private Set<Event_Venue> eventVenues = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name = "venue_id")
+	private Venue venue;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-	@JsonBackReference
-	private Set <Event_Stage> eventStages = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name = "stage_id")
+	private Stage stage;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference

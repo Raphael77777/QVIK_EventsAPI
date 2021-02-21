@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class VenuesDTO {
+public class Event_DetailsWithVenueDTO extends Event_DetailsDTO {
 
-	private Venue_DetailsDTO venue;
+	private VenueDTO venue;
+
 }

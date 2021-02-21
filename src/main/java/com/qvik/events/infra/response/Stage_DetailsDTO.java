@@ -8,5 +8,6 @@ public class Stage_DetailsDTO extends StageDTO{
     private String location;
     private Integer capacity;
     private String type;
-    private Venue venue;
+
+    private VenueDTO venue;
 }

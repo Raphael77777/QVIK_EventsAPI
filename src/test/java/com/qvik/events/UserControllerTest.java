@@ -59,7 +59,7 @@ public class UserControllerTest {
 	@Test
 	@DisplayName("Search by valid ID")
 	void eventById_success() throws Exception {
-		mockMvc.perform(get("/api/v1/events/11"))
+		mockMvc.perform(get("/api/v1/events/28"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("status").exists())

@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.stage.Stage;
 
@@ -60,7 +61,7 @@ public class Venue {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
 	@JsonBackReference
-	private List<Event_Venue> event_venues;
+	private List<Event> events;
 
 	public Venue(String name, String city, String address, String contact) {
 		this.name = name;
