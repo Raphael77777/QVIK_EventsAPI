@@ -1,18 +1,30 @@
 package com.qvik.events.modules.event;
 
-import com.qvik.events.infra.exception.DataNotFoundException;
-import com.qvik.events.infra.response.*;
-import com.qvik.events.modules.tag.Event_Tag;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.qvik.events.infra.exception.DataNotFoundException;
+import com.qvik.events.infra.response.Event_DetailsDTO;
+import com.qvik.events.infra.response.Event_DetailsWithStageDTO;
+import com.qvik.events.infra.response.Event_DetailsWithVenueDTO;
+import com.qvik.events.infra.response.ExhibitorsDTO;
+import com.qvik.events.infra.response.Parent_EventDTO;
+import com.qvik.events.infra.response.PresentersDTO;
+import com.qvik.events.infra.response.RestaurantsDTO;
+import com.qvik.events.infra.response.StagesDTO;
+import com.qvik.events.infra.response.Sub_EventDTO;
+import com.qvik.events.infra.response.TagsDTO;
+import com.qvik.events.infra.response.VenuesDTO;
+import com.qvik.events.modules.tag.Event_Tag;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -181,9 +193,15 @@ public class EventService {
 		for (Event e : events) {
 			if (e.getSubEvents().size() != 0) { // root event
 				Parent_EventDTO parentEvent = modelMapper.map(e, Parent_EventDTO.class);
+				List <String> tags = new ArrayList<>();
+				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
+				parentEvent.setTags(tags);
 				eventData.put("parentEvent", parentEvent);
 			} else if (e.getParentEvent() != null) { // sub events
 				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
+				List <String> tags = new ArrayList<>();
+				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
+				subEvent.setTags(tags);
 				subevents.add(subEvent);
 			}
 			eventData.put("subEvents", subevents);
