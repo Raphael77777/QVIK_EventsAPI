@@ -190,22 +190,26 @@ public class EventService {
 	public Map<String, Object> mapEventListToDTOs(List<Event> events) {
 		Map<String, Object> eventData = new LinkedHashMap<>();
 		List<Sub_EventDTO> subevents = new ArrayList<>();
+		Parent_EventDTO parentEvent = null;
+		
 		for (Event e : events) {
 			if (e.getSubEvents().size() != 0) { // root event
-				Parent_EventDTO parentEvent = modelMapper.map(e, Parent_EventDTO.class);
+				parentEvent = modelMapper.map(e, Parent_EventDTO.class);
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				parentEvent.setTags(tags);
 				parentEvent.setVenue(e.getVenue().getName());
-				eventData.put("parentEvent", parentEvent);
+				
 			} else if (e.getParentEvent() != null) { // sub events
 				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				subEvent.setTags(tags);
+				parentEvent.getTags().addAll(tags);
 				subEvent.setStage(e.getStage().getName());
 				subevents.add(subEvent);
 			}
+			eventData.put("parentEvent", parentEvent);
 			eventData.put("subEvents", subevents);
 		}
 		return eventData;
