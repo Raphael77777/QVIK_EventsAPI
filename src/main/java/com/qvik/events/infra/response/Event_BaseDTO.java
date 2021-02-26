@@ -36,6 +36,6 @@ public class Event_BaseDTO {
 
 	private String title;
 	
-	private List<String> tags = new ArrayList<>();
+	
 	
 }

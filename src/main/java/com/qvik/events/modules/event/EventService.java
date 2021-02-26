@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,8 @@ public class EventService {
 
 		if (event.getSubEvents().size() != 0) { 				// root event
 			details = modelMapper.map(event, Event_DetailsWithVenueDTO.class);
+			
+			
 		} else if (event.getParentEvent() != null) { 			// sub events
 			details = modelMapper.map(event, Event_DetailsWithStageDTO.class);
 		}
@@ -196,12 +199,14 @@ public class EventService {
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				parentEvent.setTags(tags);
+				parentEvent.setVenue(e.getVenue().getName());
 				eventData.put("parentEvent", parentEvent);
 			} else if (e.getParentEvent() != null) { // sub events
 				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				subEvent.setTags(tags);
+				subEvent.setStage(e.getStage().getName());
 				subevents.add(subEvent);
 			}
 			eventData.put("subEvents", subevents);
