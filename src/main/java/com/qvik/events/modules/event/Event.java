@@ -47,6 +47,9 @@ public class Event {
 
 	@Column(name = "title", nullable = false)
 	private String title;
+	
+	@Column(name = "short_description", nullable = false)
+	private String shortDescription;
 
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
@@ -109,12 +112,13 @@ public class Event {
 	private List<Event_Tag> eventTags;
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String title,
-			String category, String image, String status, LocalDateTime last_modified, boolean has_exhibitor,
+			String shortDescription, String category, String image, String status, LocalDateTime last_modified, boolean has_exhibitor,
 			boolean has_restaurant, boolean has_presenter) {
 		this.startDate = start_date;
 		this.startTime = start_time;
 		this.endDate = end_date;
 		this.endTime = end_time;
+		this.shortDescription = shortDescription;
 		this.title = title;
 		this.category = category;
 		this.image = image;

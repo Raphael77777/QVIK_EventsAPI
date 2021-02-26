@@ -10,6 +10,7 @@ public class Event_DetailsDTO extends Event_BaseDTO {
 	
 	private String image;
 	private String fullDescription;
+	private String shortDescription;
 
 	private Set<Event_PresenterDTO> eventPresenters = new HashSet<>();
 	private Set<Event_TagDTO> eventTags = new HashSet<>();
