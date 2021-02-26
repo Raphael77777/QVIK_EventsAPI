@@ -89,14 +89,6 @@ public class UserController {
 		return convertToResponseMessage(event);
 	}
 	
-	// I DON'T KNOW IF THIS METHOD IS NECESSARY?? - 17.02.2021 Tei
-	@GetMapping(path = "/events/date")
-	public ResponseMessage eventsDate(@RequestParam(name = "start") String startDate,
-			@RequestParam(name = "end", required = false) String endDate) {
-		List<Event> events = eventService.findEventsByDates(startDate, endDate);
-		return convertToResponseMessage(events);
-	}
-
 	@GetMapping(path = "/events/tag")
 	public ResponseMessage eventsTag(@RequestParam(name = "tag") String tagName) {
 		Map<String, Object> events = eventService.findEventsByTags(tagName);

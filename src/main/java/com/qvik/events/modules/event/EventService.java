@@ -146,25 +146,6 @@ public class EventService {
 		return mapEventListToDTOs(ongoingEvents);
 	}
 
-	// I DON'T KNOW IF THIS METHOD IS NECESSARY? - 17.02.2021 Tei
-	@Transactional
-	public List<Event> findEventsByDates(String startDate, String endDate) {
-
-		LocalDate localStartDate = LocalDate.parse(startDate);
-		LocalDate localEndDate;
-		List<Event> events = null;
-		if (endDate != null) {
-			localEndDate = LocalDate.parse(endDate);
-			events = eventRepository.findByStartDateAndEndDateOrderByStartDateDesc(localStartDate, localEndDate);
-		} else {
-			events = eventRepository.findByStartDateOrderByStartDateDesc(localStartDate);
-		}
-		if (events.size() == 0) {
-			throw new DataNotFoundException("Data not found with given date(s)");
-		}
-		return events;
-	}
-
 	public Map<String, Object> findEventsByTags(String tagName) {
 
 		List<Event> events = eventRepository.findAll();
