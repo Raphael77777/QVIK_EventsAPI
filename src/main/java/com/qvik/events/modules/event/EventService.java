@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ import com.qvik.events.infra.response.StagesDTO;
 import com.qvik.events.infra.response.Sub_EventDTO;
 import com.qvik.events.infra.response.TagsDTO;
 import com.qvik.events.infra.response.VenuesDTO;
+import com.qvik.events.modules.presenter.Event_Presenter;
 import com.qvik.events.modules.tag.Event_Tag;
 
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ public class EventService {
 	@Transactional
 	public Event_DetailsDTO findEventByEventId(Long id) {
 
-		Event event = eventRepository.findEventWithVenueAndStageAndEventPresentersAndEventTagsByEventId(id);
+		Event event = eventRepository.findEventWithEventPresentersByEventId(id);
 		
 		if(event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
@@ -52,11 +52,19 @@ public class EventService {
 		Event_DetailsDTO details = null;
 
 		if (event.getSubEvents().size() != 0) { 				// root event
-			details = modelMapper.map(event, Event_DetailsWithVenueDTO.class);
+			details = modelMapper.map(event, Event_DetailsDTO.class);
+			List<String> presenters = new ArrayList<>();
+			List<Event_Presenter> eventPresenters  = event.getEventPresenters();
+			eventPresenters.forEach( p -> presenters.add(p.getPresenter().getName()));
+			details.setPresenters(presenters);
 			
 			
 		} else if (event.getParentEvent() != null) { 			// sub events
-			details = modelMapper.map(event, Event_DetailsWithStageDTO.class);
+			details = modelMapper.map(event, Event_DetailsDTO.class);
+			List<String> presenters = new ArrayList<>();
+			List<Event_Presenter> eventPresenters  = event.getEventPresenters();
+			eventPresenters.forEach( p -> presenters.add(p.getPresenter().getName()));
+			details.setPresenters(presenters);
 		}
 
 		return details;

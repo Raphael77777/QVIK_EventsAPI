@@ -1,5 +1,25 @@
 package com.qvik.events.modules.event;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.qvik.events.modules.exhibitor.Event_Exhibitor;
 import com.qvik.events.modules.presenter.Event_Presenter;
@@ -7,15 +27,13 @@ import com.qvik.events.modules.restaurant.Event_Restaurant;
 import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.tag.Event_Tag;
 import com.qvik.events.modules.venue.Venue;
-import lombok.*;
 
-import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /** Entity for table Event */
 @Entity
@@ -97,19 +115,19 @@ public class Event {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private Set <Event_Presenter> eventPresenters = new HashSet<>();
+	private List <Event_Presenter> eventPresenters = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Restaurant> eventRestaurants;
+	private List<Event_Restaurant> eventRestaurants= new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Exhibitor> eventExhibitors;
+	private List<Event_Exhibitor> eventExhibitors= new ArrayList<>();
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
-	private List<Event_Tag> eventTags;
+	private List<Event_Tag> eventTags= new ArrayList<>();
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String title,
 			String shortDescription, String category, String image, String status, LocalDateTime last_modified, boolean has_exhibitor,
