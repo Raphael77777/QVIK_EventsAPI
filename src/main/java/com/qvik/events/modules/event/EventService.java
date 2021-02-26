@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EventService {
 
 	private final EventRepository eventRepository;
@@ -137,27 +138,7 @@ public class EventService {
 		return tagsDTO;
 	}
 
-	@Transactional
-	public Map<String, Object> findOnGoingEvents(String date) {
-		LocalDate givenDate = LocalDate.parse(date);
-		List<Event> events = eventRepository.findAll();
-		List<Event> ongoingEvents = new ArrayList<>();
-		for (Event e : events) {
-			LocalDate startDate = e.getStartDate();
-			LocalDate endDate = e.getEndDate();
-			if ((givenDate.isEqual(startDate) || givenDate.isAfter(startDate))
-					&& (givenDate.isEqual(endDate) || givenDate.isBefore(endDate))) {
-				ongoingEvents.add(e);
-			}
-		}
-
-		if (ongoingEvents.size() == 0) {
-			throw new DataNotFoundException("Event not found with given date: " + date);
-		}
-
-		return mapEventListToDTOs(ongoingEvents);
-	}
-
+	
 	public Map<String, Object> findEventsByTags(String tagName) {
 
 		List<Event> events = eventRepository.findAll();
@@ -186,6 +167,31 @@ public class EventService {
 		return mapEventListToDTOs(eventsWithTag);
 	}
 
+	/*THIS METHOD WILL NOT BE IN USE -> TO BE DELETED LATER 27.02.2027 - TEI*/
+	@Transactional
+	public Map<String, Object> findOnGoingEvents(String date) {
+		LocalDate givenDate = LocalDate.parse(date);
+		List<Event> events = eventRepository.findAll();
+		List<Event> ongoingEvents = new ArrayList<>();
+		for (Event e : events) {
+			LocalDate startDate = e.getStartDate();
+			LocalDate endDate = e.getEndDate();
+			if ((givenDate.isEqual(startDate) || givenDate.isAfter(startDate))
+					&& (givenDate.isEqual(endDate) || givenDate.isBefore(endDate))) {
+				ongoingEvents.add(e);
+			}
+		}
+
+		if (ongoingEvents.size() == 0) {
+			throw new DataNotFoundException("Event not found with given date: " + date);
+		}
+
+		return mapEventListToDTOs(ongoingEvents);
+	}
+
+	
+	
+	
 	/* Map List of Events to DTO */
 	public Map<String, Object> mapEventListToDTOs(List<Event> events) {
 		Map<String, Object> eventData = new LinkedHashMap<>();
@@ -193,7 +199,7 @@ public class EventService {
 		Parent_EventDTO parentEvent = null;
 		
 		for (Event e : events) {
-			if (e.getSubEvents().size() != 0) { // root event
+			if (e.getSubEvents().size() != 0) { // parent event
 				parentEvent = modelMapper.map(e, Parent_EventDTO.class);
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
@@ -201,6 +207,13 @@ public class EventService {
 				parentEvent.setVenue(e.getVenue().getName());
 				
 			} else if (e.getParentEvent() != null) { // sub events
+				/**
+				 * TODO:
+				 * SUB EVENTS WILL BE PRESENTED BY 'DATE' instead of OngoingEvents API CALL. 
+				 * - RECOMMENDED BY QVIK. 
+				 * - 27.02.2021 - Tei
+				 * 
+				 * **/
 				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
