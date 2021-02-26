@@ -49,27 +49,16 @@ public class EventService {
 			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
 
-		Event_DetailsDTO details = null;
-
-		if (event.getSubEvents().size() != 0) { 				// root event
-			details = modelMapper.map(event, Event_DetailsDTO.class);
-			List<String> presenters = new ArrayList<>();
-			List<Event_Presenter> eventPresenters  = event.getEventPresenters();
-			eventPresenters.forEach( p -> presenters.add(p.getPresenter().getName()));
-			details.setPresenters(presenters);
-			
-			
-		} else if (event.getParentEvent() != null) { 			// sub events
-			details = modelMapper.map(event, Event_DetailsDTO.class);
-			List<String> presenters = new ArrayList<>();
-			List<Event_Presenter> eventPresenters  = event.getEventPresenters();
-			eventPresenters.forEach( p -> presenters.add(p.getPresenter().getName()));
-			details.setPresenters(presenters);
-		}
-
+		Event_DetailsDTO details = modelMapper.map(event, Event_DetailsDTO.class);
+		List<String> presenters = new ArrayList<>();
+		List<Event_Presenter> eventPresenters  = event.getEventPresenters();
+		eventPresenters.forEach( p -> presenters.add(p.getPresenter().getName()));
+		details.setPresenters(presenters);
+	
 		return details;
 	}
 
+	
 	@Transactional
 	public StagesDTO findEventStageByEventId(Long id) {
 
