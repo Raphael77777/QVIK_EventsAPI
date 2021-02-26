@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.qvik.events.infra.response.*;
+import com.qvik.events.modules.tag.Tag;
+import com.qvik.events.modules.tag.TagRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +48,7 @@ public class UserController {
 	private final RestaurantRepository restaurantRepository;
 	private final StageRepository stageRepository;
 	private final VenueRepository venueRepository;
+	private final TagRepository tagRepository;
 
 	private final EventService eventService;
 	private final VenueService venueService;
@@ -94,6 +97,12 @@ public class UserController {
 		return convertToResponseMessage(events);
 	}
 
+	@GetMapping(path = "/events/tag")
+	public ResponseMessage eventsTag(@RequestParam(name = "tag") String tagName) {
+		Map<String, Object> events = eventService.findEventsByTags(tagName);
+		return convertToResponseMessage(events);
+	}
+
 	@GetMapping(path = "/events/{eventId}/stage")
 	public ResponseMessage eventsStage(@PathVariable Long eventId) {
 		StagesDTO stagesDTO = eventService.findEventStageByEventId(eventId);
@@ -122,6 +131,12 @@ public class UserController {
 	public ResponseMessage eventsRestaurant(@PathVariable Long eventId) {
 		RestaurantsDTO restaurantsDTO = eventService.findEventRestaurantsByEventId(eventId);
 		return convertToResponseMessage(restaurantsDTO);
+	}
+
+	@GetMapping(path = "/events/{eventId}/tags")
+	public ResponseMessage eventsTag(@PathVariable Long eventId) {
+		TagsDTO tagsDTO = eventService.findEventTagsByEventId(eventId);
+		return convertToResponseMessage(tagsDTO);
 	}
 
 	@GetMapping(path = "/events/{eventId}/full-description")
@@ -220,6 +235,15 @@ public class UserController {
 	public ResponseMessage restaurantsInfo(@PathVariable Long restaurantId) {
 		Restaurant restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
 		return convertToResponseMessage(restaurant);
+	}
+
+	/*
+	 * Tag APIs
+	 */
+	@GetMapping(path = "/tags")
+	public ResponseMessage tags() {
+		List<Tag> tags = tagRepository.findAll();
+		return convertToResponseMessage(tags);
 	}
 
 	/*

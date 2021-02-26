@@ -43,4 +43,13 @@ public class Event_Tag {
 	@JoinColumn(name = "tag_id")
 	private Tag tag;
 
+	// TODO : Temporary output to be removed at the end of development
+	@Override
+	public String toString() {
+		return "Event_Tag{" +
+				"event_tag_id=" + event_tag_id +
+				", event=" + event +
+				", tag=" + tag +
+				'}';
+	}
 }

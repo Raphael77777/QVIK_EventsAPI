@@ -2,6 +2,7 @@ package com.qvik.events.modules.event;
 
 import com.qvik.events.infra.exception.DataNotFoundException;
 import com.qvik.events.infra.response.*;
+import com.qvik.events.modules.tag.Event_Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class EventService {
 	@Transactional
 	public Event_DetailsDTO findEventByEventId(Long id) {
 
-		Event event = eventRepository.findEventWithVenueAndStageAndEventPresentersByEventId(id);
+		Event event = eventRepository.findEventWithVenueAndStageAndEventPresentersAndEventTagsByEventId(id);
 		
 		if(event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
@@ -112,6 +113,19 @@ public class EventService {
 	}
 
 	@Transactional
+	public TagsDTO findEventTagsByEventId(Long id) {
+
+		Event event = eventRepository.findEventWithEventTagsByEventId(id);
+
+		if(event == null) {
+			throw new DataNotFoundException("Event not found with ID: " + id);
+		}
+		TagsDTO tagsDTO = modelMapper.map(event, TagsDTO.class);
+
+		return tagsDTO;
+	}
+
+	@Transactional
 	public Map<String, Object> findOnGoingEvents(String date) {
 		LocalDate givenDate = LocalDate.parse(date);
 		List<Event> events = eventRepository.findAll();
@@ -149,6 +163,34 @@ public class EventService {
 			throw new DataNotFoundException("Data not found with given date(s)");
 		}
 		return events;
+	}
+
+	public Map<String, Object> findEventsByTags(String tagName) {
+
+		List<Event> events = eventRepository.findAll();
+		List<Event> eventsWithTag = new ArrayList<>();
+
+		for (Event e : events){
+			Event event = eventRepository.findEventWithEventTagsByEventId(e.getEventId());
+			List<Event_Tag> event_tags = event.getEventTags();
+
+			for (Event_Tag et : event_tags){
+				if (et.getTag().getName().equals(tagName)){
+
+					if (e.getSubEvents().size() != 0){ // root event
+						return mapEventListToDTOs(events);
+					}else if (e.getParentEvent() != null) { // sub events
+						eventsWithTag.add(e);
+					}
+				}
+			}
+		}
+
+		if(eventsWithTag.size() == 0) {
+			throw new DataNotFoundException("Events not found with tag: " + tagName);
+		}
+
+		return mapEventListToDTOs(eventsWithTag);
 	}
 
 	/* Map List of Events to DTO */
