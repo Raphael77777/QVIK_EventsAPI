@@ -2,13 +2,14 @@ package com.qvik.events.infra.response;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.qvik.events.modules.tag.Event_Tag;
 
 import lombok.Data;
 
@@ -34,4 +35,5 @@ public class Event_BaseDTO {
 	private LocalTime endTime;
 
 	private String title;
+	
 }
