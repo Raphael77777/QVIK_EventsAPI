@@ -186,9 +186,6 @@ public class EventService {
 		return mapEventListToDTOs(ongoingEvents);
 	}
 
-	
-	
-	
 	/* Map List of Events to DTO */
 	public Map<String, Object> mapEventListToDTOs(List<Event> events) {
 		Map<String, Object> eventData = new LinkedHashMap<>();
