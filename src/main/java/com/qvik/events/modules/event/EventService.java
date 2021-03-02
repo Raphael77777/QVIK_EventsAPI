@@ -201,9 +201,13 @@ public class EventService {
 		for (Event e : events) {
 			if (e.getSubEvents().size() != 0) { // parent event
 				parentEvent = modelMapper.map(e, Parent_EventDTO.class);
+
+				/* ADD TAGS */
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				parentEvent.setTags(tags);
+
+				/* ADD VENUE */
 				parentEvent.setVenue(e.getVenue().getName());
 				
 			} else if (e.getParentEvent() != null) { // sub events
@@ -215,11 +219,21 @@ public class EventService {
 				 * 
 				 * **/
 				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
+
+				/* ADD TAGS */
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				subEvent.setTags(tags);
 				parentEvent.getTags().addAll(tags);
+
+				/* ADD PRESENTERS */
+				List <String> presenters = new ArrayList<>();
+				e.getEventPresenters().forEach(et -> presenters.add(et.getPresenter().getName()));
+				subEvent.setPresenters(presenters);
+
+				/* ADD STAGE */
 				subEvent.setStage(e.getStage().getName());
+
 				subevents.add(subEvent);
 			}
 			eventData.put("parentEvent", parentEvent);

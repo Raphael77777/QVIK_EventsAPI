@@ -15,4 +15,5 @@ public class Sub_EventDTO extends Event_BaseDTO {
 	
 	private String stage;
 	private List<String> tags = new ArrayList<>();
+	private List<String> presenters = new ArrayList<>();
 }
