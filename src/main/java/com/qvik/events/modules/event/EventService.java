@@ -60,11 +60,12 @@ public class EventService {
 		List<Event_Tag> eventTags  = event.getEventTags();
 		eventTags.forEach( t -> tags.add(t.getTag().getName()));
 
-		if (event.getParentEvent() != null){ // subEvent
-			//ADD PARENT TAG;
-			Event parentEvent = eventRepository.findEventWithEventTagsByEventId(event.getParentEvent().getEventId());
-			List<Event_Tag> parentEventTags  = parentEvent.getEventTags();
-			parentEventTags.forEach( t -> tags.add(t.getTag().getName()));
+		if (event.getSubEvents().size() != 0){ // parent event
+			//ADD SUB EVENT TAG;
+			for (Event e : event.getSubEvents()){
+				List<Event_Tag> subEventTags  = e.getEventTags();
+				subEventTags.forEach( t -> tags.add(t.getTag().getName()));
+			}
 		}
 
 		details.setTags(tags);
@@ -231,7 +232,7 @@ public class EventService {
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				subEvent.setTags(tags);
-				tags.addAll(parentEvent.getTags());
+				parentEvent.getTags().addAll(tags);
 
 				/* ADD PRESENTERS */
 				List <String> presenters = new ArrayList<>();
