@@ -48,10 +48,26 @@ public class EventService {
 		}
 
 		Event_DetailsDTO details = modelMapper.map(event, Event_DetailsDTO.class);
+
+		/* ADD PRESENTERS */
 		List<String> presenters = new ArrayList<>();
 		List<Event_Presenter> eventPresenters  = event.getEventPresenters();
 		eventPresenters.forEach( p -> presenters.add(p.getPresenter().getName()));
 		details.setPresenters(presenters);
+
+		/* ADD TAGS */
+		List<String> tags = new ArrayList<>();
+		List<Event_Tag> eventTags  = event.getEventTags();
+		eventTags.forEach( t -> tags.add(t.getTag().getName()));
+
+		if (event.getParentEvent() != null){ // subEvent
+			//ADD PARENT TAG;
+			Event parentEvent = eventRepository.findEventWithEventTagsByEventId(event.getParentEvent().getEventId());
+			List<Event_Tag> parentEventTags  = parentEvent.getEventTags();
+			parentEventTags.forEach( t -> tags.add(t.getTag().getName()));
+		}
+
+		details.setTags(tags);
 	
 		return details;
 	}
@@ -195,7 +211,7 @@ public class EventService {
 		List<Map<String, Object>> subListOfMap = new ArrayList<>();
 
 		Parent_EventDTO parentEvent = null;
-		
+
 		for (Event e : events) {
 			if (e.getSubEvents().size() != 0) { // parent event
 				parentEvent = modelMapper.map(e, Parent_EventDTO.class);
@@ -215,7 +231,7 @@ public class EventService {
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				subEvent.setTags(tags);
-				parentEvent.getTags().addAll(tags);
+				tags.addAll(parentEvent.getTags());
 
 				/* ADD PRESENTERS */
 				List <String> presenters = new ArrayList<>();

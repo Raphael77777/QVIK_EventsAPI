@@ -223,11 +223,6 @@ public class EventsApplication {
                     event_tags.add(event_tag);
                 }
 
-                Event_Tag event_tag = new Event_Tag();
-                event_tag.setEvent(events.get(3));
-                event_tag.setTag(tags.get(0));
-                event_tags.add(event_tag);
-
                 eventTagRepository.saveAll(event_tags);
 
                 log.info("PID 9-747 : EVENT-TAG SAVED !");
