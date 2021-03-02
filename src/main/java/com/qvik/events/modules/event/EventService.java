@@ -1,10 +1,7 @@
 package com.qvik.events.modules.event;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -195,7 +192,11 @@ public class EventService {
 	/* Map List of Events to DTO */
 	public Map<String, Object> mapEventListToDTOs(List<Event> events) {
 		Map<String, Object> eventData = new LinkedHashMap<>();
-		List<Sub_EventDTO> subevents = new ArrayList<>();
+
+		Map<String, Map<String, Object>> subMapOfMap = new LinkedHashMap<>();;
+		List<LocalDate> subMapOfMapKey = new ArrayList<>();
+		List<Map<String, Object>> subListOfMap = new ArrayList<>();
+
 		Parent_EventDTO parentEvent = null;
 		
 		for (Event e : events) {
@@ -211,13 +212,6 @@ public class EventService {
 				parentEvent.setVenue(e.getVenue().getName());
 				
 			} else if (e.getParentEvent() != null) { // sub events
-				/**
-				 * TODO:
-				 * SUB EVENTS WILL BE PRESENTED BY 'DATE' instead of OngoingEvents API CALL. 
-				 * - RECOMMENDED BY QVIK. 
-				 * - 27.02.2021 - Tei
-				 * 
-				 * **/
 				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
 
 				/* ADD TAGS */
@@ -234,11 +228,37 @@ public class EventService {
 				/* ADD STAGE */
 				subEvent.setStage(e.getStage().getName());
 
-				subevents.add(subEvent);
+				/* SUB EVENTS WILL PRESENTED BY 'DATE' */
+				String date = subEvent.getStartDate().toString();
+				Map<String, Object> subeventsMap = subMapOfMap.get(date);
+				if (subeventsMap == null){
+					subeventsMap = new LinkedHashMap<>();
+					subeventsMap.put("dateAsTitle", date);
+					subMapOfMapKey.add(subEvent.getStartDate());
+
+					List<Sub_EventDTO> subevents = new ArrayList<>();
+					subevents.add(subEvent);
+					subeventsMap.put("events", subevents);
+
+				}else {
+					List<Sub_EventDTO> subevents = (List<Sub_EventDTO>) subeventsMap.get("events");
+					subevents.add(subEvent);
+					subeventsMap.put("events", subevents);
+				}
+
+				subMapOfMap.put(date, subeventsMap);
 			}
-			eventData.put("parentEvent", parentEvent);
-			eventData.put("subEvents", subevents);
 		}
+
+		eventData.put("parentEvent", parentEvent);
+
+		/* Sort sub events by dates in chronological order */
+		subMapOfMapKey.sort(Comparator.naturalOrder());
+		for (LocalDate ld : subMapOfMapKey){
+			subListOfMap.add(subMapOfMap.get(ld.toString()));
+		}
+		eventData.put("subEvents", subListOfMap);
+
 		return eventData;
 	}
 }
