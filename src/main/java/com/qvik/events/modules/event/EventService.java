@@ -228,6 +228,7 @@ public class EventService {
 
 				/* ADD ALL TAGS */
 				List <String> allTags = new ArrayList<>();
+				allTags.addAll(tags);
 				parentEvent.setAllTags(allTags);
 
 				/* ADD VENUE */
