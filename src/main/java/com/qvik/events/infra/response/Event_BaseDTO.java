@@ -35,7 +35,6 @@ public class Event_BaseDTO {
 	private LocalTime endTime;
 
 	private String title;
-	
-	
+	private List<String> tags = new ArrayList<>();
 	
 }

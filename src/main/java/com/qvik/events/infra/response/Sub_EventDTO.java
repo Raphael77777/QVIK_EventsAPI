@@ -12,8 +12,8 @@ import lombok.Data;
 
 @Data
 public class Sub_EventDTO extends Event_BaseDTO {
-	
+
+	private List<String> inheritedTags = new ArrayList<>();
 	private String stage;
-	private List<String> tags = new ArrayList<>();
 	private List<String> presenters = new ArrayList<>();
 }
