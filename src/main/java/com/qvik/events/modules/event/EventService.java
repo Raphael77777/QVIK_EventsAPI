@@ -3,22 +3,12 @@ package com.qvik.events.modules.event;
 import java.time.LocalDate;
 import java.util.*;
 
+import com.qvik.events.infra.response.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.qvik.events.infra.exception.DataNotFoundException;
-import com.qvik.events.infra.response.Event_DetailsDTO;
-import com.qvik.events.infra.response.Event_DetailsWithStageDTO;
-import com.qvik.events.infra.response.Event_DetailsWithVenueDTO;
-import com.qvik.events.infra.response.ExhibitorsDTO;
-import com.qvik.events.infra.response.Parent_EventDTO;
-import com.qvik.events.infra.response.PresentersDTO;
-import com.qvik.events.infra.response.RestaurantsDTO;
-import com.qvik.events.infra.response.StagesDTO;
-import com.qvik.events.infra.response.Sub_EventDTO;
-import com.qvik.events.infra.response.TagsDTO;
-import com.qvik.events.infra.response.VenuesDTO;
 import com.qvik.events.modules.presenter.Event_Presenter;
 import com.qvik.events.modules.tag.Event_Tag;
 
@@ -47,7 +37,28 @@ public class EventService {
 			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
 
-		Event_DetailsDTO details = modelMapper.map(event, Event_DetailsDTO.class);
+		Event_DetailsDTO details = null;
+
+		if (event.getSubEvents().size() != 0){ // parent event
+			details = modelMapper.map(event, ParentEvent_DetailsDTO.class);
+			List<String> subTags = new ArrayList<>();
+			for (Event e : event.getSubEvents()){
+				List<Event_Tag> subEventTags  = e.getEventTags();
+				subEventTags.forEach( t -> subTags.add(t.getTag().getName()));
+			}
+			((ParentEvent_DetailsDTO) details).setAllTags(subTags);
+		}else if (event.getParentEvent() != null){ // subEvent
+			details = modelMapper.map(event, SubEvent_DetailsDTO.class);
+			Event parentEvent = event.getParentEvent();
+			List<Event_Tag> parentEventTags  = parentEvent.getEventTags();
+			List<String> inheritedTags = new ArrayList<>();
+			parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
+			((SubEvent_DetailsDTO) details).setInheritedTags(inheritedTags);
+		}
+
+		if (details == null){
+			details = modelMapper.map(event, Event_DetailsDTO.class);
+		}
 
 		/* ADD PRESENTERS */
 		List<String> presenters = new ArrayList<>();
@@ -60,21 +71,6 @@ public class EventService {
 		List<Event_Tag> eventTags  = event.getEventTags();
 		eventTags.forEach( t -> tags.add(t.getTag().getName()));
 		details.setTags(tags);
-
-		if (event.getSubEvents().size() != 0){ // parent event
-			List<String> subTags = new ArrayList<>();
-			for (Event e : event.getSubEvents()){
-				List<Event_Tag> subEventTags  = e.getEventTags();
-				subEventTags.forEach( t -> subTags.add(t.getTag().getName()));
-			}
-			details.setAllTags(subTags);
-		}else if (event.getParentEvent() != null){ // subEvent
-			Event parentEvent = event.getParentEvent();
-			List<Event_Tag> parentEventTags  = parentEvent.getEventTags();
-			List<String> inheritedTags = new ArrayList<>();
-			parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
-			details.setInheritedTags(inheritedTags);
-		}
 
 		return details;
 	}

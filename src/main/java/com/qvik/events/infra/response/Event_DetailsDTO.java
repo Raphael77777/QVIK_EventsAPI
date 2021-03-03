@@ -14,7 +14,5 @@ public class Event_DetailsDTO extends Event_BaseDTO {
 
 	//private Set<Event_PresenterDTO> eventPresenters = new HashSet<>();	
 	private List<String> presenters = new ArrayList<>();
-	private List<String> allTags = new ArrayList<>();
-	private List<String> inheritedTags = new ArrayList<>();
 
 }
