@@ -46,6 +46,8 @@ public class EventService {
 				List<Event_Tag> subEventTags  = e.getEventTags();
 				subEventTags.forEach( t -> subTags.add(t.getTag().getName()));
 			}
+			List<Event_Tag> eventTags  = event.getEventTags();
+			eventTags.forEach( t -> subTags.add(t.getTag().getName()));
 			((ParentEvent_DetailsDTO) details).setAllTags(subTags);
 		}else if (event.getParentEvent() != null){ // subEvent
 			details = modelMapper.map(event, SubEvent_DetailsDTO.class);
