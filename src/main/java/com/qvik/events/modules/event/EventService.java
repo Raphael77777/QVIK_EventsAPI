@@ -267,12 +267,12 @@ public class EventService {
 
 					List<Sub_EventDTO> subevents = new ArrayList<>();
 					subevents.add(subEvent);
-					subeventsMap.put("events", subevents);
+					subeventsMap.put("data", subevents);
 
 				}else {
-					List<Sub_EventDTO> subevents = (List<Sub_EventDTO>) subeventsMap.get("events");
+					List<Sub_EventDTO> subevents = (List<Sub_EventDTO>) subeventsMap.get("data");
 					subevents.add(subEvent);
-					subeventsMap.put("events", subevents);
+					subeventsMap.put("data", subevents);
 				}
 
 				subMapOfMap.put(date, subeventsMap);
