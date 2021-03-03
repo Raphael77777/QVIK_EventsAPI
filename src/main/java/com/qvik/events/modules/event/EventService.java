@@ -59,17 +59,23 @@ public class EventService {
 		List<String> tags = new ArrayList<>();
 		List<Event_Tag> eventTags  = event.getEventTags();
 		eventTags.forEach( t -> tags.add(t.getTag().getName()));
+		details.setTags(tags);
 
 		if (event.getSubEvents().size() != 0){ // parent event
-			//ADD SUB EVENT TAG;
+			List<String> subTags = new ArrayList<>();
 			for (Event e : event.getSubEvents()){
 				List<Event_Tag> subEventTags  = e.getEventTags();
-				subEventTags.forEach( t -> tags.add(t.getTag().getName()));
+				subEventTags.forEach( t -> subTags.add(t.getTag().getName()));
 			}
+			details.setAllTags(subTags);
+		}else if (event.getParentEvent() != null){ // subEvent
+			Event parentEvent = event.getParentEvent();
+			List<Event_Tag> parentEventTags  = parentEvent.getEventTags();
+			List<String> inheritedTags = new ArrayList<>();
+			parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
+			details.setInheritedTags(inheritedTags);
 		}
 
-		details.setTags(tags);
-	
 		return details;
 	}
 
@@ -222,6 +228,10 @@ public class EventService {
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				parentEvent.setTags(tags);
 
+				/* ADD ALL TAGS */
+				List <String> allTags = new ArrayList<>();
+				parentEvent.setAllTags(allTags);
+
 				/* ADD VENUE */
 				parentEvent.setVenue(e.getVenue().getName());
 				
@@ -232,7 +242,13 @@ public class EventService {
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 				subEvent.setTags(tags);
-				parentEvent.getTags().addAll(tags);
+				parentEvent.getAllTags().addAll(tags);
+
+				/* ADD INHERITED TAGS */
+				List<Event_Tag> parentEventTags  = e.getParentEvent().getEventTags();
+				List<String> inheritedTags = new ArrayList<>();
+				parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
+				subEvent.setInheritedTags(inheritedTags);
 
 				/* ADD PRESENTERS */
 				List <String> presenters = new ArrayList<>();
