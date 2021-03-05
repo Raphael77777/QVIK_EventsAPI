@@ -10,6 +10,9 @@ import java.util.List;
 
 /** Repository for entity Restaurant */
 @RepositoryRestResource
+@Transactional(readOnly = true)
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findByVenueEquals (Venue venue);	
+    
+    Restaurant findRestaurantByRestaurantId (Long id);
 }

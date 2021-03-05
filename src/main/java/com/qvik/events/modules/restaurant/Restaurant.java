@@ -44,21 +44,17 @@ public class Restaurant {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "restaurant_id", nullable = false, updatable = false)
-	private long restaurant_id;
+	private long restaurantId;
 
 	@Column(name = "name", nullable = false)
 	private String name;
 
 	@Column(name = "location", nullable = false)
 	private String location;
-	
-	@JsonSerialize(using = LocalTimeSerializer.class)
-	@JsonFormat(pattern = "HH:mm:ss")
+
 	@Column(name = "open_time", nullable = false)
 	private LocalTime openTime;
-	
-	@JsonSerialize(using = LocalTimeSerializer.class)
-	@JsonFormat(pattern = "HH:mm:ss")
+
 	@Column(name = "close_time", nullable = false)
 	private LocalTime closeTime;
 
@@ -91,7 +87,7 @@ public class Restaurant {
 	// TODO : Temporary output to be removed at the end of development
 	@Override
 	public String toString() {
-		return "Restaurant{" + "restaurant_id=" + restaurant_id + ", name='" + name + '\'' + ", location='" + location
+		return "Restaurant{" + "restaurant_id=" + restaurantId + ", name='" + name + '\'' + ", location='" + location
 				+ '\'' + ", openTime=" + openTime + ", closeTime=" + closeTime + ", shortDescription='"
 				+ shortDescription + '\'' + ", fullDescription='" + fullDescription + '\'' + ", venue=" + venue + '}';
 	}

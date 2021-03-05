@@ -219,13 +219,13 @@ public class UserController {
 	 */
 	@GetMapping(path = "/restaurants")
 	public ResponseMessage restaurants() {
-		List<Restaurant> restaurants = restaurantRepository.findAll();
+		List<Restaurant_DetailsDTO> restaurants = restaurantService.findAllRestaurants();
 		return convertToResponseMessage(restaurants);
 	}
 
 	@GetMapping(path = "/restaurants/{restaurantId}")
 	public ResponseMessage restaurantsInfo(@PathVariable Long restaurantId) {
-		Restaurant restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
+		Restaurant_DetailsDTO restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
 		return convertToResponseMessage(restaurant);
 	}
 
