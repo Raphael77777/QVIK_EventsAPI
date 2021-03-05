@@ -181,11 +181,11 @@ public class EventsApplication {
                 LocalDate testDate = LocalDate.parse("2021-05-10");
                 LocalTime testTime = LocalTime.parse("10:00:00");
                 
-                events.add(new Event(testDate.minusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(7), "Night of Arts", "This is short Description", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(testDate.minusDays(1), testTime.plusHours(1), testDate.minusDays(1), testTime.plusHours(2), "Wall of Paint", "This is short Description","Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(testDate.minusDays(1), testTime.plusHours(2), testDate.minusDays(1), testTime.plusHours(3), "Art Business", "This is short Description","Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(testDate, testTime, testDate, testTime.plusHours(2), "Paint the streets", "This is short Description","Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
-                events.add(new Event(testDate.plusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(1), "Design in IT industry", "This is short Description", "Festival", "#url", "OPEN", LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate.minusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(7), "Night of Arts", "This is short Description",  "#url", LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate.minusDays(1), testTime.plusHours(1), testDate.minusDays(1), testTime.plusHours(2), "Wall of Paint", "This is short Description", "#url",  LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate.minusDays(1), testTime.plusHours(2), testDate.minusDays(1), testTime.plusHours(3), "Art Business", "This is short Description", "#url",  LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate, testTime, testDate, testTime.plusHours(2), "Paint the streets", "This is short Description", "#url",  LocalDateTime.now(), true, true, true));
+                events.add(new Event(testDate.plusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(1), "Design in IT industry", "This is short Description", "#url", LocalDateTime.now(), true, true, true));
 
                 events.get(0).setFullDescription(fullDescription);
                 events.get(0).setVenue(venues.get(0));

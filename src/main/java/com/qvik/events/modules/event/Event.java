@@ -74,16 +74,10 @@ public class Event {
 	@Column(name = "full_description", nullable = false)
 	private String fullDescription;
 
-	@Column(name = "category", nullable = false)
-	private String category;
-
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "image", nullable = false)
 	private String image;
-
-	@Column(name = "status", nullable = false)
-	private String status;
 
 	@Column(name = "last_modified", nullable = false)
 	private LocalDateTime lastModified;
@@ -130,7 +124,7 @@ public class Event {
 	private List<Event_Tag> eventTags= new ArrayList<>();
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String title,
-			String shortDescription, String category, String image, String status, LocalDateTime last_modified, boolean has_exhibitor,
+			String shortDescription, String image, LocalDateTime last_modified, boolean has_exhibitor,
 			boolean has_restaurant, boolean has_presenter) {
 		this.startDate = start_date;
 		this.startTime = start_time;
@@ -138,9 +132,7 @@ public class Event {
 		this.endTime = end_time;
 		this.shortDescription = shortDescription;
 		this.title = title;
-		this.category = category;
-		this.image = image;
-		this.status = status;
+		this.image = image;	
 		this.lastModified = last_modified;
 		this.hasExhibitor = has_exhibitor;
 		this.hasRestaurant = has_restaurant;
@@ -152,14 +144,14 @@ public class Event {
 	public String toString() {
 		if (parentEvent == null) {
 			return "Event{" + "event_id=" + eventId + ", start_date=" + startDate + ", end_date=" + endDate
-					+ ", title='" + title + '\'' + ", full_description='" + fullDescription + '\'' + ", category='"
-					+ category + '\'' + ", image='" + image + '\'' + ", status='" + status + '\'' + ", last_modified="
+					+ ", title='" + title + '\'' + ", full_description='" + fullDescription + '\'' + 
+					'\'' + ", image='" + image + '\''  + ", last_modified="
 					+ lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant=" + hasRestaurant
 					+ ", has_presenter=" + hasPresenter + '}';
 		} else {
 			return "Event{" + "event_id=" + eventId + ", start_date=" + startDate + ", end_date=" + endDate
-					+ ", title='" + title + '\'' + ", full_description='" + fullDescription + '\'' + ", category='"
-					+ category + '\'' + ", image='" + image + '\'' + ", status='" + status + '\'' + ", last_modified="
+					+ ", title='" + title + '\'' + ", full_description='" + fullDescription + '\'' 
+					+ ", image='" + image + '\'' + ", last_modified="
 					+ lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant=" + hasRestaurant
 					+ ", parent_event=" + parentEvent + ", has_presenter=" + hasPresenter + '}';
 		}
