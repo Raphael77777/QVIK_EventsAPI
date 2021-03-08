@@ -9,4 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RepositoryRestResource
 public interface TagRepository extends JpaRepository <Tag, Long> {
 
+	Tag findByName(String name);
+
 }

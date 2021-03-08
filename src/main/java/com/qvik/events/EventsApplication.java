@@ -88,7 +88,8 @@ public class EventsApplication {
             	tags.add(new Tag("English speaker"));
             	tags.add(new Tag("Online event"));
             	tags.add(new Tag("Webinar"));
-            	tags.add(new Tag("Startup"));            	
+            	tags.add(new Tag("Startup")); 
+            	tags.add(new Tag("Culture"));
             	tagRepository.saveAll(tags);
 
                 log.info("PID 9-740 : TAG SAVED !");
@@ -222,6 +223,18 @@ public class EventsApplication {
                     event_tag.setTag(tags.get(i));
                     event_tags.add(event_tag);
                 }
+                
+                // adding more sample tag to parent event
+                Event_Tag parent2 = new Event_Tag();
+                parent2.setEvent(events.get(0));
+                parent2.setTag(tagRepository.findByName("Culture"));
+                event_tags.add(parent2); 
+                
+                // adding more sample tag to sub event
+                Event_Tag sub2 = new Event_Tag();
+                sub2.setEvent(events.get(3));
+                sub2.setTag(tagRepository.findByName("Webinar"));
+                event_tags.add(sub2);
 
                 eventTagRepository.saveAll(event_tags);
 
