@@ -48,7 +48,8 @@ public class EventService {
 			}
 			List<Event_Tag> eventTags  = event.getEventTags();
 			eventTags.forEach( t -> subTags.add(t.getTag().getName()));
-			((ParentEvent_DetailsDTO) details).setAllTags(subTags);
+			//TODO : DELETE DUPLICATES FROM subTags
+			((ParentEvent_DetailsDTO) details).setAllTags(removeDuplicates(subTags));
 		}else if (event.getParentEvent() != null){ // subEvent
 			details = modelMapper.map(event, SubEvent_DetailsDTO.class);
 			Event parentEvent = event.getParentEvent();
@@ -279,6 +280,10 @@ public class EventService {
 			}
 		}
 
+		List<String> allTags = parentEvent.getAllTags();
+		//TODO : DELETE DUPLICATES FROM subTags
+		parentEvent.setAllTags(removeDuplicates(allTags));
+
 		eventData.put("parentEvent", parentEvent);
 
 		/* Sort sub events by dates in chronological order */
@@ -289,5 +294,12 @@ public class EventService {
 		eventData.put("subEvents", subListOfMap);
 
 		return eventData;
+	}
+
+	private List<String> removeDuplicates (List<String> list){
+		Set<String> set = new LinkedHashSet<>(list);
+		list.clear();
+		list.addAll(set);
+		return list;
 	}
 }
