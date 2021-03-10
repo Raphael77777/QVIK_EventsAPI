@@ -64,9 +64,9 @@ public class EventService {
 		}
 
 		/* ADD PRESENTERS */
-		List<String> presenters = new ArrayList<>();
-		List<Event_Presenter> eventPresenters  = event.getEventPresenters();
-		eventPresenters.forEach( p -> presenters.add(p.getPresenter().getName()));
+		List<PresenterDTO> presenters = new ArrayList<>();
+		List<Event_Presenter> eventPresesnters = event.getEventPresenters();
+		eventPresesnters.forEach( ep -> presenters.add(modelMapper.map(ep.getPresenter(), PresenterDTO.class)));
 		details.setPresenters(presenters);
 
 		/* ADD TAGS */
