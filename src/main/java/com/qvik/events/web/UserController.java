@@ -218,7 +218,7 @@ public class UserController {
 	 */
 	@GetMapping(path = "/restaurants")
 	public ResponseMessage restaurants() {
-		List<Restaurant_DetailsDTO> restaurants = restaurantService.findAllRestaurants();
+		Map<String, Object> restaurants = restaurantService.findAllRestaurants();
 		return convertToResponseMessage(restaurants);
 	}
 
