@@ -1,6 +1,7 @@
 package com.qvik.events.modules.restaurant;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -18,9 +19,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.qvik.events.modules.stage.Stage;
+import com.qvik.events.modules.tag.Restaurant_Tag;
 import com.qvik.events.modules.venue.Venue;
 
 import lombok.AllArgsConstructor;
@@ -69,10 +69,14 @@ public class Restaurant {
 	@ManyToOne
 	@JoinColumn(name = "venue_id")
 	private Venue venue;
-
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant")
 	@JsonBackReference
 	private List<Event_Restaurant> event_restaurants;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant")
+	@JsonBackReference
+	private List<Restaurant_Tag> restaurantTags= new ArrayList<>();
 
 	public Restaurant(String name, String location, LocalTime open_time, LocalTime close_time, String short_description,
 			String full_description) {
