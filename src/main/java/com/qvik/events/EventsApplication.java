@@ -135,13 +135,13 @@ public class EventsApplication {
 				List<Presenter> presenters = new ArrayList<>();
 				presenters.add(new Presenter("Jan Pellervo Vapaavuori", "jan@email.com", "I am Helsinki Mayor",
 						"Full description"));
-				presenters.add(new Presenter("Li Andersson ", "li@email.com", "I am a minister", "Full description"));
+				presenters.add(new Presenter("Li Andersson ", "li@email.com", "I am a minister", fullDescription));
 				presenters.add(
-						new Presenter("Pekka Lundmark", "Pekka@email.com", "I am an entrepreneur", "Full description"));
+						new Presenter("Pekka Lundmark", "Pekka@email.com", "I am an entrepreneur", fullDescription));
 				presenters.add(
-						new Presenter("Mark Zuckerberg", "Mark@email.com", "I am an entrepreneur", "Full description"));
+						new Presenter("Mark Zuckerberg", "Mark@email.com", "I am an entrepreneur", fullDescription));
 				presenters
-						.add(new Presenter("Elon Musk", "elon@email.com", "I am an entrepreneur", "Full description"));
+						.add(new Presenter("Elon Musk", "elon@email.com", "I am an entrepreneur", fullDescription));
 
 				presenterRepository.saveAll(presenters);
 
@@ -174,9 +174,9 @@ public class EventsApplication {
 
 				/************************************************************************************************************/
 				List<Exhibitor> exhibitors = new ArrayList<>();
-				exhibitors.add(new Exhibitor("Qvik", "Helsinki", "#qvik.com", "Short", "Full description"));
-				exhibitors.add(new Exhibitor("Google", "California", "#google.com", "Short", "Full description"));
-				exhibitors.add(new Exhibitor("Tesla", "tesla ", "#elon.com", "Short", "Full description"));
+				exhibitors.add(new Exhibitor("Qvik", "Helsinki", "#qvik.com", "Short", fullDescription));
+				exhibitors.add(new Exhibitor("Google", "California", "#google.com", "Short", fullDescription));
+				exhibitors.add(new Exhibitor("Tesla", "tesla ", "#elon.com", "Short", fullDescription));
 				exhibitorRepository.saveAll(exhibitors);
 
 				for (Exhibitor e : exhibitorRepository.findAll()) {
