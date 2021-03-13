@@ -238,11 +238,6 @@ public class EventService {
 				allTags.addAll(tags);
 				parentEvent.setAllTags(allTags);
 
-				/* ADD RESTAURANTS */
-				List <String> restaurants = new ArrayList<>();
-				e.getEventRestaurants().forEach(er -> restaurants.add(er.getRestaurant().getName()));
-				parentEvent.setRestaurants(restaurants);
-
 				/* ADD VENUE */
 				parentEvent.setVenue(e.getVenue().getName());
 				
@@ -260,11 +255,6 @@ public class EventService {
 				List<String> inheritedTags = new ArrayList<>();
 				parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
 				subEvent.setInheritedTags(inheritedTags);
-
-				/* ADD RESTAURANTS */
-				List <String> restaurants = new ArrayList<>();
-				e.getEventRestaurants().forEach(er -> restaurants.add(er.getRestaurant().getName()));
-				subEvent.setRestaurants(restaurants);
 
 				/* ADD PRESENTERS */
 				List <String> presenters = new ArrayList<>();

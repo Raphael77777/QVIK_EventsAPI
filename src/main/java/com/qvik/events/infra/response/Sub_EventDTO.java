@@ -16,5 +16,4 @@ public class Sub_EventDTO extends Event_BaseDTO {
 	private List<String> inheritedTags = new ArrayList<>();
 	private String stage;
 	private List<String> presenters = new ArrayList<>();
-	private List<String> restaurants = new ArrayList<>();
 }
