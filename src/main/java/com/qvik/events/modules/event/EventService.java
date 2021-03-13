@@ -57,6 +57,12 @@ public class EventService {
 			List<String> inheritedTags = new ArrayList<>();
 			parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
 			((SubEvent_DetailsDTO) details).setInheritedTags(inheritedTags);
+
+			/* ADD RESTAURANTS */
+			List<RestaurantDTO> restaurants = new ArrayList<>();
+			List<Event_Restaurant> eventRestaurants = event.getEventRestaurants();
+			eventRestaurants.forEach( er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
+			((SubEvent_DetailsDTO) details).setRestaurants(restaurants);
 		}
 
 		if (details == null){
@@ -68,12 +74,6 @@ public class EventService {
 		List<Event_Presenter> eventPresesnters = event.getEventPresenters();
 		eventPresesnters.forEach( ep -> presenters.add(modelMapper.map(ep.getPresenter(), PresenterDTO.class)));
 		details.setPresenters(presenters);
-
-		/* ADD RESTAURANTS */
-		List<RestaurantDTO> restaurants = new ArrayList<>();
-		List<Event_Restaurant> eventRestaurants = event.getEventRestaurants();
-		eventRestaurants.forEach( er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
-		details.setRestaurants(restaurants);
 
 		/* ADD TAGS */
 		List<String> tags = new ArrayList<>();

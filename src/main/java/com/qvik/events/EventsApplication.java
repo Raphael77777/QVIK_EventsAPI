@@ -293,7 +293,7 @@ public class EventsApplication {
 				List<Event_Restaurant> event_restaurants = new ArrayList<>();
 				for (int i = 0; i < restaurants.size(); i++) {
 					Event_Restaurant event_restaurant = new Event_Restaurant("Description");
-					event_restaurant.setEvent(events.get(i));
+					event_restaurant.setEvent(events.get(i+1));
 					event_restaurant.setRestaurant(restaurants.get(i));
 					event_restaurants.add(event_restaurant);
 				}

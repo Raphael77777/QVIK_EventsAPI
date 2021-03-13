@@ -15,7 +15,6 @@ public class Event_DetailsDTO extends Event_BaseDTO {
 	private String fullDescription;	
 	private VenueDTO venue;
 	private StageDTO stage;
-	private List<PresenterDTO> presenters = new ArrayList<>(); 
-	private List<RestaurantDTO> restaurants = new ArrayList<>();
+	private List<PresenterDTO> presenters = new ArrayList<>();
 	
 }

@@ -9,5 +9,5 @@ import java.util.List;
 public class SubEvent_DetailsDTO extends Event_DetailsDTO {
 
 	private List<String> inheritedTags = new ArrayList<>();
-
+	private List<RestaurantDTO> restaurants = new ArrayList<>();
 }
