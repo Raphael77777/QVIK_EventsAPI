@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class RestaurantDTO {
-	private long restaurantId;
+	private long restaurant_id;
 	private String name;
 }

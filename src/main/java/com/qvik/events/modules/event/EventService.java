@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import com.qvik.events.infra.response.*;
+import com.qvik.events.modules.restaurant.Event_Restaurant;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +49,6 @@ public class EventService {
 			}
 			List<Event_Tag> eventTags  = event.getEventTags();
 			eventTags.forEach( t -> subTags.add(t.getTag().getName()));
-			//TODO : DELETE DUPLICATES FROM subTags
 			((ParentEvent_DetailsDTO) details).setAllTags(removeDuplicates(subTags));
 		}else if (event.getParentEvent() != null){ // subEvent
 			details = modelMapper.map(event, SubEvent_DetailsDTO.class);
@@ -68,6 +68,12 @@ public class EventService {
 		List<Event_Presenter> eventPresesnters = event.getEventPresenters();
 		eventPresesnters.forEach( ep -> presenters.add(modelMapper.map(ep.getPresenter(), PresenterDTO.class)));
 		details.setPresenters(presenters);
+
+		/* ADD RESTAURANTS */
+		List<RestaurantDTO> restaurants = new ArrayList<>();
+		List<Event_Restaurant> eventRestaurants = event.getEventRestaurants();
+		eventRestaurants.forEach( er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
+		details.setRestaurants(restaurants);
 
 		/* ADD TAGS */
 		List<String> tags = new ArrayList<>();
@@ -232,6 +238,11 @@ public class EventService {
 				allTags.addAll(tags);
 				parentEvent.setAllTags(allTags);
 
+				/* ADD RESTAURANTS */
+				List <String> restaurants = new ArrayList<>();
+				e.getEventRestaurants().forEach(er -> restaurants.add(er.getRestaurant().getName()));
+				parentEvent.setRestaurants(restaurants);
+
 				/* ADD VENUE */
 				parentEvent.setVenue(e.getVenue().getName());
 				
@@ -249,6 +260,11 @@ public class EventService {
 				List<String> inheritedTags = new ArrayList<>();
 				parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
 				subEvent.setInheritedTags(inheritedTags);
+
+				/* ADD RESTAURANTS */
+				List <String> restaurants = new ArrayList<>();
+				e.getEventRestaurants().forEach(er -> restaurants.add(er.getRestaurant().getName()));
+				subEvent.setRestaurants(restaurants);
 
 				/* ADD PRESENTERS */
 				List <String> presenters = new ArrayList<>();
@@ -281,7 +297,6 @@ public class EventService {
 		}
 
 		List<String> allTags = parentEvent.getAllTags();
-		//TODO : DELETE DUPLICATES FROM subTags
 		parentEvent.setAllTags(removeDuplicates(allTags));
 
 		eventData.put("parentEvent", parentEvent);
