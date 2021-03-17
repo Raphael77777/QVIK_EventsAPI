@@ -34,7 +34,7 @@ public class Event_BaseDTO {
 	@JsonFormat(pattern = "HH:mm:ss")
 	private LocalTime endTime;
 
-	private String title;
-	private List<String> eventTags = new ArrayList<>();
+	private String title;	
+	
 	
 }

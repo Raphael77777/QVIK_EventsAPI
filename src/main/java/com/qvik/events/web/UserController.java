@@ -80,85 +80,92 @@ public class UserController {
 	 * Header-setup API
 	 */
 	@GetMapping(path = "/initial-setup")
-	public ResponseMessage initialSetUp() {
-		//Map <String, Object> initialSetUp = new LinkedHashMap<>();
-		Init_SettingDTO initialSetUp = eventService.findInitialSetUpData();
-		//restaurantService.findAllTags();
-		//initialSetUp.put("parentEvent", parentEvent);
+	public ResponseMessage initialSetUp() {		
+		Init_SettingDTO initialSetUp = eventService.findInitialSetUpData();		
 		return convertToResponseMessage(initialSetUp);
 	}
 	
 	/*
-	 * Event APIs
+	 * NEW - Event API
 	 */
 	@GetMapping(path = "/events")
 	public ResponseMessage events() {
-		Map<String, Object> events = eventService.findAllEvents();		
+		List<Map<String, Object>> events = eventService.findAllEvents();		
 		return convertToResponseMessage(events);
 	}
 	
-	@GetMapping(path = "/ongoing-events")
-	public ResponseMessage eventsOngoing(@RequestParam(name = "on") String date) {
-		Map<String, Object> events = eventService.findOnGoingEvents(date);
-		return convertToResponseMessage(events);
-	}
 	
-	@GetMapping(path = "/events/{eventId}")
-	public ResponseMessage eventsInfo(@PathVariable Long eventId) {
-		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
-		return convertToResponseMessage(event);
-	}
-	
-	@GetMapping(path = "/events/tag")
-	public ResponseMessage eventsTag(@RequestParam(name = "tag") String tagName) {
-		Map<String, Object> events = eventService.findEventsByTags(tagName);
-		return convertToResponseMessage(events);
-	}
-
-	@GetMapping(path = "/events/{eventId}/stage")
-	public ResponseMessage eventsStage(@PathVariable Long eventId) {
-		StagesDTO stagesDTO = eventService.findEventStageByEventId(eventId);
-		return convertToResponseMessage(stagesDTO);
-	}
-
-	@GetMapping(path = "/events/{eventId}/venue")
-	public ResponseMessage eventsVenue(@PathVariable Long eventId) {
-		VenuesDTO venuesDTO = eventService.findEventVenueByEventId(eventId);
-		return convertToResponseMessage(venuesDTO);
-	}
-
-	@GetMapping(path = "/events/{eventId}/exhibitors")
-	public ResponseMessage eventsExhibitor(@PathVariable Long eventId) {
-		ExhibitorsDTO exhibitorsDTO = eventService.findEventExhibitorsByEventId(eventId);
-		return convertToResponseMessage(exhibitorsDTO);
-	}
-
-	@GetMapping(path = "/events/{eventId}/presenters")
-	public ResponseMessage eventsPresenter(@PathVariable Long eventId) {
-		PresentersDTO presentersDTO = eventService.findEventPresentersByEventId(eventId);
-		return convertToResponseMessage(presentersDTO);
-	}
-
-	@GetMapping(path = "/events/{eventId}/restaurants")
-	public ResponseMessage eventsRestaurant(@PathVariable Long eventId) {
-		RestaurantsDTO restaurantsDTO = eventService.findEventRestaurantsByEventId(eventId);
-		return convertToResponseMessage(restaurantsDTO);
-	}
-
-	@GetMapping(path = "/events/{eventId}/tags")
-	public ResponseMessage eventsTag(@PathVariable Long eventId) {
-		TagsDTO tagsDTO = eventService.findEventTagsByEventId(eventId);
-		return convertToResponseMessage(tagsDTO);
-	}
-
-	@GetMapping(path = "/events/{eventId}/full-description")
-	public ResponseMessage eventsFullDescription(@PathVariable Long eventId) throws JsonProcessingException {
-		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
-		String desc = event.getFullDescription();
-		Map<String, String> response = new HashMap<>();
-		response.put("fullDescription", desc);
-		return convertToResponseMessage(response);
-	}
+	/*
+	 * OLD - Event APIs
+	 */
+//	@GetMapping(path = "/events")
+//	public ResponseMessage events() {
+//		Map<String, Object> events = eventService.findAllEvents();		
+//		return convertToResponseMessage(events);
+//	}
+//	
+//	@GetMapping(path = "/ongoing-events")
+//	public ResponseMessage eventsOngoing(@RequestParam(name = "on") String date) {
+//		Map<String, Object> events = eventService.findOnGoingEvents(date);
+//		return convertToResponseMessage(events);
+//	}
+//	
+//	@GetMapping(path = "/events/{eventId}")
+//	public ResponseMessage eventsInfo(@PathVariable Long eventId) {
+//		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
+//		return convertToResponseMessage(event);
+//	}
+//	
+//	@GetMapping(path = "/events/tag")
+//	public ResponseMessage eventsTag(@RequestParam(name = "tag") String tagName) {
+//		Map<String, Object> events = eventService.findEventsByTags(tagName);
+//		return convertToResponseMessage(events);
+//	}
+//
+//	@GetMapping(path = "/events/{eventId}/stage")
+//	public ResponseMessage eventsStage(@PathVariable Long eventId) {
+//		StagesDTO stagesDTO = eventService.findEventStageByEventId(eventId);
+//		return convertToResponseMessage(stagesDTO);
+//	}
+//
+//	@GetMapping(path = "/events/{eventId}/venue")
+//	public ResponseMessage eventsVenue(@PathVariable Long eventId) {
+//		VenuesDTO venuesDTO = eventService.findEventVenueByEventId(eventId);
+//		return convertToResponseMessage(venuesDTO);
+//	}
+//
+//	@GetMapping(path = "/events/{eventId}/exhibitors")
+//	public ResponseMessage eventsExhibitor(@PathVariable Long eventId) {
+//		ExhibitorsDTO exhibitorsDTO = eventService.findEventExhibitorsByEventId(eventId);
+//		return convertToResponseMessage(exhibitorsDTO);
+//	}
+//
+//	@GetMapping(path = "/events/{eventId}/presenters")
+//	public ResponseMessage eventsPresenter(@PathVariable Long eventId) {
+//		PresentersDTO presentersDTO = eventService.findEventPresentersByEventId(eventId);
+//		return convertToResponseMessage(presentersDTO);
+//	}
+//
+//	@GetMapping(path = "/events/{eventId}/restaurants")
+//	public ResponseMessage eventsRestaurant(@PathVariable Long eventId) {
+//		RestaurantsDTO restaurantsDTO = eventService.findEventRestaurantsByEventId(eventId);
+//		return convertToResponseMessage(restaurantsDTO);
+//	}
+//
+//	@GetMapping(path = "/events/{eventId}/tags")
+//	public ResponseMessage eventsTag(@PathVariable Long eventId) {
+//		TagsDTO tagsDTO = eventService.findEventTagsByEventId(eventId);
+//		return convertToResponseMessage(tagsDTO);
+//	}
+//
+//	@GetMapping(path = "/events/{eventId}/full-description")
+//	public ResponseMessage eventsFullDescription(@PathVariable Long eventId) throws JsonProcessingException {
+//		Event_DetailsDTO event = eventService.findEventByEventId(eventId);
+//		String desc = event.getFullDescription();
+//		Map<String, String> response = new HashMap<>();
+//		response.put("fullDescription", desc);
+//		return convertToResponseMessage(response);
+//	}
 
 	/*
 	 * Venue APIs

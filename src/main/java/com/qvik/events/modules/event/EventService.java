@@ -18,14 +18,12 @@ import com.qvik.events.infra.response.dto.Event_DetailsDTO;
 import com.qvik.events.infra.response.dto.ExhibitorsDTO;
 import com.qvik.events.infra.response.dto.Init_SettingDTO;
 import com.qvik.events.infra.response.dto.ParentEvent_DetailsDTO;
-import com.qvik.events.infra.response.dto.Parent_EventDTO;
 import com.qvik.events.infra.response.dto.PresenterDTO;
 import com.qvik.events.infra.response.dto.PresentersDTO;
 import com.qvik.events.infra.response.dto.RestaurantDTO;
 import com.qvik.events.infra.response.dto.RestaurantsDTO;
 import com.qvik.events.infra.response.dto.StagesDTO;
 import com.qvik.events.infra.response.dto.SubEvent_DetailsDTO;
-import com.qvik.events.infra.response.dto.Sub_EventDTO;
 import com.qvik.events.infra.response.dto.TagsDTO;
 import com.qvik.events.infra.response.dto.VenuesDTO;
 import com.qvik.events.modules.presenter.Event_Presenter;
@@ -46,114 +44,138 @@ public class EventService {
 	private final ModelMapper modelMapper;
 
 	/*
-	 * Data to be used for header setup  
+	 * Data to be used for header setup
 	 */
-	@Transactional
 	public Init_SettingDTO findInitialSetUpData() {
 		Event event = eventRepository.findEventByParentEvent(null);
 		Init_SettingDTO initData = modelMapper.map(event, Init_SettingDTO.class);
-		
+
 		initData.setEventImage(event.getImage());
 		initData.setRestaurantImage("https://qvik-event-platform.s3-eu-west-1.amazonaws.com/restaurant_cover.jpg");
-		
 
 		/* ADD TAGS */
-		List <String> tags = new ArrayList<>();
+		List<String> tags = new ArrayList<>();
 		event.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
 		initData.setEventTags(tags);
 
-		/* ADD ALL TAGS from both parent and sub events*/
-		List <String> allTags = new ArrayList<>();
+		/* ADD ALL TAGS from both parent and sub events */
+		List<String> allTags = new ArrayList<>();
 		event.getEventTags().forEach(et -> allTags.add(et.getTag().getName()));
-		event.getSubEvents().forEach(subEvent -> subEvent.getEventTags().forEach(et -> allTags.add(et.getTag().getName())));
-		
+		event.getSubEvents()
+				.forEach(subEvent -> subEvent.getEventTags().forEach(et -> allTags.add(et.getTag().getName())));
+
 		List<String> allTagsWithoutDuplicate = removeDuplicates(allTags);
 		initData.setAllEventTags(allTagsWithoutDuplicate);
 
 		/* ADD VENUE */
 		initData.setVenue(event.getVenue().getName());
-		
-		/* ADD RESTAURANT TAGS*/
+
+		/* ADD RESTAURANT TAGS */
 		List<Restaurant> restaurants = restaurantRepository.findAll();
 		List<String> restaurantTags = new ArrayList<>();
 		restaurants.forEach(r -> r.getRestaurantTags().forEach(tag -> restaurantTags.add(tag.getTag().getName())));
-		
+
 		List<String> allRestaurantTagsWithoutDeuplicate = removeDuplicates(restaurantTags);
 		initData.setAllRestaurantTags(allRestaurantTagsWithoutDeuplicate);
-		
-		
+
 		return initData;
 	}
-	
-	
-	@Transactional
-	public Map<String, Object> findAllEvents() {
+
+	/*
+	 * API /events to return all information related to events
+	 * 
+	 */
+	public List<Map<String, Object>> findAllEvents() {
 		List<Event> events = eventRepository.findAll();
 		return mapEventListToDTOs(events);
 	}
 
-	@Transactional
-	public Event_DetailsDTO findEventByEventId(Long id) {
+	/* NEW - Map List of Events to DTO */
+	public List<Map<String, Object>> mapEventListToDTOs(List<Event> events) {
 
-		Event event = eventRepository.findEventWithEventPresentersByEventId(id);
-		
-		if(event == null) {
-			throw new DataNotFoundException("Event not found with ID: " + id);
-		}
+		Map<String, Map<String, Object>> mapOfMap = new LinkedHashMap<>();
+		List<LocalDate> mapKeys = new ArrayList<>();
+		List<Map<String, Object>> listOfMap = new ArrayList<>();
 
-		Event_DetailsDTO details = null;
+		for (Event e : events) {
+			if (e.getParentEvent() != null) { // sub events
+				Event_DetailsDTO event_detailsDTO = modelMapper.map(e, Event_DetailsDTO.class);
+				event_detailsDTO.setActiveEvent(e.isActive());
 
-		if (event.getSubEvents().size() != 0){ // parent event
-			details = modelMapper.map(event, ParentEvent_DetailsDTO.class);
-			List<String> subTags = new ArrayList<>();
-			for (Event e : event.getSubEvents()){
-				List<Event_Tag> subEventTags  = e.getEventTags();
-				subEventTags.forEach( t -> subTags.add(t.getTag().getName()));
+				/* ADD PRESENTERS */
+				List<PresenterDTO> presenters = new ArrayList<>();
+				List<Event_Presenter> eventPresenters = e.getEventPresenters();
+				eventPresenters.forEach(er -> presenters.add(modelMapper.map(er.getPresenter(), PresenterDTO.class)));
+				event_detailsDTO.setPresenters(presenters);
+
+				/* ADD INHERITED TAGS */
+				Event parentEvent = e.getParentEvent();
+				List<Event_Tag> parentEventTags = parentEvent.getEventTags();
+				List<String> inheritedTags = new ArrayList<>();
+				parentEventTags.forEach(t -> inheritedTags.add(t.getTag().getName()));
+				event_detailsDTO.setInheritedTags(inheritedTags);
+
+				/* ADD EVENT TAGS */
+				List<String> tags = new ArrayList<>();
+				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
+				event_detailsDTO.setEventTags(tags);
+
+				/* ADD RESTAURANTS */
+				List<RestaurantDTO> restaurants = new ArrayList<>();
+				List<Event_Restaurant> eventRestaurants = e.getEventRestaurants();
+				eventRestaurants
+						.forEach(er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
+				event_detailsDTO.setRestaurants(restaurants);
+
+				/* SUB EVENTS WILL PRESENTED BY 'DATE' */
+				String date = event_detailsDTO.getStartDate().toString();
+				Map<String, Object> eventsMap = mapOfMap.get(date);
+				if (eventsMap == null) {
+					eventsMap = new LinkedHashMap<>();
+					eventsMap.put("dateAsTitle", date);
+					mapKeys.add(event_detailsDTO.getStartDate());
+
+					// Collect list of event_details
+					List<Event_DetailsDTO> list = new ArrayList<>();
+					list.add(event_detailsDTO);
+					eventsMap.put("data", list);
+
+				} else {
+					List<Event_DetailsDTO> subevents = (List<Event_DetailsDTO>) eventsMap.get("data");
+					subevents.add(event_detailsDTO);
+					eventsMap.put("data", subevents);
+				}
+
+				mapOfMap.put(date, eventsMap);
 			}
-			List<Event_Tag> eventTags  = event.getEventTags();
-			eventTags.forEach( t -> subTags.add(t.getTag().getName()));
-			((ParentEvent_DetailsDTO) details).setAllTags(removeDuplicates(subTags));
-		}else if (event.getParentEvent() != null){ // subEvent
-			details = modelMapper.map(event, SubEvent_DetailsDTO.class);
-			Event parentEvent = event.getParentEvent();
-			List<Event_Tag> parentEventTags  = parentEvent.getEventTags();
-			List<String> inheritedTags = new ArrayList<>();
-			parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
-			((SubEvent_DetailsDTO) details).setInheritedTags(inheritedTags);
 
-			/* ADD RESTAURANTS */
-			List<RestaurantDTO> restaurants = new ArrayList<>();
-			List<Event_Restaurant> eventRestaurants = event.getEventRestaurants();
-			eventRestaurants.forEach( er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
-			((SubEvent_DetailsDTO) details).setRestaurants(restaurants);
 		}
 
-		if (details == null){
-			details = modelMapper.map(event, Event_DetailsDTO.class);
+		/* Sort sub events by dates in chronological order */
+		mapKeys.sort(Comparator.naturalOrder());
+		for (LocalDate ld : mapKeys) {
+			listOfMap.add(mapOfMap.get(ld.toString()));
 		}
-
-		/* ADD PRESENTERS */
-		List<PresenterDTO> presenters = new ArrayList<>();
-		List<Event_Presenter> eventPresesnters = event.getEventPresenters();
-		eventPresesnters.forEach( ep -> presenters.add(modelMapper.map(ep.getPresenter(), PresenterDTO.class)));
-		details.setPresenters(presenters);
-
-		/* ADD TAGS */
-		List<String> tags = new ArrayList<>();
-		List<Event_Tag> eventTags  = event.getEventTags();
-		eventTags.forEach( t -> tags.add(t.getTag().getName()));
-		details.setEventTags(tags);
-
-		return details;
+		return listOfMap;
 	}
 
-	
-	@Transactional
+	private List<String> removeDuplicates(List<String> list) {
+		Set<String> set = new LinkedHashSet<>(list);
+		list.clear();
+		list.addAll(set);
+		return list;
+	}
+
+	/*
+	 * 
+	 * NOT IN USE for mobile platform
+	 * 
+	 */
 	public StagesDTO findEventStageByEventId(Long id) {
 
 		Event event = eventRepository.findEventWithStageByEventId(id);
 
-		if(event == null) {
+		if (event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
 		StagesDTO stagesDTO = modelMapper.map(event, StagesDTO.class);
@@ -161,12 +183,11 @@ public class EventService {
 		return stagesDTO;
 	}
 
-	@Transactional
 	public PresentersDTO findEventPresentersByEventId(Long id) {
 
 		Event event = eventRepository.findEventWithEventPresentersByEventId(id);
 
-		if(event == null) {
+		if (event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
 		PresentersDTO presentersDTO = modelMapper.map(event, PresentersDTO.class);
@@ -174,12 +195,11 @@ public class EventService {
 		return presentersDTO;
 	}
 
-	@Transactional
 	public VenuesDTO findEventVenueByEventId(Long id) {
 
 		Event event = eventRepository.findEventWithVenueByEventId(id);
 
-		if(event == null) {
+		if (event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
 		VenuesDTO venuesDTO = modelMapper.map(event, VenuesDTO.class);
@@ -192,7 +212,7 @@ public class EventService {
 
 		Event event = eventRepository.findEventWithEventExhibitorsByEventId(id);
 
-		if(event == null) {
+		if (event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
 		ExhibitorsDTO exhibitorsDTO = modelMapper.map(event, ExhibitorsDTO.class);
@@ -200,12 +220,11 @@ public class EventService {
 		return exhibitorsDTO;
 	}
 
-	@Transactional
 	public RestaurantsDTO findEventRestaurantsByEventId(Long id) {
 
 		Event event = eventRepository.findEventWithEventRestaurantsByEventId(id);
 
-		if(event == null) {
+		if (event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
 		RestaurantsDTO restaurantsDTO = modelMapper.map(event, RestaurantsDTO.class);
@@ -213,12 +232,11 @@ public class EventService {
 		return restaurantsDTO;
 	}
 
-	@Transactional
 	public TagsDTO findEventTagsByEventId(Long id) {
 
 		Event event = eventRepository.findEventWithEventTagsByEventId(id);
 
-		if(event == null) {
+		if (event == null) {
 			throw new DataNotFoundException("Event not found with ID: " + id);
 		}
 		TagsDTO tagsDTO = modelMapper.map(event, TagsDTO.class);
@@ -227,149 +245,190 @@ public class EventService {
 	}
 
 	
-	public Map<String, Object> findEventsByTags(String tagName) {
+//	  public Map<String, Object> findEventsByTags(String tagName) {
+//	  
+//	  List<Event> events = eventRepository.findAll(); List<Event> eventsWithTag =
+//	  new ArrayList<>();
+//	  
+//	  for (Event e : events) { Event event =
+//	  eventRepository.findEventWithEventTagsByEventId(e.getEventId());
+//	  List<Event_Tag> event_tags = event.getEventTags();
+//	 
+//	  for (Event_Tag et : event_tags) { if (et.getTag().getName().equals(tagName))
+//	 {
+//	  
+//	  if (e.getSubEvents().size() != 0) { // root event return
+//	  mapEventListToDTOs(events); } else if (e.getParentEvent() != null) { // sub
+//	  events eventsWithTag.add(e); } } } }
+//	  
+//	  if (eventsWithTag.size() == 0) { throw new
+//	  DataNotFoundException("Events not found with tag: " + tagName); }
+//	  
+//	  return mapEventListToDTOs(eventsWithTag); }
+	 
 
-		List<Event> events = eventRepository.findAll();
-		List<Event> eventsWithTag = new ArrayList<>();
+//	/* OLD -  Map List of Events to DTO */
+//	public Map<String, Object> mapEventListToDTOs(List<Event> events) {
+//		Map<String, Object> eventData = new LinkedHashMap<>();
+//
+//		Map<String, Map<String, Object>> subMapOfMap = new LinkedHashMap<>();;
+//		List<LocalDate> subMapOfMapKey = new ArrayList<>();
+//		List<Map<String, Object>> subListOfMap = new ArrayList<>();
+//
+//		Parent_EventDTO parentEvent = null;
+//
+//		for (Event e : events) {
+//			if (e.getSubEvents().size() != 0) { // parent event
+//				parentEvent = modelMapper.map(e, Parent_EventDTO.class);
+//
+//				/* ADD TAGS */
+//				List <String> tags = new ArrayList<>();
+//				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
+//				parentEvent.setEventTags(tags);
+//
+//				/* ADD ALL TAGS */
+//				List <String> allTags = new ArrayList<>();
+//				allTags.addAll(tags);
+//				parentEvent.setAllEventTags(allTags);
+//
+//				/* ADD VENUE */
+//				parentEvent.setVenue(e.getVenue().getName());
+//				
+//			} else if (e.getParentEvent() != null) { // sub events
+//				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
+//
+//				/* ADD TAGS */
+//				List <String> tags = new ArrayList<>();
+//				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
+//				subEvent.setEventTags(tags);
+//				parentEvent.getAllEventTags().addAll(tags);
+//
+//				/* ADD INHERITED TAGS */
+//				List<Event_Tag> parentEventTags  = e.getParentEvent().getEventTags();
+//				List<String> inheritedTags = new ArrayList<>();
+//				parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
+//				subEvent.setInheritedTags(inheritedTags);
+//
+//				/* ADD PRESENTERS */
+//				List <String> presenters = new ArrayList<>();
+//				e.getEventPresenters().forEach(et -> presenters.add(et.getPresenter().getName()));
+//				subEvent.setPresenters(presenters);
+//
+//				/* ADD STAGE */
+//				subEvent.setStage(e.getStage().getName());
+//
+//				/* SUB EVENTS WILL PRESENTED BY 'DATE' */
+//				String date = subEvent.getStartDate().toString();
+//				Map<String, Object> subeventsMap = subMapOfMap.get(date);
+//				if (subeventsMap == null){
+//					subeventsMap = new LinkedHashMap<>();
+//					subeventsMap.put("dateAsTitle", date);
+//					subMapOfMapKey.add(subEvent.getStartDate());
+//
+//					List<Sub_EventDTO> subevents = new ArrayList<>();
+//					subevents.add(subEvent);
+//					subeventsMap.put("data", subevents);
+//
+//				}else {
+//					List<Sub_EventDTO> subevents = (List<Sub_EventDTO>) subeventsMap.get("data");
+//					subevents.add(subEvent);
+//					subeventsMap.put("data", subevents);
+//				}
+//
+//				subMapOfMap.put(date, subeventsMap);
+//			}
+//		}
+//
+//		List<String> allTags = parentEvent.getAllEventTags();
+//		parentEvent.setAllEventTags(removeDuplicates(allTags));
+//
+//		eventData.put("parentEvent", parentEvent);
+//
+//		/* Sort sub events by dates in chronological order */
+//		subMapOfMapKey.sort(Comparator.naturalOrder());
+//		for (LocalDate ld : subMapOfMapKey){
+//			subListOfMap.add(subMapOfMap.get(ld.toString()));
+//		}
+//		eventData.put("subEvents", subListOfMap);
+//
+//		return eventData;
+//	}
 
-		for (Event e : events){
-			Event event = eventRepository.findEventWithEventTagsByEventId(e.getEventId());
-			List<Event_Tag> event_tags = event.getEventTags();
+	/* THIS METHOD WILL NOT BE IN USE -> TO BE DELETED LATER 27.02.2027 - TEI */
+//	@Transactional
+//	public Map<String, Object> findOnGoingEvents(String date) {
+//		LocalDate givenDate = LocalDate.parse(date);
+//		List<Event> events = eventRepository.findAll();
+//		List<Event> ongoingEvents = new ArrayList<>();
+//		for (Event e : events) {
+//			LocalDate startDate = e.getStartDate();
+//			LocalDate endDate = e.getEndDate();
+//			if ((givenDate.isEqual(startDate) || givenDate.isAfter(startDate))
+//					&& (givenDate.isEqual(endDate) || givenDate.isBefore(endDate))) {
+//				ongoingEvents.add(e);
+//			}
+//		}
+//
+//		if (ongoingEvents.size() == 0) {
+//			throw new DataNotFoundException("Event not found with given date: " + date);
+//		}
+//
+//		return mapEventListToDTOs(ongoingEvents);
+//	}
 
-			for (Event_Tag et : event_tags){
-				if (et.getTag().getName().equals(tagName)){
+	/* OLD - EVENT details API */
+//	public Event_DetailsDTO findEventByEventId(Long id) {
+//
+//		Event event = eventRepository.findEventWithEventPresentersByEventId(id);
+//
+//		if (event == null) {
+//			throw new DataNotFoundException("Event not found with ID: " + id);
+//		}
+//
+//		Event_DetailsDTO details = null;
+//
+//		if (event.getSubEvents().size() != 0) { // parent event
+//			details = modelMapper.map(event, ParentEvent_DetailsDTO.class);
+//			List<String> subTags = new ArrayList<>();
+//			for (Event e : event.getSubEvents()) {
+//				List<Event_Tag> subEventTags = e.getEventTags();
+//				subEventTags.forEach(t -> subTags.add(t.getTag().getName()));
+//			}
+//			List<Event_Tag> eventTags = event.getEventTags();
+//			eventTags.forEach(t -> subTags.add(t.getTag().getName()));
+//			((ParentEvent_DetailsDTO) details).setAllTags(removeDuplicates(subTags));
+//		} else if (event.getParentEvent() != null) { // subEvent
+//			details = modelMapper.map(event, SubEvent_DetailsDTO.class);
+//			Event parentEvent = event.getParentEvent();
+//			List<Event_Tag> parentEventTags = parentEvent.getEventTags();
+//			List<String> inheritedTags = new ArrayList<>();
+//			parentEventTags.forEach(t -> inheritedTags.add(t.getTag().getName()));
+//			((SubEvent_DetailsDTO) details).setInheritedTags(inheritedTags);
+//
+//			/* ADD RESTAURANTS */
+//			List<RestaurantDTO> restaurants = new ArrayList<>();
+//			List<Event_Restaurant> eventRestaurants = event.getEventRestaurants();
+//			eventRestaurants.forEach(er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
+//			((SubEvent_DetailsDTO) details).setRestaurants(restaurants);
+//		}
+//
+//		if (details == null) {
+//			details = modelMapper.map(event, Event_DetailsDTO.class);
+//		}
+//
+//		/* ADD PRESENTERS */
+//		List<PresenterDTO> presenters = new ArrayList<>();
+//		List<Event_Presenter> eventPresesnters = event.getEventPresenters();
+//		eventPresesnters.forEach(ep -> presenters.add(modelMapper.map(ep.getPresenter(), PresenterDTO.class)));
+//		details.setPresenters(presenters);
+//
+//		/* ADD TAGS */
+//		List<String> tags = new ArrayList<>();
+//		List<Event_Tag> eventTags = event.getEventTags();
+//		eventTags.forEach(t -> tags.add(t.getTag().getName()));
+//		details.setEventTags(tags);
+//
+//		return details;
+//	}
 
-					if (e.getSubEvents().size() != 0){ // root event
-						return mapEventListToDTOs(events);
-					}else if (e.getParentEvent() != null) { // sub events
-						eventsWithTag.add(e);
-					}
-				}
-			}
-		}
-
-		if(eventsWithTag.size() == 0) {
-			throw new DataNotFoundException("Events not found with tag: " + tagName);
-		}
-
-		return mapEventListToDTOs(eventsWithTag);
-	}
-
-	/*THIS METHOD WILL NOT BE IN USE -> TO BE DELETED LATER 27.02.2027 - TEI*/
-	@Transactional
-	public Map<String, Object> findOnGoingEvents(String date) {
-		LocalDate givenDate = LocalDate.parse(date);
-		List<Event> events = eventRepository.findAll();
-		List<Event> ongoingEvents = new ArrayList<>();
-		for (Event e : events) {
-			LocalDate startDate = e.getStartDate();
-			LocalDate endDate = e.getEndDate();
-			if ((givenDate.isEqual(startDate) || givenDate.isAfter(startDate))
-					&& (givenDate.isEqual(endDate) || givenDate.isBefore(endDate))) {
-				ongoingEvents.add(e);
-			}
-		}
-
-		if (ongoingEvents.size() == 0) {
-			throw new DataNotFoundException("Event not found with given date: " + date);
-		}
-
-		return mapEventListToDTOs(ongoingEvents);
-	}
-
-	/* Map List of Events to DTO */
-	public Map<String, Object> mapEventListToDTOs(List<Event> events) {
-		Map<String, Object> eventData = new LinkedHashMap<>();
-
-		Map<String, Map<String, Object>> subMapOfMap = new LinkedHashMap<>();;
-		List<LocalDate> subMapOfMapKey = new ArrayList<>();
-		List<Map<String, Object>> subListOfMap = new ArrayList<>();
-
-		Parent_EventDTO parentEvent = null;
-
-		for (Event e : events) {
-			if (e.getSubEvents().size() != 0) { // parent event
-				parentEvent = modelMapper.map(e, Parent_EventDTO.class);
-
-				/* ADD TAGS */
-				List <String> tags = new ArrayList<>();
-				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
-				parentEvent.setEventTags(tags);
-
-				/* ADD ALL TAGS */
-				List <String> allTags = new ArrayList<>();
-				allTags.addAll(tags);
-				parentEvent.setAllEventTags(allTags);
-
-				/* ADD VENUE */
-				parentEvent.setVenue(e.getVenue().getName());
-				
-			} else if (e.getParentEvent() != null) { // sub events
-				Sub_EventDTO subEvent = modelMapper.map(e, Sub_EventDTO.class);
-
-				/* ADD TAGS */
-				List <String> tags = new ArrayList<>();
-				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
-				subEvent.setEventTags(tags);
-				parentEvent.getAllEventTags().addAll(tags);
-
-				/* ADD INHERITED TAGS */
-				List<Event_Tag> parentEventTags  = e.getParentEvent().getEventTags();
-				List<String> inheritedTags = new ArrayList<>();
-				parentEventTags.forEach( t -> inheritedTags.add(t.getTag().getName()));
-				subEvent.setInheritedTags(inheritedTags);
-
-				/* ADD PRESENTERS */
-				List <String> presenters = new ArrayList<>();
-				e.getEventPresenters().forEach(et -> presenters.add(et.getPresenter().getName()));
-				subEvent.setPresenters(presenters);
-
-				/* ADD STAGE */
-				subEvent.setStage(e.getStage().getName());
-
-				/* SUB EVENTS WILL PRESENTED BY 'DATE' */
-				String date = subEvent.getStartDate().toString();
-				Map<String, Object> subeventsMap = subMapOfMap.get(date);
-				if (subeventsMap == null){
-					subeventsMap = new LinkedHashMap<>();
-					subeventsMap.put("dateAsTitle", date);
-					subMapOfMapKey.add(subEvent.getStartDate());
-
-					List<Sub_EventDTO> subevents = new ArrayList<>();
-					subevents.add(subEvent);
-					subeventsMap.put("data", subevents);
-
-				}else {
-					List<Sub_EventDTO> subevents = (List<Sub_EventDTO>) subeventsMap.get("data");
-					subevents.add(subEvent);
-					subeventsMap.put("data", subevents);
-				}
-
-				subMapOfMap.put(date, subeventsMap);
-			}
-		}
-
-		List<String> allTags = parentEvent.getAllEventTags();
-		parentEvent.setAllEventTags(removeDuplicates(allTags));
-
-		eventData.put("parentEvent", parentEvent);
-
-		/* Sort sub events by dates in chronological order */
-		subMapOfMapKey.sort(Comparator.naturalOrder());
-		for (LocalDate ld : subMapOfMapKey){
-			subListOfMap.add(subMapOfMap.get(ld.toString()));
-		}
-		eventData.put("subEvents", subListOfMap);
-
-		return eventData;
-	}
-
-	private List<String> removeDuplicates (List<String> list){
-		Set<String> set = new LinkedHashSet<>(list);
-		list.clear();
-		list.addAll(set);
-		return list;
-	}
-
-	
 }

@@ -6,9 +6,12 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class Init_SettingDTO extends Parent_EventDTO {
-
+public class Init_SettingDTO extends Event_BaseDTO {
+	private List<String> eventTags = new ArrayList<>();
+	private List<String> allEventTags = new ArrayList<>();
 	private String eventImage;
+	private String venue;
+	
 	private List<String> allRestaurantTags = new ArrayList<>();
 	private String restaurantImage;
 }

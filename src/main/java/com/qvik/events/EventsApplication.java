@@ -134,14 +134,13 @@ public class EventsApplication {
 				/************************************************************************************************************/
 				List<Presenter> presenters = new ArrayList<>();
 				presenters.add(new Presenter("Jan Pellervo Vapaavuori", "jan@email.com", "I am Helsinki Mayor",
-						"Full description"));
+						fullDescription));
 				presenters.add(new Presenter("Li Andersson ", "li@email.com", "I am a minister", fullDescription));
 				presenters.add(
 						new Presenter("Pekka Lundmark", "Pekka@email.com", "I am an entrepreneur", fullDescription));
 				presenters.add(
 						new Presenter("Mark Zuckerberg", "Mark@email.com", "I am an entrepreneur", fullDescription));
-				presenters
-						.add(new Presenter("Elon Musk", "elon@email.com", "I am an entrepreneur", fullDescription));
+				presenters.add(new Presenter("Elon Musk", "elon@email.com", "I am an entrepreneur", fullDescription));
 
 				presenterRepository.saveAll(presenters);
 
@@ -191,18 +190,19 @@ public class EventsApplication {
 				LocalTime testTime = LocalTime.parse("10:00:00");
 
 				events.add(new Event(testDate.minusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(7),
-						"Night of Arts", "This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_cover.jpg", LocalDateTime.now(), true, true, true, true));
+						"Night of Arts", "This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_cover.jpg", LocalDateTime.now(), true, true, true,
+						true));
 				events.add(new Event(testDate.minusDays(1), testTime.plusHours(1), testDate.minusDays(1),
-						testTime.plusHours(2), "Wall of Paint", "This is short Description", "#url",
+						testTime.plusHours(2), "Wall of Paint", "This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_sample1.jpg",
 						LocalDateTime.now(), true, true, true, true));
 				events.add(new Event(testDate.minusDays(1), testTime.plusHours(2), testDate.minusDays(1),
 						testTime.plusHours(3), "Art Business", "This is short Description", "#url", LocalDateTime.now(),
 						true, true, true, true));
 				events.add(new Event(testDate, testTime, testDate, testTime.plusHours(2), "Paint the streets",
-						"This is short Description", "#url", LocalDateTime.now(), true, true, true, true));
+						"This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_sample2.jpg", LocalDateTime.now(), true, true, true, true));
 				events.add(new Event(testDate.plusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(1),
-						"Design in IT industry", "This is short Description", "#url", LocalDateTime.now(), false, true, true,
-						true));
+						"Design in IT industry", "This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_sample3.jpg", LocalDateTime.now(), false, true,
+						true, true));
 
 				events.get(0).setFullDescription(fullDescription);
 				events.get(0).setVenue(venues.get(0));
@@ -264,11 +264,11 @@ public class EventsApplication {
 					event_presenter.setPresenter(presenters.get(i));
 					event_presenters.add(event_presenter);
 				}
-				
-				Event_Presenter event_presenter = new Event_Presenter("Description");
-				event_presenter.setEvent(events.get(2));
-				event_presenter.setPresenter(presenters.get(0));
-				event_presenters.add(event_presenter);
+				Event_Presenter event_presenter1 = new Event_Presenter("Description");
+				event_presenter1.setEvent(events.get(1));
+				event_presenter1.setPresenter(presenters.get(0));
+				event_presenters.add(event_presenter1);
+
 				eventPresenterRepository.saveAll(event_presenters);
 
 				/*
@@ -298,10 +298,21 @@ public class EventsApplication {
 				List<Event_Restaurant> event_restaurants = new ArrayList<>();
 				for (int i = 0; i < restaurants.size(); i++) {
 					Event_Restaurant event_restaurant = new Event_Restaurant("Description");
-					event_restaurant.setEvent(events.get(i+1));
+					event_restaurant.setEvent(events.get(i + 1));
 					event_restaurant.setRestaurant(restaurants.get(i));
 					event_restaurants.add(event_restaurant);
 				}
+
+				Event_Restaurant event_restaurant1 = new Event_Restaurant("Description");
+				event_restaurant1.setEvent(events.get(events.size() - 1));
+				event_restaurant1.setRestaurant(restaurants.get(1));
+				event_restaurants.add(event_restaurant1);
+
+				Event_Restaurant event_restaurant2 = new Event_Restaurant("Description");
+				event_restaurant2.setEvent(events.get(1));
+				event_restaurant2.setRestaurant(restaurants.get(0));
+				event_restaurants.add(event_restaurant2);
+
 				eventRestaurantRepository.saveAll(event_restaurants);
 
 				for (Event_Restaurant e : eventRestaurantRepository.findAll()) {
