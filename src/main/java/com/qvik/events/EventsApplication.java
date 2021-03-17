@@ -264,6 +264,11 @@ public class EventsApplication {
 					event_presenter.setPresenter(presenters.get(i));
 					event_presenters.add(event_presenter);
 				}
+				
+				Event_Presenter event_presenter = new Event_Presenter("Description");
+				event_presenter.setEvent(events.get(2));
+				event_presenter.setPresenter(presenters.get(0));
+				event_presenters.add(event_presenter);
 				eventPresenterRepository.saveAll(event_presenters);
 
 				/*
