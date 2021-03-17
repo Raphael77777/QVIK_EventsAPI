@@ -81,6 +81,9 @@ public class Event {
 
 	@Column(name = "last_modified", nullable = false)
 	private LocalDateTime lastModified;
+	
+	@Column(name = "is_active", nullable = false)
+	private boolean isActive;
 
 	@Column(name = "has_exhibitor", nullable = false)
 	private boolean hasExhibitor;
@@ -124,7 +127,7 @@ public class Event {
 	private List<Event_Tag> eventTags= new ArrayList<>();
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String title,
-			String shortDescription, String image, LocalDateTime last_modified, boolean has_exhibitor,
+			String shortDescription, String image, LocalDateTime last_modified, boolean isActive, boolean has_exhibitor,
 			boolean has_restaurant, boolean has_presenter) {
 		this.startDate = start_date;
 		this.startTime = start_time;
@@ -134,6 +137,7 @@ public class Event {
 		this.title = title;
 		this.image = image;	
 		this.lastModified = last_modified;
+		this.isActive=isActive;
 		this.hasExhibitor = has_exhibitor;
 		this.hasRestaurant = has_restaurant;
 		this.hasPresenter = has_presenter;

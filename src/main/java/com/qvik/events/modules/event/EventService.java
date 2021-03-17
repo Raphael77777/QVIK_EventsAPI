@@ -1,16 +1,37 @@
 package com.qvik.events.modules.event;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.qvik.events.infra.response.*;
-import com.qvik.events.modules.restaurant.Event_Restaurant;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.qvik.events.infra.exception.DataNotFoundException;
+import com.qvik.events.infra.response.Event_DetailsDTO;
+import com.qvik.events.infra.response.ExhibitorsDTO;
+import com.qvik.events.infra.response.Init_SettingDTO;
+import com.qvik.events.infra.response.ParentEvent_DetailsDTO;
+import com.qvik.events.infra.response.Parent_EventDTO;
+import com.qvik.events.infra.response.PresenterDTO;
+import com.qvik.events.infra.response.PresentersDTO;
+import com.qvik.events.infra.response.RestaurantDTO;
+import com.qvik.events.infra.response.RestaurantsDTO;
+import com.qvik.events.infra.response.StagesDTO;
+import com.qvik.events.infra.response.SubEvent_DetailsDTO;
+import com.qvik.events.infra.response.Sub_EventDTO;
+import com.qvik.events.infra.response.TagsDTO;
+import com.qvik.events.infra.response.VenuesDTO;
 import com.qvik.events.modules.presenter.Event_Presenter;
+import com.qvik.events.modules.restaurant.Event_Restaurant;
+import com.qvik.events.modules.restaurant.Restaurant;
+import com.qvik.events.modules.restaurant.RestaurantRepository;
 import com.qvik.events.modules.tag.Event_Tag;
 
 import lombok.RequiredArgsConstructor;
@@ -21,8 +42,50 @@ import lombok.RequiredArgsConstructor;
 public class EventService {
 
 	private final EventRepository eventRepository;
+	private final RestaurantRepository restaurantRepository;
 	private final ModelMapper modelMapper;
 
+	/*
+	 * Data to be used for header setup  
+	 */
+	@Transactional
+	public Init_SettingDTO findInitialSetUpData() {
+		Event event = eventRepository.findEventByParentEvent(null);
+		Init_SettingDTO initData = modelMapper.map(event, Init_SettingDTO.class);
+		
+		initData.setEventImage(event.getImage());
+		initData.setRestaurantImage("https://qvik-event-platform.s3-eu-west-1.amazonaws.com/restaurant_cover.jpg");
+		
+
+		/* ADD TAGS */
+		List <String> tags = new ArrayList<>();
+		event.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
+		initData.setEventTags(tags);
+
+		/* ADD ALL TAGS from both parent and sub events*/
+		List <String> allTags = new ArrayList<>();
+		event.getEventTags().forEach(et -> allTags.add(et.getTag().getName()));
+		event.getSubEvents().forEach(subEvent -> subEvent.getEventTags().forEach(et -> allTags.add(et.getTag().getName())));
+		
+		List<String> allTagsWithoutDuplicate = removeDuplicates(allTags);
+		initData.setAllEventTags(allTagsWithoutDuplicate);
+
+		/* ADD VENUE */
+		initData.setVenue(event.getVenue().getName());
+		
+		/* ADD RESTAURANT TAGS*/
+		List<Restaurant> restaurants = restaurantRepository.findAll();
+		List<String> restaurantTags = new ArrayList<>();
+		restaurants.forEach(r -> r.getRestaurantTags().forEach(tag -> restaurantTags.add(tag.getTag().getName())));
+		
+		List<String> allRestaurantTagsWithoutDeuplicate = removeDuplicates(restaurantTags);
+		initData.setAllRestaurantTags(allRestaurantTagsWithoutDeuplicate);
+		
+		
+		return initData;
+	}
+	
+	
 	@Transactional
 	public Map<String, Object> findAllEvents() {
 		List<Event> events = eventRepository.findAll();
@@ -79,7 +142,7 @@ public class EventService {
 		List<String> tags = new ArrayList<>();
 		List<Event_Tag> eventTags  = event.getEventTags();
 		eventTags.forEach( t -> tags.add(t.getTag().getName()));
-		details.setTags(tags);
+		details.setEventTags(tags);
 
 		return details;
 	}
@@ -231,12 +294,12 @@ public class EventService {
 				/* ADD TAGS */
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
-				parentEvent.setTags(tags);
+				parentEvent.setEventTags(tags);
 
 				/* ADD ALL TAGS */
 				List <String> allTags = new ArrayList<>();
 				allTags.addAll(tags);
-				parentEvent.setAllTags(allTags);
+				parentEvent.setAllEventTags(allTags);
 
 				/* ADD VENUE */
 				parentEvent.setVenue(e.getVenue().getName());
@@ -247,8 +310,8 @@ public class EventService {
 				/* ADD TAGS */
 				List <String> tags = new ArrayList<>();
 				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
-				subEvent.setTags(tags);
-				parentEvent.getAllTags().addAll(tags);
+				subEvent.setEventTags(tags);
+				parentEvent.getAllEventTags().addAll(tags);
 
 				/* ADD INHERITED TAGS */
 				List<Event_Tag> parentEventTags  = e.getParentEvent().getEventTags();
@@ -286,8 +349,8 @@ public class EventService {
 			}
 		}
 
-		List<String> allTags = parentEvent.getAllTags();
-		parentEvent.setAllTags(removeDuplicates(allTags));
+		List<String> allTags = parentEvent.getAllEventTags();
+		parentEvent.setAllEventTags(removeDuplicates(allTags));
 
 		eventData.put("parentEvent", parentEvent);
 
@@ -307,4 +370,6 @@ public class EventService {
 		list.addAll(set);
 		return list;
 	}
+
+	
 }

@@ -74,4 +74,9 @@ public class RestaurantService {
 		return list;
 	}
 
+	public void findAllTags() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

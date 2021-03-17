@@ -4,10 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.qvik.events.infra.response.*;
-import com.qvik.events.modules.tag.Tag;
-import com.qvik.events.modules.tag.TagRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.qvik.events.infra.response.Event_DetailsDTO;
+import com.qvik.events.infra.response.ExhibitorsDTO;
+import com.qvik.events.infra.response.Init_SettingDTO;
+import com.qvik.events.infra.response.PresentersDTO;
+import com.qvik.events.infra.response.ResponseMessage;
+import com.qvik.events.infra.response.Restaurant_DetailsDTO;
+import com.qvik.events.infra.response.RestaurantsDTO;
+import com.qvik.events.infra.response.StagesDTO;
+import com.qvik.events.infra.response.TagsDTO;
+import com.qvik.events.infra.response.VenuesDTO;
 import com.qvik.events.modules.event.EventService;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorRepository;
@@ -30,6 +37,8 @@ import com.qvik.events.modules.restaurant.RestaurantService;
 import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.stage.StageRepository;
 import com.qvik.events.modules.stage.StageService;
+import com.qvik.events.modules.tag.Tag;
+import com.qvik.events.modules.tag.TagRepository;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
 import com.qvik.events.modules.venue.VenueService;
@@ -65,6 +74,18 @@ public class UserController {
 		links.put("API Docs", "https://qvik.herokuapp.com/api-docs");
 		links.put("API Definition", "https://qvik.herokuapp.com/swagger-ui.html");
 		return convertToResponseMessage(links);
+	}
+	
+	/*
+	 * Header-setup API
+	 */
+	@GetMapping(path = "/initial-setup")
+	public ResponseMessage initialSetUp() {
+		//Map <String, Object> initialSetUp = new LinkedHashMap<>();
+		Init_SettingDTO initialSetUp = eventService.findInitialSetUpData();
+		//restaurantService.findAllTags();
+		//initialSetUp.put("parentEvent", parentEvent);
+		return convertToResponseMessage(initialSetUp);
 	}
 	
 	/*

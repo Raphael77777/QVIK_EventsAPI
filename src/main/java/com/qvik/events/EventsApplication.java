@@ -191,17 +191,17 @@ public class EventsApplication {
 				LocalTime testTime = LocalTime.parse("10:00:00");
 
 				events.add(new Event(testDate.minusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(7),
-						"Night of Arts", "This is short Description", "#url", LocalDateTime.now(), true, true, true));
+						"Night of Arts", "This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_cover.jpg", LocalDateTime.now(), true, true, true, true));
 				events.add(new Event(testDate.minusDays(1), testTime.plusHours(1), testDate.minusDays(1),
 						testTime.plusHours(2), "Wall of Paint", "This is short Description", "#url",
-						LocalDateTime.now(), true, true, true));
+						LocalDateTime.now(), true, true, true, true));
 				events.add(new Event(testDate.minusDays(1), testTime.plusHours(2), testDate.minusDays(1),
 						testTime.plusHours(3), "Art Business", "This is short Description", "#url", LocalDateTime.now(),
-						true, true, true));
+						true, true, true, true));
 				events.add(new Event(testDate, testTime, testDate, testTime.plusHours(2), "Paint the streets",
-						"This is short Description", "#url", LocalDateTime.now(), true, true, true));
+						"This is short Description", "#url", LocalDateTime.now(), true, true, true, true));
 				events.add(new Event(testDate.plusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(1),
-						"Design in IT industry", "This is short Description", "#url", LocalDateTime.now(), true, true,
+						"Design in IT industry", "This is short Description", "#url", LocalDateTime.now(), false, true, true,
 						true));
 
 				events.get(0).setFullDescription(fullDescription);

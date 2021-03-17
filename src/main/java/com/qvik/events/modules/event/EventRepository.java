@@ -37,5 +37,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
 	@EntityGraph(attributePaths = {"eventTags"})
 	Event findEventWithEventTagsByEventId(Long id);
+	
+	Event findEventByParentEvent (Event event);
 
 }
