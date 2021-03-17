@@ -56,7 +56,7 @@ public class Stage {
 	@JoinColumn(name = "venue_id")
 	private Venue venue;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "stage")
 	@JsonBackReference
 	private List<Event> events;
 	

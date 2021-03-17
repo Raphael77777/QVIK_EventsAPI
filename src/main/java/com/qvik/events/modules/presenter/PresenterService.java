@@ -30,8 +30,7 @@ public class PresenterService {
 	public List<Presenter_DetailsDTO> findAllPresenters() {
 		List<Presenter> presenters = presenterRepository.findAll();
 		List<Presenter_DetailsDTO> presenterDTOs = new ArrayList<>(); // final list
-		//presenters.forEach(p -> presenterDTOs.add(modelMapper.map(p, Presenter_DetailsDTO.class)));
-
+		
 		for (Presenter p : presenters) {
 			// map each presenter to DTO
 			Presenter_DetailsDTO presenterDTO = modelMapper.map(p, Presenter_DetailsDTO.class);

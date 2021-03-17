@@ -9,23 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.qvik.events.infra.response.ResponseMessage;
-import com.qvik.events.infra.response.dto.Event_DetailsDTO;
-import com.qvik.events.infra.response.dto.ExhibitorsDTO;
 import com.qvik.events.infra.response.dto.Init_SettingDTO;
-import com.qvik.events.infra.response.dto.PresenterDTO;
 import com.qvik.events.infra.response.dto.Presenter_DetailsDTO;
-import com.qvik.events.infra.response.dto.PresentersDTO;
 import com.qvik.events.infra.response.dto.Restaurant_DetailsDTO;
-import com.qvik.events.infra.response.dto.RestaurantsDTO;
-import com.qvik.events.infra.response.dto.StagesDTO;
-import com.qvik.events.infra.response.dto.TagsDTO;
-import com.qvik.events.infra.response.dto.VenuesDTO;
+import com.qvik.events.infra.response.dto.Stage_DetailsDTO;
 import com.qvik.events.modules.event.EventService;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorRepository;
@@ -68,7 +59,7 @@ public class UserController {
 	private final RestaurantService restaurantService;
 
 	/*
-	 * Main page shows links to API Docs & API Definition 
+	 * Main page shows links to API Docs & API Definition
 	 */
 	@GetMapping(path = "/")
 	public ResponseMessage home() {
@@ -77,26 +68,25 @@ public class UserController {
 		links.put("API Definition", "https://qvik.herokuapp.com/swagger-ui.html");
 		return convertToResponseMessage(links);
 	}
-	
+
 	/*
 	 * Header-setup API
 	 */
 	@GetMapping(path = "/initial-setup")
-	public ResponseMessage initialSetUp() {		
-		Init_SettingDTO initialSetUp = eventService.findInitialSetUpData();		
+	public ResponseMessage initialSetUp() {
+		Init_SettingDTO initialSetUp = eventService.findInitialSetUpData();
 		return convertToResponseMessage(initialSetUp);
 	}
-	
+
 	/*
 	 * NEW - Event API
 	 */
 	@GetMapping(path = "/events")
 	public ResponseMessage events() {
-		List<Map<String, Object>> events = eventService.findAllEvents();		
+		List<Map<String, Object>> events = eventService.findAllEvents();
 		return convertToResponseMessage(events);
 	}
-	
-	
+
 	/*
 	 * OLD - Event APIs
 	 */
@@ -203,7 +193,7 @@ public class UserController {
 	 */
 	@GetMapping(path = "/stages")
 	public ResponseMessage stage() {
-		List<Stage> stages = stageRepository.findAll();
+		List<Stage_DetailsDTO> stages = stageService.findAllStages();
 		return convertToResponseMessage(stages);
 	}
 
