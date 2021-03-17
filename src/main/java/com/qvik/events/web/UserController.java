@@ -18,6 +18,8 @@ import com.qvik.events.infra.response.ResponseMessage;
 import com.qvik.events.infra.response.dto.Event_DetailsDTO;
 import com.qvik.events.infra.response.dto.ExhibitorsDTO;
 import com.qvik.events.infra.response.dto.Init_SettingDTO;
+import com.qvik.events.infra.response.dto.PresenterDTO;
+import com.qvik.events.infra.response.dto.Presenter_DetailsDTO;
 import com.qvik.events.infra.response.dto.PresentersDTO;
 import com.qvik.events.infra.response.dto.Restaurant_DetailsDTO;
 import com.qvik.events.infra.response.dto.RestaurantsDTO;
@@ -231,7 +233,7 @@ public class UserController {
 	 */
 	@GetMapping(path = "/presenters")
 	public ResponseMessage presenter() {
-		List<Presenter> presenters = presenterRepository.findAll();
+		List<Presenter_DetailsDTO> presenters = presenterService.findAllPresenters();
 		return convertToResponseMessage(presenters);
 	}
 
