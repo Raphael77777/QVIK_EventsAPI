@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.qvik.events.infra.exception.DataNotFoundException;
-import com.qvik.events.infra.response.Restaurant_DetailsDTO;
+import com.qvik.events.infra.response.dto.Restaurant_DetailsDTO;
 import com.qvik.events.modules.tag.Restaurant_Tag;
 
 import lombok.RequiredArgsConstructor;

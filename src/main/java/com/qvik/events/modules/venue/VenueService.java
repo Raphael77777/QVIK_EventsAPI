@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.qvik.events.infra.exception.DataNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 public class VenueService {
@@ -13,7 +15,7 @@ public class VenueService {
 
 	@Transactional
 	public Venue findVenueByVenueId(Long id) {
-		return venueRepository.findById(id).orElseThrow(() -> new VenueNotFoundException(id));
+		return venueRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Presenter not found with ID: " + id));
 	}
 
 }
