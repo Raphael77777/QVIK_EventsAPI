@@ -27,7 +27,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "venue_id")
+@EqualsAndHashCode(of = "venueId")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,7 +37,7 @@ public class Venue {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "venue_id", nullable = false, updatable = false)
-	private long venue_id;
+	private long venueId;
 
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -74,7 +74,7 @@ public class Venue {
 	@Override
 	public String toString() {
 		return "Venue{" +
-				"venue_id=" + venue_id +
+				"venue_id=" + venueId +
 				", name='" + name + '\'' +
 				", city='" + city + '\'' +
 				", address='" + address + '\'' +

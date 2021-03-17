@@ -39,7 +39,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "event_id")
+@EqualsAndHashCode(of = "eventId")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class PresenterDTO {
 
-	private long presenter_id;
+	private long presenterId;
 	private String name;
 }

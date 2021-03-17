@@ -15,7 +15,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.qvik.events.modules.event.Event;
-import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.venue.Venue;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +28,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "stage_id")
+@EqualsAndHashCode(of = "stageId")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,7 +38,7 @@ public class Stage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "stage_id", nullable = false, updatable = false)
-	private long stage_id;
+	private long stageId;
 
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -73,7 +72,7 @@ public class Stage {
 	@Override
 	public String toString() {
 		return "Stage{" +
-				"stage_id=" + stage_id +
+				"stage_id=" + stageId +
 				", name='" + name + '\'' +
 				", location='" + location + '\'' +
 				", capacity=" + capacity +

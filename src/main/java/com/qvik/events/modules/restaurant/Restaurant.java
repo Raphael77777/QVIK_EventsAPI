@@ -34,7 +34,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "restaurant_id")
+@EqualsAndHashCode(of = "restaurantId")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

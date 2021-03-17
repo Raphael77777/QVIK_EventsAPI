@@ -27,7 +27,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "exhibitor_id")
+@EqualsAndHashCode(of = "exhibitorId")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,7 +37,7 @@ public class Exhibitor {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "exhibitor_id", nullable = false, updatable = false)
-	private long exhibitor_id;
+	private long exhibitorId;
 
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -72,7 +72,7 @@ public class Exhibitor {
 	@Override
 	public String toString() {
 		return "Exhibitor{" +
-				"exhibitor_id=" + exhibitor_id +
+				"exhibitor_id=" + exhibitorId +
 				", name='" + name + '\'' +
 				", location='" + location + '\'' +
 				", contact='" + contact + '\'' +

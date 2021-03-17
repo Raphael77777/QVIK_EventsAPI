@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "presenter_id")
+@EqualsAndHashCode(of = "presenterId")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +26,7 @@ public class Presenter {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "presenter_id", nullable = false, updatable = false)
-	private long presenter_id;
+	private long presenterId;
 
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -57,7 +57,7 @@ public class Presenter {
 	@Override
 	public String toString() {
 		return "Presenter{" +
-				"presenter_id=" + presenter_id +
+				"presenter_id=" + presenterId +
 				", name='" + name + '\'' +
 				", contact='" + contact + '\'' +
 				", shortDescription='" + shortDescription + '\'' +

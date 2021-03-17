@@ -22,7 +22,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "event_restaurant_id")
+@EqualsAndHashCode(of = "eventRestaurantId")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +32,7 @@ public class Event_Restaurant {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "event_restaurant_id", nullable = false, updatable = false)
-	private long event_restaurant_id;
+	private long eventRestaurantId;
 
 	@ManyToOne
 	@JoinColumn(name = "event_id")
@@ -53,7 +53,7 @@ public class Event_Restaurant {
 	@Override
 	public String toString() {
 		return "Event_Restaurant{" +
-				"event_restaurant_id=" + event_restaurant_id +
+				"event_restaurant_id=" + eventRestaurantId +
 				", event=" + event +
 				", restaurant=" + restaurant +
 				", description='" + description + '\'' +

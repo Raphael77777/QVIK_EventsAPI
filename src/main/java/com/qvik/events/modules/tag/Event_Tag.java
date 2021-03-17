@@ -23,7 +23,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "event_tag_id")
+@EqualsAndHashCode(of = "eventTagId")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,7 +33,7 @@ public class Event_Tag {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "event_tag_id", nullable = false, updatable = false)
-	private long event_tag_id;
+	private long eventTagId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id")
@@ -47,7 +47,7 @@ public class Event_Tag {
 	@Override
 	public String toString() {
 		return "Event_Tag{" +
-				"event_tag_id=" + event_tag_id +
+				"event_tag_id=" + eventTagId +
 				", event=" + event +
 				", tag=" + tag +
 				'}';

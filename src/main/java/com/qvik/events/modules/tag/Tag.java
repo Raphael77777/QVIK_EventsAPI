@@ -34,7 +34,7 @@ public class Tag {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "tag_id", nullable = false, updatable = false)
-	private long tag_id;
+	private long tagId;
 
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -51,7 +51,7 @@ public class Tag {
 	@Override
 	public String toString() {
 		return "Tag{" +
-				"tag_id=" + tag_id +
+				"tag_id=" + tagId +
 				", name='" + name + '\'' +
 				'}';
 	}

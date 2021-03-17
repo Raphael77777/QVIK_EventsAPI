@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class StageDTO {
-	private long stage_id;
+	private long stageId;
 	private String name;
 }
