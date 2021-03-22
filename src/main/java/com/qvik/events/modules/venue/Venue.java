@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -41,15 +42,23 @@ public class Venue {
 
 	@Column(name = "name", nullable = false)
 	private String name;
-	
+
 	@Column(name = "city", nullable = false)
 	private String city;
-	
+
 	@Column(name = "address", nullable = false)
 	private String address;
-	
+
 	@Column(name = "contact", nullable = false)
 	private String contact;
+
+	@Lob
+	@Column(name = "transportation", nullable = false)
+	private String transportation;
+
+	@Lob
+	@Column(name = "facilities", nullable = false)
+	private String facilities;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
 	@JsonBackReference
@@ -63,22 +72,21 @@ public class Venue {
 	@JsonBackReference
 	private List<Event> events;
 
-	public Venue(String name, String city, String address, String contact) {
+	public Venue(String name, String city, String address, String contact, String transportation, String facilities) {
+		super();
 		this.name = name;
 		this.city = city;
 		this.address = address;
 		this.contact = contact;
+		this.transportation = transportation;
+		this.facilities = facilities;
 	}
 
-	//TODO : Temporary output to be removed at the end of development
+	// TODO : Temporary output to be removed at the end of development
 	@Override
 	public String toString() {
-		return "Venue{" +
-				"venue_id=" + venueId +
-				", name='" + name + '\'' +
-				", city='" + city + '\'' +
-				", address='" + address + '\'' +
-				", contact='" + contact + '\'' +
-				'}';
+		return "Venue{" + "venue_id=" + venueId + ", name='" + name + '\'' + ", city='" + city + '\'' + ", address='"
+				+ address + '\'' + ", contact='" + contact + '\'' + '}';
 	}
+
 }

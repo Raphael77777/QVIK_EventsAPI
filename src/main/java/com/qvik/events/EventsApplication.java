@@ -98,11 +98,11 @@ public class EventsApplication {
 				/************************************************************************************************************/
 
 				List<Venue> venues = new ArrayList<>();
-				venues.add(new Venue("Suvilahti", "Helsinki", "Kaasutehtaankatu 1", "+358 52 45 63 96"));
-				venues.add(new Venue("The Senate Square", "Helsinki", "00170 Helsinki", "+358 52 45 78 96"));
-				venues.add(new Venue("Messukeskuksen ", "Helsinki", "Messuaukio 1", "+358 52 45 78 96"));
-				venues.add(new Venue("Finlandia-talo", "Helsinki", "Mannerheimintie 13", "+358 52 45 78 96"));
-				venues.add(new Venue("Temppeliaukio Church", "Helsinki", "Temppeliaukio  13", "+358 52 45 78 96"));
+				venues.add(new Venue("Suvilahti", "Helsinki", "Kaasutehtaankatu 1", "+358 52 45 63 96", fullDescription, fullDescription));
+				venues.add(new Venue("The Senate Square", "Helsinki", "00170 Helsinki", "+358 52 45 78 96", fullDescription, fullDescription));
+				venues.add(new Venue("Messukeskuksen ", "Helsinki", "Messuaukio 1", "+358 52 45 78 96", fullDescription, fullDescription));
+				venues.add(new Venue("Finlandia-talo", "Helsinki", "Mannerheimintie 13", "+358 52 45 78 96", fullDescription, fullDescription));
+				venues.add(new Venue("Temppeliaukio Church", "Helsinki", "Temppeliaukio  13", "+358 52 45 78 96", fullDescription, fullDescription));
 				venueRepository.saveAll(venues);
 
 				for (Venue v : venueRepository.findAll()) {

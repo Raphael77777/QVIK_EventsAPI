@@ -74,7 +74,7 @@ public class Event {
 	@Column(name = "full_description", nullable = false)
 	private String fullDescription;
 
-	@Lob
+	//@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "image", nullable = false)
 	private String image;
