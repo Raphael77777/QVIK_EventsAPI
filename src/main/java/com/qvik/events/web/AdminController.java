@@ -1,32 +1,21 @@
 package com.qvik.events.web;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.qvik.events.infra.response.ResponseMessage;
-import com.qvik.events.modules.event.EventService;
-import com.qvik.events.modules.exhibitor.ExhibitorRepository;
-import com.qvik.events.modules.exhibitor.ExhibitorService;
-import com.qvik.events.modules.presenter.PresenterRepository;
-import com.qvik.events.modules.presenter.PresenterService;
-import com.qvik.events.modules.restaurant.RestaurantRepository;
-import com.qvik.events.modules.restaurant.RestaurantService;
-import com.qvik.events.modules.stage.StageRepository;
-import com.qvik.events.modules.stage.StageService;
-import com.qvik.events.modules.tag.TagRepository;
-import com.qvik.events.modules.venue.VenueRepository;
-import com.qvik.events.modules.venue.VenueService;
-
+import com.qvik.events.modules.image.ImageRepository;
+import com.qvik.events.modules.image.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /** Controller used for admin page */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/")
 public class AdminController {
+
+	private final ImageRepository imageRepository;
+	private final ImageService imageService;
 
 	/*	  
 	 * Add New Main Event 
@@ -36,10 +25,15 @@ public class AdminController {
 	/*
 	 * Add New Sub Event 
 	 */
-	
-		
-	
-	
+
+	/*
+	 * Upload Image
+	 */
+	@PostMapping(path = "/upload-image")
+	Long uploadImage(@RequestParam MultipartFile file) throws Exception {
+		return imageService.uploadImage(file);
+	}
+
 	/*
 	 * Convert Data to ResponseMessage.class
 	 */

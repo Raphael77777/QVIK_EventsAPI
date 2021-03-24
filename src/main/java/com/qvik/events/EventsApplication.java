@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.qvik.events.modules.image.Image;
+import com.qvik.events.modules.image.ImageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -52,11 +54,11 @@ public class EventsApplication {
 	/** INSERTION OF DEMO DATA */
 	@Bean
 	public CommandLineRunner QvikDemoData(EventExhibitorRepository eventExhibitorRepository,
-			EventPresenterRepository eventPresenterRepository, EventRepository eventRepository,
-			EventRestaurantRepository eventRestaurantRepository, EventTagRepository eventTagRepository,
-			ExhibitorRepository exhibitorRepository, PresenterRepository presenterRepository,
-			RestaurantRepository restaurantRepository, RestaurantTagRepository restaurantTagRepository,
-			StageRepository stageRepository, VenueRepository venueRepository, TagRepository tagRepository) {
+										  EventPresenterRepository eventPresenterRepository, EventRepository eventRepository,
+										  EventRestaurantRepository eventRestaurantRepository, EventTagRepository eventTagRepository,
+										  ExhibitorRepository exhibitorRepository, PresenterRepository presenterRepository,
+										  RestaurantRepository restaurantRepository, RestaurantTagRepository restaurantTagRepository,
+										  StageRepository stageRepository, VenueRepository venueRepository, TagRepository tagRepository, ImageRepository imageRepository) {
 		return (args) -> {
 			if (true) {
 				/** Cleaning DB before insertion of demo data */
@@ -72,6 +74,7 @@ public class EventsApplication {
 				stageRepository.deleteAll();
 				venueRepository.deleteAll();
 				tagRepository.deleteAll();
+				imageRepository.deleteAll();
 				log.info("PID 9-740 : DATABASE CLEANED !");
 			}
 
@@ -114,15 +117,15 @@ public class EventsApplication {
 				/************************************************************************************************************/
 				List<Stage> stages = new ArrayList<>();
 				stages.add(new Stage("Spray Paint Wall", "Helsinki", 350, "Big stage"));
-				stages.get(stages.size() - 1).setVenue(venueRepository.findByName("Suvilahti"));
+				stages.get(stages.size() - 1).setVenue(venues.get(0));
 				stages.add(new Stage("Instrument Room (building 8)", "Helsinki", 150, "Small stage"));
-				stages.get(stages.size() - 1).setVenue(venueRepository.findByName("Suvilahti"));
+				stages.get(stages.size() - 1).setVenue(venues.get(0));
 				stages.add(new Stage("Purification plant (building 6)", "Helsinki", 150, "Small stage"));
-				stages.get(stages.size() - 1).setVenue(venueRepository.findByName("Suvilahti"));
+				stages.get(stages.size() - 1).setVenue(venues.get(0));
 				stages.add(new Stage("Hall 1", "Helsinki", 150, "Small hall"));
-				stages.get(stages.size() - 1).setVenue(venueRepository.findByName("Suvilahti"));
+				stages.get(stages.size() - 1).setVenue(venues.get(0));
 				stages.add(new Stage("Glass Gallary", "Helsinki", 500, "Big Gallary"));
-				stages.get(stages.size() - 1).setVenue(venueRepository.findByName("Suvilahti"));
+				stages.get(stages.size() - 1).setVenue(venues.get(0));
 				stageRepository.saveAll(stages);
 
 				for (Stage s : stageRepository.findAll()) {
@@ -185,43 +188,61 @@ public class EventsApplication {
 				log.info("PID 9-745 : EXHIBITORS SAVED !");
 
 				/************************************************************************************************************/
+				List<Image> images = new ArrayList<>();
+				images.add(new Image(new byte[]{}, "01.png"));
+				images.add(new Image(new byte[]{}, "02.png"));
+				images.add(new Image(new byte[]{}, "03.png"));
+				imageRepository.saveAll(images);
+
+				for (Image i : imageRepository.findAll()) {
+					log.info(i.toString());
+				}
+
+				log.info("PID 9-746 : IMAGES SAVED !");
+
+				/************************************************************************************************************/
 				List<Event> events = new ArrayList<>();
 				LocalDate testDate = LocalDate.parse("2021-05-10");
 				LocalTime testTime = LocalTime.parse("10:00:00");
 
 				events.add(new Event(testDate.minusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(7),
-						"Night of Arts", "This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_cover.jpg", LocalDateTime.now(), true, true, true,
+						"Night of Arts", "This is short Description", LocalDateTime.now(), true, true, true,
 						true));
 				events.add(new Event(testDate.minusDays(1), testTime.plusHours(1), testDate.minusDays(1),
-						testTime.plusHours(2), "Wall of Paint", "This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_sample1.jpg",
+						testTime.plusHours(2), "Wall of Paint", "This is short Description",
 						LocalDateTime.now(), true, true, true, true));
 				events.add(new Event(testDate.minusDays(1), testTime.plusHours(2), testDate.minusDays(1),
-						testTime.plusHours(3), "Art Business", "This is short Description", "#url", LocalDateTime.now(),
+						testTime.plusHours(3), "Art Business", "This is short Description", LocalDateTime.now(),
 						true, true, true, true));
 				events.add(new Event(testDate, testTime, testDate, testTime.plusHours(2), "Paint the streets",
-						"This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_sample2.jpg", LocalDateTime.now(), true, true, true, true));
+						"This is short Description", LocalDateTime.now(), true, true, true, true));
 				events.add(new Event(testDate.plusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(1),
-						"Design in IT industry", "This is short Description", "https://qvik-event-platform.s3-eu-west-1.amazonaws.com/event_sample3.jpg", LocalDateTime.now(), false, true,
+						"Design in IT industry", "This is short Description", LocalDateTime.now(), false, true,
 						true, true));
 
 				events.get(0).setFullDescription(fullDescription);
 				events.get(0).setVenue(venues.get(0));
+				events.get(0).setImage(images.get(0));
 
 				events.get(1).setParentEvent(events.get(0));
 				events.get(1).setFullDescription(fullDescription);
 				events.get(1).setStage(stages.get(1));
+				events.get(1).setImage(images.get(0));
 
 				events.get(2).setParentEvent(events.get(0));
 				events.get(2).setFullDescription(fullDescription);
 				events.get(2).setStage(stages.get(2));
+				events.get(2).setImage(images.get(0));
 
 				events.get(3).setParentEvent(events.get(0));
 				events.get(3).setFullDescription(fullDescription);
 				events.get(3).setStage(stages.get(3));
+				events.get(3).setImage(images.get(1));
 
 				events.get(4).setParentEvent(events.get(0));
 				events.get(4).setFullDescription(fullDescription);
 				events.get(4).setStage(stages.get(4));
+				events.get(4).setImage(images.get(2));
 
 				eventRepository.saveAll(events);
 
@@ -229,7 +250,7 @@ public class EventsApplication {
 					log.info(e.toString());
 				}
 
-				log.info("PID 9-746 : EVENTS SAVED !");
+				log.info("PID 9-747 : EVENTS SAVED !");
 
 				/************************************************************************************************************/
 				List<Event_Tag> event_tags = new ArrayList<>();
@@ -254,7 +275,7 @@ public class EventsApplication {
 
 				eventTagRepository.saveAll(event_tags);
 
-				log.info("PID 9-747 : EVENT-TAG SAVED !");
+				log.info("PID 9-748 : EVENT-TAG SAVED !");
 
 				/************************************************************************************************************/
 				List<Event_Presenter> event_presenters = new ArrayList<>();
@@ -276,7 +297,7 @@ public class EventsApplication {
 				 * log.info(e.toString()); }
 				 */
 
-				log.info("PID 9-747 : EVENT-PRESENTER SAVED !");
+				log.info("PID 9-749 : EVENT-PRESENTER SAVED !");
 
 				/************************************************************************************************************/
 				List<Event_Exhibitor> event_exhibitors = new ArrayList<>();
@@ -292,7 +313,7 @@ public class EventsApplication {
 					log.info(e.toString());
 				}
 
-				log.info("PID 9-748 : EVENT-EXHIBITOR SAVED !");
+				log.info("PID 9-750 : EVENT-EXHIBITOR SAVED !");
 
 				/************************************************************************************************************/
 				List<Event_Restaurant> event_restaurants = new ArrayList<>();
@@ -319,7 +340,7 @@ public class EventsApplication {
 					log.info(e.toString());
 				}
 
-				log.info("PID 9-749 : EVENT-RESTAURANT SAVED !");
+				log.info("PID 9-751 : EVENT-RESTAURANT SAVED !");
 
 				/************************************************************************************************************/
 				List<Restaurant_Tag> restaurant_tags = new ArrayList<>();
@@ -346,7 +367,7 @@ public class EventsApplication {
 
 				restaurantTagRepository.saveAll(restaurant_tags);
 
-				log.info("PID 9-747 : REESTAURANT-TAG SAVED !");
+				log.info("PID 9-752 : RESTAURANT-TAG SAVED !");
 
 				/***********************************************************************************************************
 				 * List<Event_Venue> event_venues = new ArrayList<>(); for (int i = 0; i <

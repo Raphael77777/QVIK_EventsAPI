@@ -22,6 +22,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.qvik.events.modules.exhibitor.Event_Exhibitor;
+import com.qvik.events.modules.image.Image;
 import com.qvik.events.modules.presenter.Event_Presenter;
 import com.qvik.events.modules.restaurant.Event_Restaurant;
 import com.qvik.events.modules.stage.Stage;
@@ -74,11 +75,6 @@ public class Event {
 	@Column(name = "full_description", nullable = false)
 	private String fullDescription;
 
-	//@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(name = "image", nullable = false)
-	private String image;
-
 	@Column(name = "last_modified", nullable = false)
 	private LocalDateTime lastModified;
 	
@@ -110,6 +106,10 @@ public class Event {
 	@JoinColumn(name = "stage_id")
 	private Stage stage;
 
+	@ManyToOne
+	@JoinColumn(name = "image_id")
+	private Image image;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
 	private List <Event_Presenter> eventPresenters = new ArrayList<>();
@@ -127,7 +127,7 @@ public class Event {
 	private List<Event_Tag> eventTags= new ArrayList<>();
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String title,
-			String shortDescription, String image, LocalDateTime last_modified, boolean isActive, boolean has_exhibitor,
+			String shortDescription, LocalDateTime last_modified, boolean isActive, boolean has_exhibitor,
 			boolean has_restaurant, boolean has_presenter) {
 		this.startDate = start_date;
 		this.startTime = start_time;
@@ -135,7 +135,6 @@ public class Event {
 		this.endTime = end_time;
 		this.shortDescription = shortDescription;
 		this.title = title;
-		this.image = image;	
 		this.lastModified = last_modified;
 		this.isActive=isActive;
 		this.hasExhibitor = has_exhibitor;

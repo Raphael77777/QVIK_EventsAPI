@@ -4,20 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.qvik.events.infra.response.dto.*;
+import com.qvik.events.modules.image.Image;
+import com.qvik.events.modules.image.ImageRepository;
+import com.qvik.events.modules.image.ImageService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import com.qvik.events.infra.response.ResponseMessage;
-import com.qvik.events.infra.response.dto.Init_SettingDTO;
-import com.qvik.events.infra.response.dto.Presenter_DetailsDTO;
-import com.qvik.events.infra.response.dto.Restaurant_DetailsDTO;
-import com.qvik.events.infra.response.dto.Stage_DetailsDTO;
-import com.qvik.events.infra.response.dto.Venue_DetailsDTO;
 import com.qvik.events.modules.event.EventService;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorRepository;
@@ -38,6 +35,8 @@ import com.qvik.events.modules.venue.VenueRepository;
 import com.qvik.events.modules.venue.VenueService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 /** Controller used for user requests */
 @RestController
@@ -51,6 +50,7 @@ public class UserController {
 	private final StageRepository stageRepository;
 	private final VenueRepository venueRepository;
 	private final TagRepository tagRepository;
+	private final ImageRepository imageRepository;
 
 	private final EventService eventService;
 	private final VenueService venueService;
@@ -58,6 +58,7 @@ public class UserController {
 	private final ExhibitorService exhibitorService;
 	private final PresenterService presenterService;
 	private final RestaurantService restaurantService;
+	private final ImageService imageService;
 
 	/*
 	 * Main page shows links to API Docs & API Definition
@@ -247,6 +248,20 @@ public class UserController {
 	public ResponseMessage restaurantsInfo(@PathVariable Long restaurantId) {
 		Restaurant_DetailsDTO restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
 		return convertToResponseMessage(restaurant);
+	}
+
+	/*
+	 * Image APIs
+	 */
+	@GetMapping(path = "/images")
+	public ResponseMessage images() {
+		List<ImageDTO> images = imageService.findAllImages();
+		return convertToResponseMessage(images);
+	}
+
+	@GetMapping(value = "/images/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
+	public Resource downloadImage(@PathVariable Long imageId) {
+		return imageService.findImageByImageId(imageId);
 	}
 
 	/*

@@ -50,9 +50,6 @@ public class EventService {
 		Event event = eventRepository.findEventByParentEvent(null);
 		Init_SettingDTO initData = modelMapper.map(event, Init_SettingDTO.class);
 
-		initData.setEventImage(event.getImage());
-		initData.setRestaurantImage("https://qvik-event-platform.s3-eu-west-1.amazonaws.com/restaurant_cover.jpg");
-
 		/* ADD TAGS */
 		List<String> tags = new ArrayList<>();
 		event.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
