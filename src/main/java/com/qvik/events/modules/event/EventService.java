@@ -124,6 +124,15 @@ public class EventService {
 						.forEach(er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
 				event_detailsDTO.setRestaurants(restaurants);
 
+				/* SUB EVENTS WILL PRESENTED BY 'PRESENTER' */
+				//TODO:
+
+				/* SUB EVENTS WILL PRESENTED BY 'STAGE' */
+				//TODO:
+
+				/* SUB EVENTS WILL PRESENTED BY 'NONE' */
+				//TODO:
+
 				/* SUB EVENTS WILL PRESENTED BY 'DATE' */
 				String date = event_detailsDTO.getStartDate().toString();
 				Map<String, Object> eventsMap = mapOfMap.get(date);
@@ -145,7 +154,6 @@ public class EventService {
 
 				mapOfMap.put(date, eventsMap);
 			}
-
 		}
 
 		/* Sort sub events by dates in chronological order */

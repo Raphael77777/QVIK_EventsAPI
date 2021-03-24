@@ -1,5 +1,7 @@
 package com.qvik.events;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -8,12 +10,15 @@ import java.util.List;
 
 import com.qvik.events.modules.image.Image;
 import com.qvik.events.modules.image.ImageRepository;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.qvik.events.modules.event.Event;
@@ -40,6 +45,7 @@ import com.qvik.events.modules.tag.Tag;
 import com.qvik.events.modules.tag.TagRepository;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
+import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootApplication
 @EnableTransactionManagement
@@ -188,18 +194,29 @@ public class EventsApplication {
 				log.info("PID 9-745 : EXHIBITORS SAVED !");
 
 				/************************************************************************************************************/
+				File file = new File("./data/img/test.jpg");
+				FileInputStream input = new FileInputStream(file);
+				MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),	MediaType.IMAGE_JPEG_VALUE, input);
 
-				/*List<Image> images = new ArrayList<>();
-				images.add(new Image(new byte[]{}, "01.png"));
-				images.add(new Image(new byte[]{}, "02.png"));
-				images.add(new Image(new byte[]{}, "03.png"));
-				imageRepository.saveAll(images);
+				Image image = new Image();
+				image.setName(multipartFile.getName());
+				image.setContent(multipartFile.getBytes());
+				imageRepository.save(image);
+
+				File file2 = new File("./data/img/event.jpg");
+				FileInputStream input2 = new FileInputStream(file2);
+				MultipartFile multipartFile2 = new MockMultipartFile(file2.getName(), file2.getName(), MediaType.IMAGE_JPEG_VALUE, input2);
+
+				Image image2 = new Image();
+				image2.setName(multipartFile2.getName());
+				image2.setContent(multipartFile2.getBytes());
+				imageRepository.save(image2);
 
 				for (Image i : imageRepository.findAll()) {
 					log.info(i.toString());
 				}
 
-				log.info("PID 9-746 : IMAGES SAVED !");*/
+				log.info("PID 9-746 : IMAGES SAVED !");
 
 				/************************************************************************************************************/
 				List<Event> events = new ArrayList<>();
@@ -223,27 +240,27 @@ public class EventsApplication {
 
 				events.get(0).setFullDescription(fullDescription);
 				events.get(0).setVenue(venues.get(0));
-				//events.get(0).setImage(images.get(0));
+				events.get(0).setImage(image);
 
 				events.get(1).setParentEvent(events.get(0));
 				events.get(1).setFullDescription(fullDescription);
 				events.get(1).setStage(stages.get(1));
-				//events.get(1).setImage(images.get(0));
+				events.get(1).setImage(image2);
 
 				events.get(2).setParentEvent(events.get(0));
 				events.get(2).setFullDescription(fullDescription);
 				events.get(2).setStage(stages.get(2));
-				//events.get(2).setImage(images.get(0));
+				events.get(2).setImage(image2);
 
 				events.get(3).setParentEvent(events.get(0));
 				events.get(3).setFullDescription(fullDescription);
 				events.get(3).setStage(stages.get(3));
-				//events.get(3).setImage(images.get(1));
+				events.get(3).setImage(image2);
 
 				events.get(4).setParentEvent(events.get(0));
 				events.get(4).setFullDescription(fullDescription);
 				events.get(4).setStage(stages.get(4));
-				//events.get(4).setImage(images.get(2));
+				events.get(4).setImage(image2);
 
 				eventRepository.saveAll(events);
 

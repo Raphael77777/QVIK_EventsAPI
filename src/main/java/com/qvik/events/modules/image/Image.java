@@ -37,4 +37,13 @@ public class Image {
         this.content = content;
         this.name = name;
     }
+
+    //TODO : Temporary output to be removed at the end of development
+    @Override
+    public String toString() {
+        return "Image{" +
+                "imageId=" + imageId +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
