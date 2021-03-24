@@ -78,8 +78,8 @@ public class UserController {
 	 * NEW - Event API
 	 */
 	@GetMapping(path = "/events")
-	public ResponseMessage events() {
-		List<Map<String, Object>> events = eventService.findAllEvents();
+	public ResponseMessage events(@RequestParam(defaultValue = "NONE", required = false) String groupBy) {
+		List<Map<String, Object>> events = eventService.findAllEvents(groupBy);
 		return convertToResponseMessage(events);
 	}
 

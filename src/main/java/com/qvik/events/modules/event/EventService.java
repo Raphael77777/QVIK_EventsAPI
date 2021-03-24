@@ -1,38 +1,19 @@
 package com.qvik.events.modules.event;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.qvik.events.infra.exception.DataNotFoundException;
-import com.qvik.events.infra.response.dto.Event_DetailsDTO;
-import com.qvik.events.infra.response.dto.ExhibitorsDTO;
-import com.qvik.events.infra.response.dto.Init_SettingDTO;
-import com.qvik.events.infra.response.dto.ParentEvent_DetailsDTO;
-import com.qvik.events.infra.response.dto.PresenterDTO;
-import com.qvik.events.infra.response.dto.PresentersDTO;
-import com.qvik.events.infra.response.dto.RestaurantDTO;
-import com.qvik.events.infra.response.dto.RestaurantsDTO;
-import com.qvik.events.infra.response.dto.StagesDTO;
-import com.qvik.events.infra.response.dto.SubEvent_DetailsDTO;
-import com.qvik.events.infra.response.dto.TagsDTO;
-import com.qvik.events.infra.response.dto.VenuesDTO;
+import com.qvik.events.infra.response.dto.*;
 import com.qvik.events.modules.presenter.Event_Presenter;
 import com.qvik.events.modules.restaurant.Event_Restaurant;
 import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.restaurant.RestaurantRepository;
 import com.qvik.events.modules.tag.Event_Tag;
-
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -72,8 +53,8 @@ public class EventService {
 		List<String> restaurantTags = new ArrayList<>();
 		restaurants.forEach(r -> r.getRestaurantTags().forEach(tag -> restaurantTags.add(tag.getTag().getName())));
 
-		List<String> allRestaurantTagsWithoutDeuplicate = removeDuplicates(restaurantTags);
-		initData.setAllRestaurantTags(allRestaurantTagsWithoutDeuplicate);
+		List<String> allRestaurantTagsWithoutDuplicate = removeDuplicates(restaurantTags);
+		initData.setAllRestaurantTags(allRestaurantTagsWithoutDuplicate);
 
 		return initData;
 	}
@@ -82,16 +63,17 @@ public class EventService {
 	 * API /events to return all information related to events
 	 * 
 	 */
-	public List<Map<String, Object>> findAllEvents() {
+	public List<Map<String, Object>> findAllEvents(String groupBy) {
 		List<Event> events = eventRepository.findAll();
-		return mapEventListToDTOs(events);
+		return mapEventListToDTOs(events, groupBy);
 	}
 
 	/* NEW - Map List of Events to DTO */
-	public List<Map<String, Object>> mapEventListToDTOs(List<Event> events) {
+	public List<Map<String, Object>> mapEventListToDTOs(List<Event> events, String groupBy) {
 
 		Map<String, Map<String, Object>> mapOfMap = new LinkedHashMap<>();
 		List<LocalDate> mapKeys = new ArrayList<>();
+		List<String> mapKeysP = new ArrayList<>();
 		List<Map<String, Object>> listOfMap = new ArrayList<>();
 
 		for (Event e : events) {
@@ -124,44 +106,159 @@ public class EventService {
 						.forEach(er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
 				event_detailsDTO.setRestaurants(restaurants);
 
-				/* SUB EVENTS WILL PRESENTED BY 'PRESENTER' */
-				//TODO:
-
-				/* SUB EVENTS WILL PRESENTED BY 'STAGE' */
-				//TODO:
-
-				/* SUB EVENTS WILL PRESENTED BY 'NONE' */
-				//TODO:
-
-				/* SUB EVENTS WILL PRESENTED BY 'DATE' */
-				String date = event_detailsDTO.getStartDate().toString();
-				Map<String, Object> eventsMap = mapOfMap.get(date);
-				if (eventsMap == null) {
-					eventsMap = new LinkedHashMap<>();
-					eventsMap.put("dateAsTitle", date);
-					mapKeys.add(event_detailsDTO.getStartDate());
-
-					// Collect list of event_details
-					List<Event_DetailsDTO> list = new ArrayList<>();
-					list.add(event_detailsDTO);
-					eventsMap.put("data", list);
-
-				} else {
-					List<Event_DetailsDTO> subevents = (List<Event_DetailsDTO>) eventsMap.get("data");
-					subevents.add(event_detailsDTO);
-					eventsMap.put("data", subevents);
+				switch (groupBy){
+					case "DATE" :
+						/* SUB EVENTS WILL BE GROUPED BY 'DATE' */
+						groupByDate(event_detailsDTO, mapOfMap, mapKeys);
+						break;
+					case "PRESENTER" :
+						/* SUB EVENTS WILL BE GROUPED BY 'PRESENTER' */
+						groupByPresenter(event_detailsDTO, mapOfMap, mapKeysP);
+						break;
+					case "STAGE" :
+						/* SUB EVENTS WILL BE GROUPED BY 'STAGE' */
+						groupByStage(event_detailsDTO, mapOfMap, mapKeysP);
+						break;
+					case "NONE" :
+					default:
+						/* SUB EVENTS WILL BE GROUPED BY 'NONE' */
+						groupByNone(event_detailsDTO, mapOfMap);
+						break;
 				}
-
-				mapOfMap.put(date, eventsMap);
 			}
 		}
 
-		/* Sort sub events by dates in chronological order */
+		switch (groupBy){
+			case "DATE" :
+				/* Sort sub events by dates in chronological order */
+				orderByDate(listOfMap, mapOfMap, mapKeys);
+				break;
+			case "PRESENTER" :
+				/* Sort sub events by presenters in chronological order */
+				orderByPresenter(listOfMap, mapOfMap, mapKeysP);
+				break;
+			case "STAGE" :
+				/* Sort sub events by stages in chronological order */
+				orderByStage(listOfMap, mapOfMap, mapKeysP);
+				break;
+			case "NONE" :
+			default:
+				/* Sort sub events by none */
+				orderByNone(listOfMap, mapOfMap);
+				break;
+		}
+		return listOfMap;
+	}
+
+	private void groupByDate (Event_DetailsDTO event_detailsDTO, Map<String, Map<String, Object>> mapOfMap, List<LocalDate> mapKeys){
+		String date = event_detailsDTO.getStartDate().toString();
+		Map<String, Object> eventsMap = mapOfMap.get(date);
+		if (eventsMap == null) {
+			eventsMap = new LinkedHashMap<>();
+			eventsMap.put("dateAsTitle", date);
+			mapKeys.add(event_detailsDTO.getStartDate());
+
+			// Collect list of event_details
+			List<Event_DetailsDTO> list = new ArrayList<>();
+			list.add(event_detailsDTO);
+			eventsMap.put("data", list);
+
+		} else {
+			List<Event_DetailsDTO> subevents = (List<Event_DetailsDTO>) eventsMap.get("data");
+			subevents.add(event_detailsDTO);
+			eventsMap.put("data", subevents);
+		}
+
+		mapOfMap.put(date, eventsMap);
+	}
+	private void orderByDate (List<Map<String, Object>> listOfMap, Map<String, Map<String, Object>> mapOfMap, List<LocalDate> mapKeys){
 		mapKeys.sort(Comparator.naturalOrder());
 		for (LocalDate ld : mapKeys) {
 			listOfMap.add(mapOfMap.get(ld.toString()));
 		}
-		return listOfMap;
+	}
+
+	private void groupByPresenter (Event_DetailsDTO event_detailsDTO, Map<String, Map<String, Object>> mapOfMap, List<String> mapKeysP){
+		List<PresenterDTO> presenters = event_detailsDTO.getPresenters();
+
+		for (PresenterDTO p : presenters){
+			Map<String, Object> eventsMap = mapOfMap.get(p.getName());
+			if (eventsMap == null) {
+				eventsMap = new LinkedHashMap<>();
+				eventsMap.put("presenterAsTitle", p.getName());
+				mapKeysP.add(p.getName());
+
+				// Collect list of event_details
+				List<Event_DetailsDTO> list = new ArrayList<>();
+				list.add(event_detailsDTO);
+				eventsMap.put("data", list);
+
+			} else {
+				List<Event_DetailsDTO> subevents = (List<Event_DetailsDTO>) eventsMap.get("data");
+				subevents.add(event_detailsDTO);
+				eventsMap.put("data", subevents);
+			}
+
+			mapOfMap.put(p.getName(), eventsMap);
+		}
+	}
+	private void orderByPresenter (List<Map<String, Object>> listOfMap, Map<String, Map<String, Object>> mapOfMap, List<String> mapKeysP){
+		mapKeysP.sort(Comparator.naturalOrder());
+		for (String s : mapKeysP) {
+			listOfMap.add(mapOfMap.get(s));
+		}
+	}
+
+	private void groupByStage (Event_DetailsDTO event_detailsDTO, Map<String, Map<String, Object>> mapOfMap, List<String> mapKeysP){
+		String stage = event_detailsDTO.getStage().getName();
+		Map<String, Object> eventsMap = mapOfMap.get(stage);
+		if (eventsMap == null) {
+			eventsMap = new LinkedHashMap<>();
+			eventsMap.put("stageAsTitle", stage);
+			mapKeysP.add(stage);
+
+			// Collect list of event_details
+			List<Event_DetailsDTO> list = new ArrayList<>();
+			list.add(event_detailsDTO);
+			eventsMap.put("data", list);
+
+		} else {
+			List<Event_DetailsDTO> subevents = (List<Event_DetailsDTO>) eventsMap.get("data");
+			subevents.add(event_detailsDTO);
+			eventsMap.put("data", subevents);
+		}
+
+		mapOfMap.put(stage, eventsMap);
+	}
+	private void orderByStage (List<Map<String, Object>> listOfMap, Map<String, Map<String, Object>> mapOfMap, List<String> mapKeysP){
+		mapKeysP.sort(Comparator.naturalOrder());
+		for (String s : mapKeysP) {
+			listOfMap.add(mapOfMap.get(s));
+		}
+	}
+
+	private void groupByNone (Event_DetailsDTO event_detailsDTO, Map<String, Map<String, Object>> mapOfMap){
+		Map<String, Object> eventsMap = mapOfMap.get("None");
+		if (eventsMap == null) {
+			eventsMap = new LinkedHashMap<>();
+			eventsMap.put("NoneAsTitle", "None");
+
+			// Collect list of event_details
+			List<Event_DetailsDTO> list = new ArrayList<>();
+			list.add(event_detailsDTO);
+			eventsMap.put("data", list);
+
+		} else {
+			List<Event_DetailsDTO> subevents = (List<Event_DetailsDTO>) eventsMap.get("data");
+			subevents.add(event_detailsDTO);
+			eventsMap.put("data", subevents);
+		}
+
+		mapOfMap.put("None", eventsMap);
+	}
+	private void orderByNone (List<Map<String, Object>> listOfMap, Map<String, Map<String, Object>> mapOfMap){
+		Map<String, Object> maps = mapOfMap.get("None");
+		listOfMap.add(maps);
 	}
 
 	private List<String> removeDuplicates(List<String> list) {
