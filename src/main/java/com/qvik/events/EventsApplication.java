@@ -188,7 +188,8 @@ public class EventsApplication {
 				log.info("PID 9-745 : EXHIBITORS SAVED !");
 
 				/************************************************************************************************************/
-				List<Image> images = new ArrayList<>();
+
+				/*List<Image> images = new ArrayList<>();
 				images.add(new Image(new byte[]{}, "01.png"));
 				images.add(new Image(new byte[]{}, "02.png"));
 				images.add(new Image(new byte[]{}, "03.png"));
@@ -198,7 +199,7 @@ public class EventsApplication {
 					log.info(i.toString());
 				}
 
-				log.info("PID 9-746 : IMAGES SAVED !");
+				log.info("PID 9-746 : IMAGES SAVED !");*/
 
 				/************************************************************************************************************/
 				List<Event> events = new ArrayList<>();
@@ -222,27 +223,27 @@ public class EventsApplication {
 
 				events.get(0).setFullDescription(fullDescription);
 				events.get(0).setVenue(venues.get(0));
-				events.get(0).setImage(images.get(0));
+				//events.get(0).setImage(images.get(0));
 
 				events.get(1).setParentEvent(events.get(0));
 				events.get(1).setFullDescription(fullDescription);
 				events.get(1).setStage(stages.get(1));
-				events.get(1).setImage(images.get(0));
+				//events.get(1).setImage(images.get(0));
 
 				events.get(2).setParentEvent(events.get(0));
 				events.get(2).setFullDescription(fullDescription);
 				events.get(2).setStage(stages.get(2));
-				events.get(2).setImage(images.get(0));
+				//events.get(2).setImage(images.get(0));
 
 				events.get(3).setParentEvent(events.get(0));
 				events.get(3).setFullDescription(fullDescription);
 				events.get(3).setStage(stages.get(3));
-				events.get(3).setImage(images.get(1));
+				//events.get(3).setImage(images.get(1));
 
 				events.get(4).setParentEvent(events.get(0));
 				events.get(4).setFullDescription(fullDescription);
 				events.get(4).setStage(stages.get(4));
-				events.get(4).setImage(images.get(2));
+				//events.get(4).setImage(images.get(2));
 
 				eventRepository.saveAll(events);
 

@@ -5,5 +5,4 @@ import lombok.Data;
 @Data
 public class ImageDTO {
 	private long imageId;
-	private String name;
 }

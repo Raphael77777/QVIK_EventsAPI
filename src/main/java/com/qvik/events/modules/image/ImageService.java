@@ -3,6 +3,8 @@ package com.qvik.events.modules.image;
 import com.qvik.events.infra.exception.DataNotFoundException;
 import com.qvik.events.infra.response.dto.ImageDTO;
 import com.qvik.events.infra.response.dto.Venue_DetailsDTO;
+import com.qvik.events.modules.event.Event;
+import com.qvik.events.modules.event.EventRepository;
 import com.qvik.events.modules.venue.Venue;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,6 +26,7 @@ import java.util.Map;
 public class ImageService {
 
 	private final ImageRepository imageRepository;
+	private final EventRepository eventRepository;
 	private final ModelMapper modelMapper;
 
 	public Resource findImageByImageId(Long id) {
@@ -43,7 +46,20 @@ public class ImageService {
 		image.setName(file.getName());
 		image.setContent(file.getBytes());
 
-		return imageRepository.save(image).getImageId();
+		//TODO : PRODUCTION MODE
+		//return imageRepository.save(image).getImageId();
+
+		//TODO: TEMPORARY DEV MODE
+		Image imageDb = imageRepository.save(image);
+		Long imageId = imageDb.getImageId();
+
+		List<Event> events = eventRepository.findAll();
+		for (Event e : events){
+			e.setImage(imageDb);
+		}
+		eventRepository.saveAll(events);
+
+		return imageId;
 	}
 
 	public List<ImageDTO> findAllImages() {

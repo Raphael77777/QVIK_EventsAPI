@@ -1,24 +1,13 @@
 package com.qvik.events.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.qvik.events.infra.response.dto.*;
-import com.qvik.events.modules.image.Image;
-import com.qvik.events.modules.image.ImageRepository;
-import com.qvik.events.modules.image.ImageService;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
 import com.qvik.events.infra.response.ResponseMessage;
+import com.qvik.events.infra.response.dto.*;
 import com.qvik.events.modules.event.EventService;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorRepository;
 import com.qvik.events.modules.exhibitor.ExhibitorService;
+import com.qvik.events.modules.image.ImageRepository;
+import com.qvik.events.modules.image.ImageService;
 import com.qvik.events.modules.presenter.Presenter;
 import com.qvik.events.modules.presenter.PresenterRepository;
 import com.qvik.events.modules.presenter.PresenterService;
@@ -33,10 +22,15 @@ import com.qvik.events.modules.tag.TagRepository;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
 import com.qvik.events.modules.venue.VenueService;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Controller used for user requests */
 @RestController
