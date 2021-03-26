@@ -194,23 +194,26 @@ public class EventsApplication {
 				log.info("PID 9-745 : EXHIBITORS SAVED !");
 
 				/************************************************************************************************************/
-				File file = new File("./data/img/test.jpg");
-				FileInputStream input = new FileInputStream(file);
-				MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),	MediaType.IMAGE_JPEG_VALUE, input);
+				String [] imgArray = new String[]{"1 event.jpg", "2 event.jpg",
+						"3 artist.jpg", "4 artist.jpg",
+						"5 satge.jpg", "6 stage.jpg",
+						"7 location.jpg", "8 location.jpg",
+						"9 food.jpg", "10 food.jpg"};
 
-				Image image = new Image();
-				image.setName(multipartFile.getName());
-				image.setContent(multipartFile.getBytes());
-				imageRepository.save(image);
+				List<Image> images = new ArrayList<>();
 
-				File file2 = new File("./data/img/event.jpg");
-				FileInputStream input2 = new FileInputStream(file2);
-				MultipartFile multipartFile2 = new MockMultipartFile(file2.getName(), file2.getName(), MediaType.IMAGE_JPEG_VALUE, input2);
+				for (int i = 0; i<10; i++){
+					File file = new File("./data/img/"+imgArray[i]);
+					FileInputStream input = new FileInputStream(file);
+					MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),	MediaType.IMAGE_JPEG_VALUE, input);
 
-				Image image2 = new Image();
-				image2.setName(multipartFile2.getName());
-				image2.setContent(multipartFile2.getBytes());
-				imageRepository.save(image2);
+					Image image = new Image();
+					image.setName(multipartFile.getName());
+					image.setContent(multipartFile.getBytes());
+					images.add(image);
+				}
+
+				imageRepository.saveAll(images);
 
 				for (Image i : imageRepository.findAll()) {
 					log.info(i.toString());
@@ -240,27 +243,27 @@ public class EventsApplication {
 
 				events.get(0).setFullDescription(fullDescription);
 				events.get(0).setVenue(venues.get(0));
-				events.get(0).setImage(image);
+				events.get(0).setImage(images.get(0));
 
 				events.get(1).setParentEvent(events.get(0));
 				events.get(1).setFullDescription(fullDescription);
 				events.get(1).setStage(stages.get(1));
-				events.get(1).setImage(image2);
+				events.get(1).setImage(images.get(1));
 
 				events.get(2).setParentEvent(events.get(0));
 				events.get(2).setFullDescription(fullDescription);
 				events.get(2).setStage(stages.get(2));
-				events.get(2).setImage(image2);
+				events.get(2).setImage(images.get(2));
 
 				events.get(3).setParentEvent(events.get(0));
 				events.get(3).setFullDescription(fullDescription);
 				events.get(3).setStage(stages.get(3));
-				events.get(3).setImage(image2);
+				events.get(3).setImage(images.get(3));
 
 				events.get(4).setParentEvent(events.get(0));
 				events.get(4).setFullDescription(fullDescription);
 				events.get(4).setStage(stages.get(4));
-				events.get(4).setImage(image2);
+				events.get(4).setImage(images.get(4));
 
 				eventRepository.saveAll(events);
 
