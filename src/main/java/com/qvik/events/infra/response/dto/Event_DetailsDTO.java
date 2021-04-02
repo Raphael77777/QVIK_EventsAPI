@@ -11,7 +11,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL) 
 public class Event_DetailsDTO extends Event_BaseDTO {
 	
-	private boolean activeEvent;
+	private boolean isActive;
 	private String shortDescription;
 	private String fullDescription;	
 	private VenueDTO venue;

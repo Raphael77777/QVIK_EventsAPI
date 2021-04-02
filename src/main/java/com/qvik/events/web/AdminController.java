@@ -42,44 +42,46 @@ public class AdminController {
 	 * CREATE Methods
 	 */
 	@PostMapping(value = "/events", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long newEvent(@RequestBody Event event) {
+	public Long createEvent(@RequestBody Event event) {
+		event.setHasExhibitor(false);
+		event.setHasRestaurant(false);
+		event.setHasPresenter(false);
 		return eventRepository.save(event).getEventId();
 	}
 
 	@PostMapping(value = "/exhibitors", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long newExhibitor(@RequestBody Exhibitor exhibitor) {
+	public Long createExhibitor(@RequestBody Exhibitor exhibitor) {
 		return exhibitorRepository.save(exhibitor).getExhibitorId();
 	}
 
 	@PostMapping(value = "/presenters", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long newPresenter(@RequestBody Presenter presenter) {
+	public Long createPresenter(@RequestBody Presenter presenter) {
 		return presenterRepository.save(presenter).getPresenterId();
 	}
 
 	@PostMapping(value = "/restaurants", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long newRestaurant(@RequestBody Restaurant restaurant) {
+	public Long createRestaurant(@RequestBody Restaurant restaurant) {
 		return restaurantRepository.save(restaurant).getRestaurantId();
 	}
 
 	@PostMapping(value = "/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long newTag(@RequestBody Tag tag) {
+	public Long createTag(@RequestBody Tag tag) {
 		return tagRepository.save(tag).getTagId();
 	}
 
 	@PostMapping(value = "/stages", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long newStage(@RequestBody Stage stage) {
+	public Long createStage(@RequestBody Stage stage) {
 		return stageRepository.save(stage).getStageId();
 	}
 
 	@PostMapping(value = "/venues", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long newVenue(@RequestBody Venue venue) {
+	public Long createVenue(@RequestBody Venue venue) {
 		return venueRepository.save(venue).getVenueId();
 	}
 
 	/*
 	 * UPDATE Methods
 	 */
-	//TODO: Implement methods
 	@PutMapping(value = "/events/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateEvent(@RequestBody Event event, @PathVariable Long id) {
 		return eventRepository.findById(id)
@@ -93,9 +95,6 @@ public class AdminController {
 					eventDb.setFullDescription(event.getFullDescription());
 					eventDb.setActive(event.isActive());
 					eventDb.setMainEvent(event.isMainEvent());
-					eventDb.setHasExhibitor(event.isHasExhibitor());
-					eventDb.setHasRestaurant(event.isHasRestaurant());
-					eventDb.setHasPresenter(event.isHasPresenter());
 					return eventRepository.save(eventDb).getEventId();
 				})
 				.orElseGet(() -> {
@@ -109,7 +108,7 @@ public class AdminController {
 		return exhibitorRepository.findById(id)
 				.map(exhibitorDb -> {
 					exhibitorDb.setName(exhibitor.getName());
-					exhibitorDb.setName(exhibitor.getLocation());
+					exhibitorDb.setLocation(exhibitor.getLocation());
 					exhibitorDb.setContact(exhibitor.getContact());
 					exhibitorDb.setShortDescription(exhibitor.getShortDescription());
 					exhibitorDb.setFullDescription(exhibitor.getFullDescription());
@@ -205,7 +204,6 @@ public class AdminController {
 	/*
 	 * DELETE Methods
 	 */
-	//TODO: Implement methods
 	@DeleteMapping(value = "/events/{id}")
 	void deleteEvent(@PathVariable Long id) {
 		//TODO: On delete set NULL
@@ -264,7 +262,7 @@ public class AdminController {
 	/*
 	 * DUPLICATE Method
 	 */
-	//TODO: Implement methods
+	//TODO: Implement method
 
 	/*
 	 * Convert Data to ResponseMessage.class

@@ -19,6 +19,7 @@ import com.qvik.events.modules.stage.StageRepository;
 import com.qvik.events.modules.stage.StageService;
 import com.qvik.events.modules.tag.Tag;
 import com.qvik.events.modules.tag.TagRepository;
+import com.qvik.events.modules.tag.TagService;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
 import com.qvik.events.modules.venue.VenueService;
@@ -53,6 +54,7 @@ public class UserController {
 	private final PresenterService presenterService;
 	private final RestaurantService restaurantService;
 	private final ImageService imageService;
+	private final TagService tagService;
 
 	/*
 	 * Main page shows links to API Docs & API Definition
@@ -204,7 +206,7 @@ public class UserController {
 	 */
 	@GetMapping(path = "/exhibitors")
 	public ResponseMessage exhibitor() {
-		List<Exhibitor> exhibitors = exhibitorRepository.findAll();
+		List<Exhibitor_DetailsDTO> exhibitors = exhibitorService.findAllExhibitors();
 		return convertToResponseMessage(exhibitors);
 	}
 
@@ -263,7 +265,7 @@ public class UserController {
 	 */
 	@GetMapping(path = "/tags")
 	public ResponseMessage tags() {
-		List<Tag> tags = tagRepository.findAll();
+		List<TagDTO> tags = tagService.findAllTags();
 		return convertToResponseMessage(tags);
 	}
 

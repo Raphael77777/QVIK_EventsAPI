@@ -79,7 +79,6 @@ public class EventService {
 		for (Event e : events) {
 			if (!e.isMainEvent()) { // sub events
 				Event_DetailsDTO event_detailsDTO = modelMapper.map(e, Event_DetailsDTO.class);
-				event_detailsDTO.setActiveEvent(e.isActive());
 
 				/* ADD PRESENTERS */
 				List<Event_Presenter> eventPresenters = e.getEventPresenters();

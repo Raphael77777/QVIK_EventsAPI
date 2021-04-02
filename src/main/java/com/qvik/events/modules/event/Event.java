@@ -76,10 +76,6 @@ public class Event {
 	@Column(name = "full_description", nullable = false)
 	private String fullDescription;
 
-	@Column(name = "last_modified")
-	@JsonIgnore
-	private LocalDateTime lastModified;
-	
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive;
 
@@ -94,6 +90,10 @@ public class Event {
 
 	@Column(name = "has_presenter", nullable = false)
 	private boolean hasPresenter;
+
+	@Column(name = "last_modified")
+	@JsonIgnore
+	private LocalDateTime lastModified;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentEvent")
 	@JsonBackReference
@@ -158,20 +158,27 @@ public class Event {
 	}
 
 	// TODO : Temporary output to be removed at the end of development
+
 	@Override
 	public String toString() {
-		if (parentEvent == null) {
-			return "Event{" + "event_id=" + eventId + ", start_date=" + startDate + ", end_date=" + endDate
-					+ ", title='" + title + '\'' + ", full_description='" + fullDescription + '\'' + 
-					'\'' + ", image='" + image + '\''  + ", last_modified="
-					+ lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant=" + hasRestaurant
-					+ ", has_presenter=" + hasPresenter + '}';
-		} else {
-			return "Event{" + "event_id=" + eventId + ", start_date=" + startDate + ", end_date=" + endDate
-					+ ", title='" + title + '\'' + ", full_description='" + fullDescription + '\'' 
-					+ ", image='" + image + '\'' + ", last_modified="
-					+ lastModified + ", has_exhibitor=" + hasExhibitor + ", has_restaurant=" + hasRestaurant
-					+ ", parent_event=" + parentEvent + ", has_presenter=" + hasPresenter + '}';
-		}
+		return "Event{" +
+				"eventId=" + eventId +
+				", startDate=" + startDate +
+				", startTime=" + startTime +
+				", endDate=" + endDate +
+				", endTime=" + endTime +
+				", title='" + title + '\'' +
+				", shortDescription='" + shortDescription + '\'' +
+				", fullDescription='" + fullDescription + '\'' +
+				", isActive=" + isActive +
+				", isMainEvent=" + isMainEvent +
+				", hasExhibitor=" + hasExhibitor +
+				", hasRestaurant=" + hasRestaurant +
+				", hasPresenter=" + hasPresenter +
+				", lastModified=" + lastModified +
+				", venue=" + venue +
+				", stage=" + stage +
+				", image=" + image +
+				'}';
 	}
 }
