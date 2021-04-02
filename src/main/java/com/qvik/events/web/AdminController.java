@@ -80,6 +80,110 @@ public class AdminController {
 	 * UPDATE Methods
 	 */
 	//TODO: Implement methods
+	@PutMapping(value = "/events/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long updateEvent(@RequestBody Event event, @PathVariable Long id) {
+		return eventRepository.findById(id)
+				.map(eventDb -> {
+					eventDb.setStartDate(event.getStartDate());
+					eventDb.setStartTime(event.getStartTime());
+					eventDb.setEndDate(event.getEndDate());
+					eventDb.setEndTime(event.getEndTime());
+					eventDb.setTitle(event.getTitle());
+					eventDb.setShortDescription(event.getShortDescription());
+					eventDb.setFullDescription(event.getFullDescription());
+					eventDb.setActive(event.isActive());
+					eventDb.setMainEvent(event.isMainEvent());
+					eventDb.setHasExhibitor(event.isHasExhibitor());
+					eventDb.setHasRestaurant(event.isHasRestaurant());
+					eventDb.setHasPresenter(event.isHasPresenter());
+					return eventRepository.save(eventDb).getEventId();
+				})
+				.orElseGet(() -> {
+					event.setEventId(id);
+					return eventRepository.save(event).getEventId();
+				});
+	}
+
+	@PutMapping(value = "/exhibitors/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long updateExhibitor(@RequestBody Exhibitor exhibitor, @PathVariable Long id) {
+		return exhibitorRepository.findById(id)
+				.map(exhibitorDb -> {
+					exhibitorDb.setName(exhibitor.getName());
+					exhibitorDb.setName(exhibitor.getLocation());
+					exhibitorDb.setContact(exhibitor.getContact());
+					exhibitorDb.setShortDescription(exhibitor.getShortDescription());
+					exhibitorDb.setFullDescription(exhibitor.getFullDescription());
+					return exhibitorRepository.save(exhibitorDb).getExhibitorId();
+				})
+				.orElseGet(() -> {
+					exhibitor.setExhibitorId(id);
+					return exhibitorRepository.save(exhibitor).getExhibitorId();
+				});
+	}
+
+	@PutMapping(value = "/presenters/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long updatePresenter(@RequestBody Presenter presenter, @PathVariable Long id) {
+		return presenterRepository.findById(id)
+				.map(presenterDb -> {
+					presenterDb.setName(presenter.getName());
+					presenterDb.setContact(presenter.getContact());
+					presenterDb.setShortDescription(presenter.getShortDescription());
+					presenterDb.setFullDescription(presenter.getFullDescription());
+					return presenterRepository.save(presenterDb).getPresenterId();
+				})
+				.orElseGet(() -> {
+					presenter.setPresenterId(id);
+					return presenterRepository.save(presenter).getPresenterId();
+				});
+	}
+
+	@PutMapping(value = "/restaurants/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long updateRestaurant(@RequestBody Restaurant restaurant, @PathVariable Long id) {
+		return restaurantRepository.findById(id)
+				.map(restaurantDb -> {
+					restaurantDb.setName(restaurant.getName());
+					restaurantDb.setLocation(restaurant.getLocation());
+					restaurantDb.setOpenTime(restaurant.getOpenTime());
+					restaurantDb.setCloseTime(restaurant.getCloseTime());
+					restaurantDb.setShortDescription(restaurant.getShortDescription());
+					restaurantDb.setFullDescription(restaurant.getFullDescription());
+					return restaurantRepository.save(restaurantDb).getRestaurantId();
+				})
+				.orElseGet(() -> {
+					restaurant.setRestaurantId(id);
+					return restaurantRepository.save(restaurant).getRestaurantId();
+				});
+	}
+
+	@PutMapping(value = "/stages/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long updateStage(@RequestBody Stage stage, @PathVariable Long id) {
+		return stageRepository.findById(id)
+				.map(stageDb -> {
+					stageDb.setName(stage.getName());
+					stageDb.setLocation(stage.getLocation());
+					stageDb.setCapacity(stage.getCapacity());
+					stageDb.setType(stage.getType());
+					return stageRepository.save(stageDb).getStageId();
+				})
+				.orElseGet(() -> {
+					stage.setStageId(id);
+					return stageRepository.save(stage).getStageId();
+				});
+	}
+
+	@PutMapping(value = "/tags/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long updateTag(@RequestBody Tag tag, @PathVariable Long id) {
+		return tagRepository.findById(id)
+				.map(tagDb -> {
+					tagDb.setName(tag.getName());
+					return tagRepository.save(tagDb).getTagId();
+				})
+				.orElseGet(() -> {
+					tag.setTagId(id);
+					return tagRepository.save(tag).getTagId();
+				});
+	}
+
 	@PutMapping(value = "/venues/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateVenue(@RequestBody Venue venue, @PathVariable Long id) {
 		return venueRepository.findById(id)
