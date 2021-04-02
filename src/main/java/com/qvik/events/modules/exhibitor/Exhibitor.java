@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -58,6 +59,7 @@ public class Exhibitor {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "exhibitor")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Event_Exhibitor> event_exhibitors;
 
 	public Exhibitor(String name, String location, String contact, String short_description, String full_description) {

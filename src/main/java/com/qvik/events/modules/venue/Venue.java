@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.stage.Stage;
@@ -62,14 +63,17 @@ public class Venue {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Stage> stages;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Restaurant> restaurants;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Event> events;
 
 	public Venue(String name, String city, String address, String contact, String transportation, String facilities) {
@@ -85,8 +89,14 @@ public class Venue {
 	// TODO : Temporary output to be removed at the end of development
 	@Override
 	public String toString() {
-		return "Venue{" + "venue_id=" + venueId + ", name='" + name + '\'' + ", city='" + city + '\'' + ", address='"
-				+ address + '\'' + ", contact='" + contact + '\'' + '}';
+		return "Venue{" +
+				"venueId=" + venueId +
+				", name='" + name + '\'' +
+				", city='" + city + '\'' +
+				", address='" + address + '\'' +
+				", contact='" + contact + '\'' +
+				", transportation='" + transportation + '\'' +
+				", facilities='" + facilities + '\'' +
+				'}';
 	}
-
 }

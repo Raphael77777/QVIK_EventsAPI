@@ -2,6 +2,7 @@ package com.qvik.events.modules.presenter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -44,6 +45,7 @@ public class Presenter {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "presenter")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Event_Presenter> event_presenters;
 
 	public Presenter(String name, String contact, String short_description, String full_description) {

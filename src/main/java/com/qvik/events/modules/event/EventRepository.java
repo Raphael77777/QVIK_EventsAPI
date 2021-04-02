@@ -40,4 +40,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	
 	Event findEventByParentEvent (Event event);
 
+	Event findEventByIsMainEventTrue ();
+
 }

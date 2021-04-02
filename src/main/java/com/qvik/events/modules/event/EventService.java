@@ -28,7 +28,7 @@ public class EventService {
 	 * Data to be used for header setup
 	 */
 	public Init_SettingDTO findInitialSetUpData() {
-		Event event = eventRepository.findEventByParentEvent(null);
+		Event event = eventRepository.findEventByIsMainEventTrue();
 		Init_SettingDTO initData = modelMapper.map(event, Init_SettingDTO.class);
 
 		/* ADD TAGS */
@@ -77,34 +77,44 @@ public class EventService {
 		List<Map<String, Object>> listOfMap = new ArrayList<>();
 
 		for (Event e : events) {
-			if (e.getParentEvent() != null) { // sub events
+			if (!e.isMainEvent()) { // sub events
 				Event_DetailsDTO event_detailsDTO = modelMapper.map(e, Event_DetailsDTO.class);
 				event_detailsDTO.setActiveEvent(e.isActive());
 
 				/* ADD PRESENTERS */
-				List<PresenterDTO> presenters = new ArrayList<>();
 				List<Event_Presenter> eventPresenters = e.getEventPresenters();
-				eventPresenters.forEach(er -> presenters.add(modelMapper.map(er.getPresenter(), PresenterDTO.class)));
-				event_detailsDTO.setPresenters(presenters);
+				if (eventPresenters != null || eventPresenters.size() != 0){
+					List<PresenterDTO> presenters = new ArrayList<>();
+					eventPresenters.forEach(er -> presenters.add(modelMapper.map(er.getPresenter(), PresenterDTO.class)));
+					event_detailsDTO.setPresenters(presenters);
+				}
 
 				/* ADD INHERITED TAGS */
 				Event parentEvent = e.getParentEvent();
-				List<Event_Tag> parentEventTags = parentEvent.getEventTags();
-				List<String> inheritedTags = new ArrayList<>();
-				parentEventTags.forEach(t -> inheritedTags.add(t.getTag().getName()));
-				event_detailsDTO.setInheritedTags(inheritedTags);
+				if (parentEvent != null){
+					List<Event_Tag> parentEventTags = parentEvent.getEventTags();
+					if (parentEventTags != null || parentEventTags.size() != 0){
+						List<String> inheritedTags = new ArrayList<>();
+						parentEventTags.forEach(t -> inheritedTags.add(t.getTag().getName()));
+						event_detailsDTO.setInheritedTags(inheritedTags);
+					}
+				}
 
 				/* ADD EVENT TAGS */
-				List<String> tags = new ArrayList<>();
-				e.getEventTags().forEach(et -> tags.add(et.getTag().getName()));
-				event_detailsDTO.setEventTags(tags);
+				List<Event_Tag> eventTags = e.getEventTags();
+				if (eventTags != null || eventTags.size() != 0){
+					List<String> tags = new ArrayList<>();
+					eventTags.forEach(et -> tags.add(et.getTag().getName()));
+					event_detailsDTO.setEventTags(tags);
+				}
 
 				/* ADD RESTAURANTS */
-				List<RestaurantDTO> restaurants = new ArrayList<>();
 				List<Event_Restaurant> eventRestaurants = e.getEventRestaurants();
-				eventRestaurants
-						.forEach(er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
-				event_detailsDTO.setRestaurants(restaurants);
+				if (eventRestaurants != null || eventRestaurants.size() != 0){
+					List<RestaurantDTO> restaurants = new ArrayList<>();
+					eventRestaurants.forEach(er -> restaurants.add(modelMapper.map(er.getRestaurant(), RestaurantDTO.class)));
+					event_detailsDTO.setRestaurants(restaurants);
+				}
 
 				switch (groupBy){
 					case "DATE" :

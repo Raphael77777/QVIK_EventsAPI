@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qvik.events.modules.exhibitor.Event_Exhibitor;
 import com.qvik.events.modules.image.Image;
 import com.qvik.events.modules.presenter.Event_Presenter;
@@ -75,11 +76,15 @@ public class Event {
 	@Column(name = "full_description", nullable = false)
 	private String fullDescription;
 
-	@Column(name = "last_modified", nullable = false)
+	@Column(name = "last_modified")
+	@JsonIgnore
 	private LocalDateTime lastModified;
 	
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive;
+
+	@Column(name = "is_main_event", nullable = false)
+	private boolean isMainEvent;
 
 	@Column(name = "has_exhibitor", nullable = false)
 	private boolean hasExhibitor;
@@ -92,42 +97,51 @@ public class Event {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentEvent")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Event> subEvents;
 
 	@ManyToOne
 	@JoinColumn(name = "parent_event")
+	@JsonIgnore
 	private Event parentEvent;
 
 	@ManyToOne
 	@JoinColumn(name = "venue_id")
+	@JsonIgnore
 	private Venue venue;
 
 	@ManyToOne
 	@JoinColumn(name = "stage_id")
+	@JsonIgnore
 	private Stage stage;
 
 	@ManyToOne
 	@JoinColumn(name = "image_id")
+	@JsonIgnore
 	private Image image;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
+	@JsonIgnore
 	private List <Event_Presenter> eventPresenters = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Event_Restaurant> eventRestaurants= new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Event_Exhibitor> eventExhibitors= new ArrayList<>();
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 	@JsonBackReference
+	@JsonIgnore
 	private List<Event_Tag> eventTags= new ArrayList<>();
 
 	public Event(LocalDate start_date, LocalTime start_time, LocalDate end_date, LocalTime end_time, String title,
-			String shortDescription, LocalDateTime last_modified, boolean isActive, boolean has_exhibitor,
+			String shortDescription, LocalDateTime last_modified, boolean isActive, boolean isMainEvent, boolean has_exhibitor,
 			boolean has_restaurant, boolean has_presenter) {
 		this.startDate = start_date;
 		this.startTime = start_time;
@@ -137,6 +151,7 @@ public class Event {
 		this.title = title;
 		this.lastModified = last_modified;
 		this.isActive=isActive;
+		this.isMainEvent=isMainEvent;
 		this.hasExhibitor = has_exhibitor;
 		this.hasRestaurant = has_restaurant;
 		this.hasPresenter = has_presenter;
