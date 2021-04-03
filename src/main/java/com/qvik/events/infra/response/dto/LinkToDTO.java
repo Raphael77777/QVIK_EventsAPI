@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class LinkToDTO {
 
-	private Integer sourceId;
-	private Integer destinationId;
+	private Long sourceId;
+	private Long destinationId;
 }

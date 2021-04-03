@@ -16,4 +16,6 @@ public interface EventRestaurantRepository extends JpaRepository<Event_Restauran
     /** Custom methods to retrieve a list of Restaurant with parameters */
     List<Event_Restaurant> findByEventEquals (Event event);
     List<Event_Restaurant> findByRestaurantEquals (Restaurant restaurant);
+
+    List<Event_Restaurant> findByEventEqualsAndRestaurantEquals (Event event, Restaurant restaurant);
 }

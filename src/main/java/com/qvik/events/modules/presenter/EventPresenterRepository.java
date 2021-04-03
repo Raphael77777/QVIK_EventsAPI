@@ -14,4 +14,6 @@ public interface EventPresenterRepository extends JpaRepository<Event_Presenter,
     /** Custom methods to retrieve a list of Presenter with parameters */
     List<Event_Presenter> findByEventEquals (Event event);
     List<Event_Presenter> findByPresenterEquals (Presenter presenter);
+
+    List<Event_Presenter> findByEventEqualsAndPresenterEquals (Event event, Presenter presenter);
 }

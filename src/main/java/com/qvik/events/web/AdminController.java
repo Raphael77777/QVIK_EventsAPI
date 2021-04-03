@@ -1,21 +1,27 @@
 package com.qvik.events.web;
 
 import com.qvik.events.infra.response.ResponseMessage;
+import com.qvik.events.infra.response.dto.LinkToDTO;
 import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.event.EventRepository;
+import com.qvik.events.modules.exhibitor.EventExhibitorRepository;
+import com.qvik.events.modules.exhibitor.Event_Exhibitor;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorRepository;
 import com.qvik.events.modules.image.Image;
 import com.qvik.events.modules.image.ImageRepository;
 import com.qvik.events.modules.image.ImageService;
+import com.qvik.events.modules.presenter.EventPresenterRepository;
+import com.qvik.events.modules.presenter.Event_Presenter;
 import com.qvik.events.modules.presenter.Presenter;
 import com.qvik.events.modules.presenter.PresenterRepository;
+import com.qvik.events.modules.restaurant.EventRestaurantRepository;
+import com.qvik.events.modules.restaurant.Event_Restaurant;
 import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.restaurant.RestaurantRepository;
 import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.stage.StageRepository;
-import com.qvik.events.modules.tag.Tag;
-import com.qvik.events.modules.tag.TagRepository;
+import com.qvik.events.modules.tag.*;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +49,12 @@ public class AdminController {
 	private final StageRepository stageRepository;
 	private final VenueRepository venueRepository;
 	private final ImageRepository imageRepository;
+
+	private final EventTagRepository eventTagRepository;
+	private final EventExhibitorRepository eventExhibitorRepository;
+	private final EventRestaurantRepository eventRestaurantRepository;
+	private final EventPresenterRepository eventPresenterRepository;
+	private final RestaurantTagRepository restaurantTagRepository;
 
 	/*
 	 * CREATE Methods
@@ -300,7 +312,180 @@ public class AdminController {
 	/*
 	 * LINK Methods
 	 */
-	//TODO: Implement methods
+	@PostMapping(value = "/linkEventExhibitor", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkEventExhibitor(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
+		Exhibitor exhibitor = exhibitorRepository.findById(linkToDTO.getDestinationId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Event_Exhibitor event_exhibitor = new Event_Exhibitor();
+				event_exhibitor.setEvent(event);
+				event_exhibitor.setExhibitor(exhibitor);
+				return eventExhibitorRepository.save(event_exhibitor).getEventExhibitorId();
+			case "DELETE":
+				List<Event_Exhibitor> event_exhibitors = eventExhibitorRepository.findByEventEqualsAndExhibitorEquals(event, exhibitor);
+				eventExhibitorRepository.deleteAll(event_exhibitors);
+				break;
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkEventPresenter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkEventPresenter(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
+		Presenter presenter = presenterRepository.findById(linkToDTO.getDestinationId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Event_Presenter event_presenter = new Event_Presenter();
+				event_presenter.setEvent(event);
+				event_presenter.setPresenter(presenter);
+				return eventPresenterRepository.save(event_presenter).getEventPresenterId();
+			case "DELETE":
+				List<Event_Presenter> event_presenters = eventPresenterRepository.findByEventEqualsAndPresenterEquals(event, presenter);
+				eventPresenterRepository.deleteAll(event_presenters);
+				break;
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkEventRestaurant", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkEventRestaurant(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
+		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getDestinationId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Event_Restaurant event_restaurant = new Event_Restaurant();
+				event_restaurant.setEvent(event);
+				event_restaurant.setRestaurant(restaurant);
+				return eventRestaurantRepository.save(event_restaurant).getEventRestaurantId();
+			case "DELETE":
+				List<Event_Restaurant> event_restaurants = eventRestaurantRepository.findByEventEqualsAndRestaurantEquals(event, restaurant);
+				eventRestaurantRepository.deleteAll(event_restaurants);
+				break;
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkEventTag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkEventTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
+		Tag tag = tagRepository.findById(linkToDTO.getDestinationId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Event_Tag event_tag = new Event_Tag();
+				event_tag.setEvent(event);
+				event_tag.setTag(tag);
+				return eventTagRepository.save(event_tag).getEventTagId();
+			case "DELETE":
+				List<Event_Tag> event_tags = eventTagRepository.findByEventEqualsAndTagEquals(event, tag);
+				eventTagRepository.deleteAll(event_tags);
+				break;
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkRestaurantTag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkRestaurantTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
+		Tag tag = tagRepository.findById(linkToDTO.getDestinationId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Restaurant_Tag restaurant_tag = new Restaurant_Tag();
+				restaurant_tag.setRestaurant(restaurant);
+				restaurant_tag.setTag(tag);
+				return restaurantTagRepository.save(restaurant_tag).getRestaurantTagId();
+			case "DELETE":
+				List<Restaurant_Tag> restaurant_tags = restaurantTagRepository.findByRestaurantEqualsAndTagEquals(restaurant, tag);
+				restaurantTagRepository.deleteAll(restaurant_tags);
+				break;
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkEventStage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkEventStage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Stage stage = stageRepository.findById(linkToDTO.getDestinationId()).get();
+				event.setStage(stage);
+				return eventRepository.save(event).getEventId();
+			case "DELETE":
+				event.setStage(null);
+				return eventRepository.save(event).getEventId();
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkEventVenue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkEventVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Venue venue = venueRepository.findById(linkToDTO.getDestinationId()).get();
+				event.setVenue(venue);
+				return eventRepository.save(event).getEventId();
+			case "DELETE":
+				event.setVenue(null);
+				return eventRepository.save(event).getEventId();
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkRestaurantVenue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkRestaurantVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Venue venue = venueRepository.findById(linkToDTO.getDestinationId()).get();
+				restaurant.setVenue(venue);
+				return restaurantRepository.save(restaurant).getRestaurantId();
+			case "DELETE":
+				restaurant.setVenue(null);
+				return restaurantRepository.save(restaurant).getRestaurantId();
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkStageVenue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkStageVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Stage stage = stageRepository.findById(linkToDTO.getSourceId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Venue venue = venueRepository.findById(linkToDTO.getDestinationId()).get();
+				stage.setVenue(venue);
+				return stageRepository.save(stage).getStageId();
+			case "DELETE":
+				stage.setVenue(null);
+				return stageRepository.save(stage).getStageId();
+		}
+		return 0L;
+	}
+
+	@PostMapping(value = "/linkEventImage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkEventImage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
+
+		switch (operation){
+			case "CREATE":
+				Image image = imageRepository.findById(linkToDTO.getDestinationId()).get();
+				event.setImage(image);
+				return eventRepository.save(event).getEventId();
+			case "DELETE":
+				event.setImage(null);
+				return eventRepository.save(event).getEventId();
+		}
+		return 0L;
+	}
 
 	/*
 	 * IMAGE Method
@@ -313,7 +498,71 @@ public class AdminController {
 	/*
 	 * DUPLICATE Method
 	 */
-	//TODO: Implement method
+	@PostMapping(value = "/duplicate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Long duplicateEvent(@RequestBody Event event) {
+		Long idToDuplicate = event.getEventId();
+		event.setEventId(0);
+		Event eventDb = eventRepository.findEventWithVenueAndStageAndImageAndParentEventByEventId(idToDuplicate);
+
+		if (eventDb.isMainEvent()){
+			return 0L;
+		}
+
+		event.setVenue(eventDb.getVenue());
+		event.setStage(eventDb.getStage());
+		event.setImage(eventDb.getImage());
+		event.setParentEvent(eventDb.getParentEvent());
+		event.setHasExhibitor(false);
+		event.setHasRestaurant(false);
+		event.setHasPresenter(false);
+		Long newId = eventRepository.save(event).getEventId();
+
+		// Duplicate eventPresenters
+		List<Event_Presenter> newEventPresenters = new ArrayList<>();
+		List<Event_Presenter> eventPresenters = eventRepository.findEventWithEventPresentersByEventId(idToDuplicate).getEventPresenters();
+		for (Event_Presenter ep : eventPresenters){
+			Event_Presenter newEP = new Event_Presenter();
+			newEP.setEvent(event);
+			newEP.setPresenter(ep.getPresenter());
+			newEventPresenters.add(newEP);
+		}
+		eventPresenterRepository.saveAll(newEventPresenters);
+
+		// Duplicate eventRestaurants
+		List<Event_Restaurant> newEventRestaurants = new ArrayList<>();
+		List<Event_Restaurant> eventRestaurants = eventRepository.findEventWithEventRestaurantsByEventId(idToDuplicate).getEventRestaurants();
+		for (Event_Restaurant er : eventRestaurants){
+			Event_Restaurant newER = new Event_Restaurant();
+			newER.setEvent(event);
+			newER.setRestaurant(er.getRestaurant());
+			newEventRestaurants.add(newER);
+		}
+		eventRestaurantRepository.saveAll(newEventRestaurants);
+
+		// Duplicate eventExhibitors
+		List<Event_Exhibitor> newEventExhibitors = new ArrayList<>();
+		List<Event_Exhibitor> eventExhibitors = eventRepository.findEventWithEventExhibitorsByEventId(idToDuplicate).getEventExhibitors();
+		for (Event_Exhibitor ex : eventExhibitors){
+			Event_Exhibitor newEX = new Event_Exhibitor();
+			newEX.setEvent(event);
+			newEX.setExhibitor(ex.getExhibitor());
+			newEventExhibitors.add(newEX);
+		}
+		eventExhibitorRepository.saveAll(newEventExhibitors);
+
+		// Duplicate eventTags
+		List<Event_Tag> newEventTags = new ArrayList<>();
+		List<Event_Tag> eventTags = eventRepository.findEventWithEventTagsByEventId(idToDuplicate).getEventTags();
+		for (Event_Tag et : eventTags){
+			Event_Tag newET = new Event_Tag();
+			newET.setEvent(event);
+			newET.setTag(et.getTag());
+			newEventTags.add(newET);
+		}
+		eventTagRepository.saveAll(newEventTags);
+
+		return newId;
+	}
 
 	/*
 	 * Convert Data to ResponseMessage.class
