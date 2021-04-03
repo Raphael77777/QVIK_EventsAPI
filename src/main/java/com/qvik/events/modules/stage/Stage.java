@@ -62,7 +62,6 @@ public class Stage {
 	@JsonBackReference
 	@JsonIgnore
 	private List<Event> events;
-	
 
 	public Stage(String name, String location, Integer capacity, String type) {
 		this.name = name;

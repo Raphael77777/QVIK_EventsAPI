@@ -3,6 +3,9 @@ package com.qvik.events.modules.event;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.qvik.events.modules.image.Image;
+import com.qvik.events.modules.stage.Stage;
+import com.qvik.events.modules.venue.Venue;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -42,4 +45,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
 	Event findEventByIsMainEventTrue ();
 
+	@EntityGraph(attributePaths = {"stage"})
+	List<Event> findEventsWithStageByStage(Stage stage);
+
+	@EntityGraph(attributePaths = {"venue"})
+	List<Event> findEventsWithVenueByVenue(Venue venue);
+
+	@EntityGraph(attributePaths = {"image"})
+	List<Event> findEventsWithImageByImage(Image image);
 }

@@ -39,13 +39,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/")
 public class UserController {
 
-	private final ExhibitorRepository exhibitorRepository;
-	private final PresenterRepository presenterRepository;
 	private final RestaurantRepository restaurantRepository;
-	private final StageRepository stageRepository;
-	private final VenueRepository venueRepository;
-	private final TagRepository tagRepository;
-	private final ImageRepository imageRepository;
 
 	private final EventService eventService;
 	private final VenueService venueService;

@@ -5,6 +5,8 @@ import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.event.EventRepository;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorRepository;
+import com.qvik.events.modules.image.Image;
+import com.qvik.events.modules.image.ImageRepository;
 import com.qvik.events.modules.image.ImageService;
 import com.qvik.events.modules.presenter.Presenter;
 import com.qvik.events.modules.presenter.PresenterRepository;
@@ -22,6 +24,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Controller used for admin page */
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +42,7 @@ public class AdminController {
 	private final TagRepository tagRepository;
 	private final StageRepository stageRepository;
 	private final VenueRepository venueRepository;
+	private final ImageRepository imageRepository;
 
 	/*
 	 * CREATE Methods
@@ -206,44 +212,89 @@ public class AdminController {
 	 */
 	@DeleteMapping(value = "/events/{id}")
 	void deleteEvent(@PathVariable Long id) {
-		//TODO: On delete set NULL
+		Event event = eventRepository.findById(id).get();
+
+		if (event.isMainEvent()){
+			return;
+		}
+
 		eventRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/exhibitors/{id}")
 	void deleteExhibitor(@PathVariable Long id) {
-		//TODO: On delete set NULL
 		exhibitorRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/presenters/{id}")
 	void deletePresenter(@PathVariable Long id) {
-		//TODO: On delete set NULL
 		presenterRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/restaurants/{id}")
 	void deleteRestaurant(@PathVariable Long id) {
-		//TODO: On delete set NULL
 		restaurantRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/tags/{id}")
 	void deleteTag(@PathVariable Long id) {
-		//TODO: On delete set NULL
 		tagRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/stages/{id}")
 	void deleteStage(@PathVariable Long id) {
-		//TODO: On delete set NULL
-		stageRepository.deleteById(id);
+		Stage stage = stageRepository.findById(id).get();
+
+		//ON DELETE SET NULL
+		List<Event> events = eventRepository.findEventsWithStageByStage(stage);
+		for (Event event : events){
+			event.setStage(null);
+		}
+		eventRepository.saveAll(events);
+
+		stageRepository.delete(stage);
 	}
 
 	@DeleteMapping(value = "/venues/{id}")
 	void deleteVenue(@PathVariable Long id) {
-		//TODO: On delete set NULL
+		Venue venue = venueRepository.findById(id).get();
+
+		//ON DELETE SET NULL
+		List<Event> events = eventRepository.findEventsWithVenueByVenue(venue);
+		for (Event event : events){
+			event.setVenue(null);
+		}
+		eventRepository.saveAll(events);
+
+		//ON DELETE SET NULL
+		List<Restaurant> restaurants = restaurantRepository.findRestaurantsWithVenueByVenue(venue);
+		for (Restaurant restaurant : restaurants){
+			restaurant.setVenue(null);
+		}
+		restaurantRepository.saveAll(restaurants);
+
+		//ON DELETE SET NULL
+		List<Stage> stages = stageRepository.findStagesWithVenueByVenue(venue);
+		for (Stage stage : stages){
+			stage.setVenue(null);
+		}
+		stageRepository.saveAll(stages);
+
 		venueRepository.deleteById(id);
+	}
+
+	@DeleteMapping(value = "/images/{id}")
+	void deleteImage(@PathVariable Long id) {
+		Image image = imageRepository.findById(id).get();
+
+		//ON DELETE SET NULL
+		List<Event> events = eventRepository.findEventsWithImageByImage(image);
+		for (Event event : events){
+			event.setImage(null);
+		}
+		eventRepository.saveAll(events);
+
+		imageRepository.deleteById(id);
 	}
 
 	/*

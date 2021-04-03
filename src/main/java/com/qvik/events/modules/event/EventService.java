@@ -46,7 +46,9 @@ public class EventService {
 		initData.setAllEventTags(allTagsWithoutDuplicate);
 
 		/* ADD VENUE */
-		initData.setVenue(event.getVenue().getName());
+		if (event.getVenue() != null){
+			initData.setVenue(event.getVenue().getName());
+		}
 
 		/* ADD RESTAURANT TAGS */
 		List<Restaurant> restaurants = restaurantRepository.findAll();
