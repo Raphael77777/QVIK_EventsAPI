@@ -312,7 +312,7 @@ public class AdminController {
 	/*
 	 * LINK Methods
 	 */
-	@PostMapping(value = "/linkEventExhibitor", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-event-exhibitor", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventExhibitor(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 		Exhibitor exhibitor = exhibitorRepository.findById(linkToDTO.getDestinationId()).get();
@@ -331,7 +331,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkEventPresenter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-event-presenter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventPresenter(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 		Presenter presenter = presenterRepository.findById(linkToDTO.getDestinationId()).get();
@@ -350,7 +350,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkEventRestaurant", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-event-restaurant", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventRestaurant(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getDestinationId()).get();
@@ -369,7 +369,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkEventTag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-event-tag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 		Tag tag = tagRepository.findById(linkToDTO.getDestinationId()).get();
@@ -388,7 +388,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkRestaurantTag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-restaurant-tag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkRestaurantTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
 		Tag tag = tagRepository.findById(linkToDTO.getDestinationId()).get();
@@ -407,7 +407,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkEventStage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-event-stage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventStage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 
@@ -423,7 +423,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkEventVenue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-event-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 
@@ -439,7 +439,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkRestaurantVenue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-restaurant-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkRestaurantVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
 
@@ -455,7 +455,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkStageVenue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-stage-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkStageVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Stage stage = stageRepository.findById(linkToDTO.getSourceId()).get();
 
@@ -471,7 +471,7 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/linkEventImage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/link-event-image", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventImage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 
