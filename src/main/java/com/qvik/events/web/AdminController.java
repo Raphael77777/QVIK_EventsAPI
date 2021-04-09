@@ -1,5 +1,6 @@
 package com.qvik.events.web;
 
+import com.qvik.events.infra.cache.ProxyCache;
 import com.qvik.events.infra.response.ResponseMessage;
 import com.qvik.events.infra.response.dto.LinkToDTO;
 import com.qvik.events.modules.event.Event;
@@ -56,11 +57,15 @@ public class AdminController {
 	private final EventPresenterRepository eventPresenterRepository;
 	private final RestaurantTagRepository restaurantTagRepository;
 
+	private final ProxyCache proxy = ProxyCache.getInstance();
+
 	/*
 	 * CREATE Methods
 	 */
 	@PostMapping(value = "/events", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long createEvent(@RequestBody Event event) {
+		proxy.resetData();
+
 		event.setHasExhibitor(false);
 		event.setHasRestaurant(false);
 		event.setHasPresenter(false);
@@ -69,31 +74,43 @@ public class AdminController {
 
 	@PostMapping(value = "/exhibitors", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long createExhibitor(@RequestBody Exhibitor exhibitor) {
+		proxy.resetData();
+
 		return exhibitorRepository.save(exhibitor).getExhibitorId();
 	}
 
 	@PostMapping(value = "/presenters", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long createPresenter(@RequestBody Presenter presenter) {
+		proxy.resetData();
+
 		return presenterRepository.save(presenter).getPresenterId();
 	}
 
 	@PostMapping(value = "/restaurants", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long createRestaurant(@RequestBody Restaurant restaurant) {
+		proxy.resetData();
+
 		return restaurantRepository.save(restaurant).getRestaurantId();
 	}
 
 	@PostMapping(value = "/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long createTag(@RequestBody Tag tag) {
+		proxy.resetData();
+
 		return tagRepository.save(tag).getTagId();
 	}
 
 	@PostMapping(value = "/stages", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long createStage(@RequestBody Stage stage) {
+		proxy.resetData();
+
 		return stageRepository.save(stage).getStageId();
 	}
 
 	@PostMapping(value = "/venues", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long createVenue(@RequestBody Venue venue) {
+		proxy.resetData();
+
 		return venueRepository.save(venue).getVenueId();
 	}
 
@@ -102,6 +119,8 @@ public class AdminController {
 	 */
 	@PutMapping(value = "/events/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateEvent(@RequestBody Event event, @PathVariable Long id) {
+		proxy.resetData();
+
 		return eventRepository.findById(id)
 				.map(eventDb -> {
 					eventDb.setStartDate(event.getStartDate());
@@ -123,6 +142,8 @@ public class AdminController {
 
 	@PutMapping(value = "/exhibitors/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateExhibitor(@RequestBody Exhibitor exhibitor, @PathVariable Long id) {
+		proxy.resetData();
+
 		return exhibitorRepository.findById(id)
 				.map(exhibitorDb -> {
 					exhibitorDb.setName(exhibitor.getName());
@@ -140,6 +161,8 @@ public class AdminController {
 
 	@PutMapping(value = "/presenters/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updatePresenter(@RequestBody Presenter presenter, @PathVariable Long id) {
+		proxy.resetData();
+
 		return presenterRepository.findById(id)
 				.map(presenterDb -> {
 					presenterDb.setName(presenter.getName());
@@ -156,6 +179,8 @@ public class AdminController {
 
 	@PutMapping(value = "/restaurants/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateRestaurant(@RequestBody Restaurant restaurant, @PathVariable Long id) {
+		proxy.resetData();
+
 		return restaurantRepository.findById(id)
 				.map(restaurantDb -> {
 					restaurantDb.setName(restaurant.getName());
@@ -174,6 +199,8 @@ public class AdminController {
 
 	@PutMapping(value = "/stages/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateStage(@RequestBody Stage stage, @PathVariable Long id) {
+		proxy.resetData();
+
 		return stageRepository.findById(id)
 				.map(stageDb -> {
 					stageDb.setName(stage.getName());
@@ -190,6 +217,8 @@ public class AdminController {
 
 	@PutMapping(value = "/tags/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateTag(@RequestBody Tag tag, @PathVariable Long id) {
+		proxy.resetData();
+
 		return tagRepository.findById(id)
 				.map(tagDb -> {
 					tagDb.setName(tag.getName());
@@ -203,6 +232,8 @@ public class AdminController {
 
 	@PutMapping(value = "/venues/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateVenue(@RequestBody Venue venue, @PathVariable Long id) {
+		proxy.resetData();
+
 		return venueRepository.findById(id)
 				.map(venueDb -> {
 					venueDb.setName(venue.getName());
@@ -224,6 +255,8 @@ public class AdminController {
 	 */
 	@DeleteMapping(value = "/events/{id}")
 	void deleteEvent(@PathVariable Long id) {
+		proxy.resetData();
+
 		Event event = eventRepository.findById(id).get();
 
 		if (event.isMainEvent()){
@@ -235,26 +268,36 @@ public class AdminController {
 
 	@DeleteMapping(value = "/exhibitors/{id}")
 	void deleteExhibitor(@PathVariable Long id) {
+		proxy.resetData();
+
 		exhibitorRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/presenters/{id}")
 	void deletePresenter(@PathVariable Long id) {
+		proxy.resetData();
+
 		presenterRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/restaurants/{id}")
 	void deleteRestaurant(@PathVariable Long id) {
+		proxy.resetData();
+
 		restaurantRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/tags/{id}")
 	void deleteTag(@PathVariable Long id) {
+		proxy.resetData();
+
 		tagRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/stages/{id}")
 	void deleteStage(@PathVariable Long id) {
+		proxy.resetData();
+
 		Stage stage = stageRepository.findById(id).get();
 
 		//ON DELETE SET NULL
@@ -269,6 +312,8 @@ public class AdminController {
 
 	@DeleteMapping(value = "/venues/{id}")
 	void deleteVenue(@PathVariable Long id) {
+		proxy.resetData();
+
 		Venue venue = venueRepository.findById(id).get();
 
 		//ON DELETE SET NULL
@@ -297,6 +342,9 @@ public class AdminController {
 
 	@DeleteMapping(value = "/images/{id}")
 	void deleteImage(@PathVariable Long id) {
+		proxy.resetData();
+		proxy.resetImage();
+
 		Image image = imageRepository.findById(id).get();
 
 		//ON DELETE SET NULL
@@ -314,6 +362,8 @@ public class AdminController {
 	 */
 	@PostMapping(value = "/link-event-exhibitor", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventExhibitor(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 		Exhibitor exhibitor = exhibitorRepository.findById(linkToDTO.getDestinationId()).get();
 
@@ -333,6 +383,8 @@ public class AdminController {
 
 	@PostMapping(value = "/link-event-presenter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventPresenter(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 		Presenter presenter = presenterRepository.findById(linkToDTO.getDestinationId()).get();
 
@@ -352,6 +404,8 @@ public class AdminController {
 
 	@PostMapping(value = "/link-event-restaurant", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventRestaurant(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getDestinationId()).get();
 
@@ -371,6 +425,8 @@ public class AdminController {
 
 	@PostMapping(value = "/link-event-tag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 		Tag tag = tagRepository.findById(linkToDTO.getDestinationId()).get();
 
@@ -390,6 +446,8 @@ public class AdminController {
 
 	@PostMapping(value = "/link-restaurant-tag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkRestaurantTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
 		Tag tag = tagRepository.findById(linkToDTO.getDestinationId()).get();
 
@@ -409,6 +467,8 @@ public class AdminController {
 
 	@PostMapping(value = "/link-event-stage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventStage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 
 		switch (operation){
@@ -425,6 +485,8 @@ public class AdminController {
 
 	@PostMapping(value = "/link-event-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 
 		switch (operation){
@@ -441,6 +503,8 @@ public class AdminController {
 
 	@PostMapping(value = "/link-restaurant-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkRestaurantVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
 
 		switch (operation){
@@ -457,6 +521,8 @@ public class AdminController {
 
 	@PostMapping(value = "/link-stage-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkStageVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+
 		Stage stage = stageRepository.findById(linkToDTO.getSourceId()).get();
 
 		switch (operation){
@@ -473,6 +539,9 @@ public class AdminController {
 
 	@PostMapping(value = "/link-event-image", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long linkEventImage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+		proxy.resetData();
+		proxy.resetImage();
+
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
 
 		switch (operation){
@@ -492,6 +561,9 @@ public class AdminController {
 	 */
 	@PostMapping(path = "/upload-image")
 	Long uploadImage(@RequestParam MultipartFile file) throws Exception {
+		proxy.resetData();
+		proxy.resetImage();
+
 		return imageService.uploadImage(file);
 	}
 
@@ -500,6 +572,8 @@ public class AdminController {
 	 */
 	@PostMapping(value = "/duplicate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long duplicateEvent(@RequestBody Event event) {
+		proxy.resetData();
+
 		Long idToDuplicate = event.getEventId();
 		event.setEventId(0);
 		Event eventDb = eventRepository.findEventWithVenueAndStageAndImageAndParentEventByEventId(idToDuplicate);

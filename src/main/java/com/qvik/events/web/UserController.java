@@ -1,27 +1,21 @@
 package com.qvik.events.web;
 
+import com.qvik.events.infra.cache.ProxyCache;
 import com.qvik.events.infra.response.ResponseMessage;
 import com.qvik.events.infra.response.dto.*;
 import com.qvik.events.modules.event.EventService;
 import com.qvik.events.modules.exhibitor.Exhibitor;
-import com.qvik.events.modules.exhibitor.ExhibitorRepository;
 import com.qvik.events.modules.exhibitor.ExhibitorService;
-import com.qvik.events.modules.image.ImageRepository;
 import com.qvik.events.modules.image.ImageService;
 import com.qvik.events.modules.presenter.Presenter;
-import com.qvik.events.modules.presenter.PresenterRepository;
 import com.qvik.events.modules.presenter.PresenterService;
 import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.restaurant.RestaurantRepository;
 import com.qvik.events.modules.restaurant.RestaurantService;
 import com.qvik.events.modules.stage.Stage;
-import com.qvik.events.modules.stage.StageRepository;
 import com.qvik.events.modules.stage.StageService;
-import com.qvik.events.modules.tag.Tag;
-import com.qvik.events.modules.tag.TagRepository;
 import com.qvik.events.modules.tag.TagService;
 import com.qvik.events.modules.venue.Venue;
-import com.qvik.events.modules.venue.VenueRepository;
 import com.qvik.events.modules.venue.VenueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -50,14 +44,33 @@ public class UserController {
 	private final ImageService imageService;
 	private final TagService tagService;
 
+	private final ProxyCache proxy = ProxyCache.getInstance();
+
 	/*
 	 * Main page shows links to API Docs & API Definition
 	 */
 	@GetMapping(path = "/")
 	public ResponseMessage home() {
+		ResponseMessage response = proxy.getData("/");
+		if (response == null){
+			Map<String, String> links = new HashMap<>();
+			links.put("API Docs", "https://qvik.herokuapp.com/api-docs");
+			links.put("API Definition", "https://qvik.herokuapp.com/swagger-ui.html");
+			response = convertToResponseMessage(links);
+
+			proxy.setData("/", response);
+		}
+		return response;
+	}
+
+	/*
+	 * Last Update Date & Time API
+	 */
+	@GetMapping(path = "/last-update")
+	public ResponseMessage lastUpdate() {
 		Map<String, String> links = new HashMap<>();
-		links.put("API Docs", "https://qvik.herokuapp.com/api-docs");
-		links.put("API Definition", "https://qvik.herokuapp.com/swagger-ui.html");
+		links.put("Last update - Date", proxy.getLastUpdateDate().toString());
+		links.put("Last update - Time", proxy.getLastUpdateTime().toString());
 		return convertToResponseMessage(links);
 	}
 
@@ -66,8 +79,14 @@ public class UserController {
 	 */
 	@GetMapping(path = "/initial-setup")
 	public ResponseMessage initialSetUp() {
-		Init_SettingDTO initialSetUp = eventService.findInitialSetUpData();
-		return convertToResponseMessage(initialSetUp);
+		ResponseMessage response = proxy.getData("/initial-setup");
+		if (response == null){
+			Init_SettingDTO initialSetUp = eventService.findInitialSetUpData();
+			response = convertToResponseMessage(initialSetUp);
+
+			proxy.setData("/initial-setup", response);
+		}
+		return response;
 	}
 
 	/*
@@ -75,8 +94,14 @@ public class UserController {
 	 */
 	@GetMapping(path = "/events")
 	public ResponseMessage events(@RequestParam(defaultValue = "NONE", required = false) String groupBy) {
-		List<Map<String, Object>> events = eventService.findAllEvents(groupBy);
-		return convertToResponseMessage(events);
+		ResponseMessage response = proxy.getData("/events+"+groupBy);
+		if (response == null){
+			List<Map<String, Object>> events = eventService.findAllEvents(groupBy);
+			response = convertToResponseMessage(events);
+
+			proxy.setData("/events+"+groupBy, response);
+		}
+		return response;
 	}
 
 	/*
@@ -156,28 +181,52 @@ public class UserController {
 	 */
 	@GetMapping(path = "/venues")
 	public ResponseMessage venues() {
-		List<Venue_DetailsDTO> venues = venueService.findAllVenues();		
-		return convertToResponseMessage(venues);
+		ResponseMessage response = proxy.getData("/venues");
+		if (response == null){
+			List<Venue_DetailsDTO> venues = venueService.findAllVenues();
+			response = convertToResponseMessage(venues);
+
+			proxy.setData("/venues", response);
+		}
+		return response;
 	}
 
 	@GetMapping(path = "/venues/{venueId}")
 	public ResponseMessage venuesInfo(@PathVariable Long venueId) {
-		Venue venue = venueService.findVenueByVenueId(venueId);
-		return convertToResponseMessage(venue);
+		ResponseMessage response = proxy.getData("/venues/"+venueId);
+		if (response == null){
+			Venue venue = venueService.findVenueByVenueId(venueId);
+			response = convertToResponseMessage(venue);
+
+			proxy.setData("/venues/"+venueId, response);
+		}
+		return response;
 	}
 
 	@GetMapping(path = "/venues/{venueId}/stages")
 	public ResponseMessage venuesStage(@PathVariable Long venueId) {
-		Venue venue = venueService.findVenueByVenueId(venueId);
-		List<Stage> venueStages = venue.getStages();
-		return convertToResponseMessage(venueStages);
+		ResponseMessage response = proxy.getData("/venues/"+venueId+"/stages");
+		if (response == null){
+			Venue venue = venueService.findVenueByVenueId(venueId);
+			List<Stage> venueStages = venue.getStages();
+			response = convertToResponseMessage(venueStages);
+
+			proxy.setData("/venues/"+venueId+"/stages", response);
+		}
+		return response;
 	}
 
 	@GetMapping(path = "/venues/{venueId}/restaurants")
 	public ResponseMessage venusRestaurant(@PathVariable Long venueId) {
-		Venue venue = venueService.findVenueByVenueId(venueId);
-		List<Restaurant> restaurants = restaurantRepository.findByVenueEquals(venue);
-		return convertToResponseMessage(restaurants);
+		ResponseMessage response = proxy.getData("/venues/"+venueId+"/restaurants");
+		if (response == null){
+			Venue venue = venueService.findVenueByVenueId(venueId);
+			List<Restaurant> restaurants = restaurantRepository.findByVenueEquals(venue);
+			response = convertToResponseMessage(restaurants);
+
+			proxy.setData("/venues/"+venueId+"/restaurants", response);
+		}
+		return response;
 	}
 
 	/*
@@ -185,14 +234,26 @@ public class UserController {
 	 */
 	@GetMapping(path = "/stages")
 	public ResponseMessage stage() {
-		List<Stage_DetailsDTO> stages = stageService.findAllStages();
-		return convertToResponseMessage(stages);
+		ResponseMessage response = proxy.getData("/stages");
+		if (response == null){
+			List<Stage_DetailsDTO> stages = stageService.findAllStages();
+			response = convertToResponseMessage(stages);
+
+			proxy.setData("/stages", response);
+		}
+		return response;
 	}
 
 	@GetMapping(path = "/stages/{stageId}")
 	public ResponseMessage stagesInfo(@PathVariable Long stageId) {
-		Stage stage = stageService.findStageByStageId(stageId);
-		return convertToResponseMessage(stage);
+		ResponseMessage response = proxy.getData("/stages/"+stageId);
+		if (response == null){
+			Stage stage = stageService.findStageByStageId(stageId);
+			response = convertToResponseMessage(stage);
+
+			proxy.setData("/stages/"+stageId, response);
+		}
+		return response;
 	}
 
 	/*
@@ -200,14 +261,26 @@ public class UserController {
 	 */
 	@GetMapping(path = "/exhibitors")
 	public ResponseMessage exhibitor() {
-		List<Exhibitor_DetailsDTO> exhibitors = exhibitorService.findAllExhibitors();
-		return convertToResponseMessage(exhibitors);
+		ResponseMessage response = proxy.getData("/exhibitors");
+		if (response == null){
+			List<Exhibitor_DetailsDTO> exhibitors = exhibitorService.findAllExhibitors();
+			response = convertToResponseMessage(exhibitors);
+
+			proxy.setData("/exhibitors", response);
+		}
+		return response;
 	}
 
 	@GetMapping(path = "/exhibitors/{exhibitorId}")
 	public ResponseMessage exhibitorsInfo(@PathVariable Long exhibitorId) {
-		Exhibitor exhibitor = exhibitorService.findExhibitorByExhibitorId(exhibitorId);
-		return convertToResponseMessage(exhibitor);
+		ResponseMessage response = proxy.getData("/exhibitors/"+exhibitorId);
+		if (response == null){
+			Exhibitor exhibitor = exhibitorService.findExhibitorByExhibitorId(exhibitorId);
+			response = convertToResponseMessage(exhibitor);
+
+			proxy.setData("/exhibitors/"+exhibitorId, response);
+		}
+		return response;
 	}
 
 	/*
@@ -215,14 +288,26 @@ public class UserController {
 	 */
 	@GetMapping(path = "/presenters")
 	public ResponseMessage presenter() {
-		List<Presenter_DetailsDTO> presenters = presenterService.findAllPresenters();
-		return convertToResponseMessage(presenters);
+		ResponseMessage response = proxy.getData("/presenters");
+		if (response == null){
+			List<Presenter_DetailsDTO> presenters = presenterService.findAllPresenters();
+			response = convertToResponseMessage(presenters);
+
+			proxy.setData("/presenters", response);
+		}
+		return response;
 	}
 
 	@GetMapping(path = "/presenters/{presenterId}")
 	public ResponseMessage presentersInfo(@PathVariable Long presenterId) {
-		Presenter presenter = presenterService.findPresenterByPresenterId(presenterId);
-		return convertToResponseMessage(presenter);
+		ResponseMessage response = proxy.getData("/presenters/"+presenterId);
+		if (response == null){
+			Presenter presenter = presenterService.findPresenterByPresenterId(presenterId);
+			response = convertToResponseMessage(presenter);
+
+			proxy.setData("/presenters/"+presenterId, response);
+		}
+		return response;
 	}
 
 	/*
@@ -230,14 +315,26 @@ public class UserController {
 	 */
 	@GetMapping(path = "/restaurants")
 	public ResponseMessage restaurants() {
-		Map<String, Object> restaurants = restaurantService.findAllRestaurants();
-		return convertToResponseMessage(restaurants);
+		ResponseMessage response = proxy.getData("/restaurants");
+		if (response == null){
+			Map<String, Object> restaurants = restaurantService.findAllRestaurants();
+			response = convertToResponseMessage(restaurants);
+
+			proxy.setData("/restaurants", response);
+		}
+		return response;
 	}
 
 	@GetMapping(path = "/restaurants/{restaurantId}")
 	public ResponseMessage restaurantsInfo(@PathVariable Long restaurantId) {
-		Restaurant_DetailsDTO restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
-		return convertToResponseMessage(restaurant);
+		ResponseMessage response = proxy.getData("/restaurants/"+restaurantId);
+		if (response == null){
+			Restaurant_DetailsDTO restaurant = restaurantService.findRestaurantByRestaurantId(restaurantId);
+			response = convertToResponseMessage(restaurant);
+
+			proxy.setData("/restaurants/"+restaurantId, response);
+		}
+		return response;
 	}
 
 	/*
@@ -245,13 +342,25 @@ public class UserController {
 	 */
 	@GetMapping(path = "/images")
 	public ResponseMessage images() {
-		List<ImageDTO> images = imageService.findAllImages();
-		return convertToResponseMessage(images);
+		ResponseMessage response = proxy.getData("/images");
+		if (response == null){
+			List<ImageDTO> images = imageService.findAllImages();
+			response = convertToResponseMessage(images);
+
+			proxy.setData("/images", response);
+		}
+		return response;
 	}
 
 	@GetMapping(value = "/images/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
 	public Resource downloadImage(@PathVariable Long imageId) {
-		return imageService.findImageByImageId(imageId);
+		Resource resource = proxy.getImage("/images/"+imageId);
+		if (resource == null){
+			resource = imageService.findImageByImageId(imageId);
+
+			proxy.setImage("/images/"+imageId, resource);
+		}
+		return resource;
 	}
 
 	/*
@@ -259,8 +368,14 @@ public class UserController {
 	 */
 	@GetMapping(path = "/tags")
 	public ResponseMessage tags() {
-		List<TagDTO> tags = tagService.findAllTags();
-		return convertToResponseMessage(tags);
+		ResponseMessage response = proxy.getData("/tags");
+		if (response == null){
+			List<TagDTO> tags = tagService.findAllTags();
+			response = convertToResponseMessage(tags);
+
+			proxy.setData("/tags", response);
+		}
+		return response;
 	}
 
 	/*
