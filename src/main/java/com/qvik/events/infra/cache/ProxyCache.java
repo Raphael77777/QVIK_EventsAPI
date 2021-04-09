@@ -4,6 +4,7 @@ import com.qvik.events.infra.response.ResponseMessage;
 import org.springframework.core.io.Resource;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +16,7 @@ public class ProxyCache {
     private final Map<String, ResponseMessage> cache = new HashMap<>();
     private final Map<String, Resource> image = new HashMap<>();
 
-    private Date lastUpdateDate = new Date(System.currentTimeMillis());
-    private Time lastUpdateTime = new Time(System.currentTimeMillis());
+    private LocalDateTime lastUpdateDateTime = LocalDateTime.now();
 
     private ProxyCache(){}
 
@@ -38,8 +38,7 @@ public class ProxyCache {
     public void resetData (){
         cache.clear();
 
-        lastUpdateDate = new Date(System.currentTimeMillis());
-        lastUpdateTime = new Time(System.currentTimeMillis());
+        lastUpdateDateTime = LocalDateTime.now();
     }
 
     /*
@@ -56,18 +55,13 @@ public class ProxyCache {
     public void resetImage (){
         image.clear();
 
-        lastUpdateDate = new Date(System.currentTimeMillis());
-        lastUpdateTime = new Time(System.currentTimeMillis());
+        lastUpdateDateTime = LocalDateTime.now();
     }
 
     /*
      * Getter for last update
      */
-    public Date getLastUpdateDate() {
-        return lastUpdateDate;
-    }
-
-    public Time getLastUpdateTime() {
-        return lastUpdateTime;
+    public LocalDateTime getLastUpdateDateTime() {
+        return lastUpdateDateTime;
     }
 }

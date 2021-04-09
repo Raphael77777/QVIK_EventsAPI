@@ -69,8 +69,7 @@ public class UserController {
 	@GetMapping(path = "/last-update")
 	public ResponseMessage lastUpdate() {
 		Map<String, String> links = new HashMap<>();
-		links.put("lastUpdateDate", proxy.getLastUpdateDate().toString());
-		links.put("lastUpdateTime", proxy.getLastUpdateTime().toString());
+		links.put("lastUpdateDateTime", proxy.getLastUpdateDateTime().toString());
 		return convertToResponseMessage(links);
 	}
 
