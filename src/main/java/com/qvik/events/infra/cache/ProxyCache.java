@@ -3,9 +3,7 @@ package com.qvik.events.infra.cache;
 import com.qvik.events.infra.response.ResponseMessage;
 import org.springframework.core.io.Resource;
 
-import java.sql.Time;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
