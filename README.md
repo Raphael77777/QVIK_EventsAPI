@@ -30,6 +30,6 @@ git clone https://github.com/Raphael77777/QVIK_EventsAPI.git
 ```
 
 2. Open the project on your IDE and Run the project
-3. Visit http://localhost:8080/api/v1 in your browser.
+3. Visit http://localhost:8080/api/v1/ in your browser.
 
 
