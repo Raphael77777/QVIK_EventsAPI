@@ -20,8 +20,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.qvik.events.modules.stage.Stage;
-import com.qvik.events.modules.tag.Restaurant_Tag;
+import com.qvik.events.modules.cuisine.Restaurant_Cuisine;
 import com.qvik.events.modules.venue.Venue;
 
 import lombok.AllArgsConstructor;
@@ -80,7 +79,7 @@ public class Restaurant {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant")
 	@JsonBackReference
 	@JsonIgnore
-	private List<Restaurant_Tag> restaurantTags= new ArrayList<>();
+	private List<Restaurant_Cuisine> restaurantCuisines = new ArrayList<>();
 
 	public Restaurant(String name, String location, LocalTime open_time, LocalTime close_time, String short_description,
 			String full_description) {

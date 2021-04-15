@@ -3,6 +3,7 @@ package com.qvik.events.web;
 import com.qvik.events.infra.cache.ProxyCache;
 import com.qvik.events.infra.response.ResponseMessage;
 import com.qvik.events.infra.response.dto.*;
+import com.qvik.events.modules.cuisine.CuisineService;
 import com.qvik.events.modules.event.EventService;
 import com.qvik.events.modules.exhibitor.Exhibitor;
 import com.qvik.events.modules.exhibitor.ExhibitorService;
@@ -43,6 +44,7 @@ public class UserController {
 	private final RestaurantService restaurantService;
 	private final ImageService imageService;
 	private final TagService tagService;
+	private final CuisineService cuisineService;
 
 	private final ProxyCache proxy = ProxyCache.getInstance();
 
@@ -373,6 +375,21 @@ public class UserController {
 			response = convertToResponseMessage(tags);
 
 			proxy.setData("/tags", response);
+		}
+		return response;
+	}
+
+	/*
+	 * Cuisine APIs
+	 */
+	@GetMapping(path = "/cuisines")
+	public ResponseMessage cuisines() {
+		ResponseMessage response = proxy.getData("/cuisines");
+		if (response == null){
+			List<CuisineDTO> cuisines = cuisineService.findAllCuisines();
+			response = convertToResponseMessage(cuisines);
+
+			proxy.setData("/cuisines", response);
 		}
 		return response;
 	}

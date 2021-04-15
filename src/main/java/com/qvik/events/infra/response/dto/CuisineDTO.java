@@ -3,8 +3,8 @@ package com.qvik.events.infra.response.dto;
 import lombok.Data;
 
 @Data
-public class Restaurant_TagDTO {
-	
-	private TagDTO tag;
+public class CuisineDTO {
 
+	private long cuisineId;
+	private String name;
 }

@@ -3,6 +3,10 @@ package com.qvik.events.web;
 import com.qvik.events.infra.cache.ProxyCache;
 import com.qvik.events.infra.response.ResponseMessage;
 import com.qvik.events.infra.response.dto.LinkToDTO;
+import com.qvik.events.modules.cuisine.Cuisine;
+import com.qvik.events.modules.cuisine.CuisineRepository;
+import com.qvik.events.modules.cuisine.RestaurantCuisineRepository;
+import com.qvik.events.modules.cuisine.Restaurant_Cuisine;
 import com.qvik.events.modules.event.Event;
 import com.qvik.events.modules.event.EventRepository;
 import com.qvik.events.modules.exhibitor.EventExhibitorRepository;
@@ -47,6 +51,7 @@ public class AdminController {
 	private final PresenterRepository presenterRepository;
 	private final RestaurantRepository restaurantRepository;
 	private final TagRepository tagRepository;
+	private final CuisineRepository cuisineRepository;
 	private final StageRepository stageRepository;
 	private final VenueRepository venueRepository;
 	private final ImageRepository imageRepository;
@@ -55,7 +60,7 @@ public class AdminController {
 	private final EventExhibitorRepository eventExhibitorRepository;
 	private final EventRestaurantRepository eventRestaurantRepository;
 	private final EventPresenterRepository eventPresenterRepository;
-	private final RestaurantTagRepository restaurantTagRepository;
+	private final RestaurantCuisineRepository restaurantCuisineRepository;
 
 	private final ProxyCache proxy = ProxyCache.getInstance();
 
@@ -98,6 +103,13 @@ public class AdminController {
 		proxy.resetData();
 
 		return tagRepository.save(tag).getTagId();
+	}
+
+	@PostMapping(value = "/cuisines", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Long createCuisine(@RequestBody Cuisine cuisine) {
+		proxy.resetData();
+
+		return cuisineRepository.save(cuisine).getCuisineId();
 	}
 
 	@PostMapping(value = "/stages", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -230,6 +242,21 @@ public class AdminController {
 				});
 	}
 
+	@PutMapping(value = "/cuisines/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long updateCuisine(@RequestBody Cuisine cuisine, @PathVariable Long id) {
+		proxy.resetData();
+
+		return cuisineRepository.findById(id)
+				.map(cuisineDb -> {
+					cuisineDb.setName(cuisine.getName());
+					return cuisineRepository.save(cuisineDb).getCuisineId();
+				})
+				.orElseGet(() -> {
+					cuisine.setCuisineId(id);
+					return cuisineRepository.save(cuisine).getCuisineId();
+				});
+	}
+
 	@PutMapping(value = "/venues/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	Long updateVenue(@RequestBody Venue venue, @PathVariable Long id) {
 		proxy.resetData();
@@ -292,6 +319,13 @@ public class AdminController {
 		proxy.resetData();
 
 		tagRepository.deleteById(id);
+	}
+
+	@DeleteMapping(value = "/cuisines/{id}")
+	void deleteCuisine(@PathVariable Long id) {
+		proxy.resetData();
+
+		cuisineRepository.deleteById(id);
 	}
 
 	@DeleteMapping(value = "/stages/{id}")
@@ -444,22 +478,22 @@ public class AdminController {
 		return 0L;
 	}
 
-	@PostMapping(value = "/link-restaurant-tag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkRestaurantTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	@PostMapping(value = "/link-restaurant-cuisine", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	Long linkRestaurantCuisine(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
-		Tag tag = tagRepository.findById(linkToDTO.getDestinationId()).get();
+		Cuisine cuisine = cuisineRepository.findById(linkToDTO.getDestinationId()).get();
 
 		switch (operation){
 			case "CREATE":
-				Restaurant_Tag restaurant_tag = new Restaurant_Tag();
-				restaurant_tag.setRestaurant(restaurant);
-				restaurant_tag.setTag(tag);
-				return restaurantTagRepository.save(restaurant_tag).getRestaurantTagId();
+				Restaurant_Cuisine restaurant_cuisine = new Restaurant_Cuisine();
+				restaurant_cuisine.setRestaurant(restaurant);
+				restaurant_cuisine.setCuisine(cuisine);
+				return restaurantCuisineRepository.save(restaurant_cuisine).getRestaurantCuisineId();
 			case "DELETE":
-				List<Restaurant_Tag> restaurant_tags = restaurantTagRepository.findByRestaurantEqualsAndTagEquals(restaurant, tag);
-				restaurantTagRepository.deleteAll(restaurant_tags);
+				List<Restaurant_Cuisine> restaurant_cuisines = restaurantCuisineRepository.findByRestaurantEqualsAndCuisineEquals(restaurant, cuisine);
+				restaurantCuisineRepository.deleteAll(restaurant_cuisines);
 				break;
 		}
 		return 0L;

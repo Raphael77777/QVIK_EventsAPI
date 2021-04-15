@@ -45,11 +45,6 @@ public class Tag {
 	@JsonIgnore
 	private List<Event_Tag> event_tags;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "tag")
-	@JsonBackReference
-	@JsonIgnore
-	private List<Restaurant_Tag> restaurant_tags;
-
 	public Tag(String name) {		
 		this.name = name;
 	}

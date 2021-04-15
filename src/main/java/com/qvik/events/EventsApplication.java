@@ -8,9 +8,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.qvik.events.modules.cuisine.Cuisine;
+import com.qvik.events.modules.cuisine.CuisineRepository;
+import com.qvik.events.modules.cuisine.RestaurantCuisineRepository;
+import com.qvik.events.modules.cuisine.Restaurant_Cuisine;
 import com.qvik.events.modules.image.Image;
 import com.qvik.events.modules.image.ImageRepository;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -39,8 +42,6 @@ import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.stage.StageRepository;
 import com.qvik.events.modules.tag.EventTagRepository;
 import com.qvik.events.modules.tag.Event_Tag;
-import com.qvik.events.modules.tag.RestaurantTagRepository;
-import com.qvik.events.modules.tag.Restaurant_Tag;
 import com.qvik.events.modules.tag.Tag;
 import com.qvik.events.modules.tag.TagRepository;
 import com.qvik.events.modules.venue.Venue;
@@ -63,8 +64,9 @@ public class EventsApplication {
 										  EventPresenterRepository eventPresenterRepository, EventRepository eventRepository,
 										  EventRestaurantRepository eventRestaurantRepository, EventTagRepository eventTagRepository,
 										  ExhibitorRepository exhibitorRepository, PresenterRepository presenterRepository,
-										  RestaurantRepository restaurantRepository, RestaurantTagRepository restaurantTagRepository,
-										  StageRepository stageRepository, VenueRepository venueRepository, TagRepository tagRepository, ImageRepository imageRepository) {
+										  RestaurantRepository restaurantRepository, RestaurantCuisineRepository restaurantCuisineRepository,
+										  StageRepository stageRepository, VenueRepository venueRepository, TagRepository tagRepository,
+										  ImageRepository imageRepository, CuisineRepository cuisineRepository) {
 		return (args) -> {
 			if (true) {
 				/** Cleaning DB before insertion of demo data */
@@ -76,11 +78,12 @@ public class EventsApplication {
 				exhibitorRepository.deleteAll();
 				presenterRepository.deleteAll();
 				restaurantRepository.deleteAll();
-				restaurantTagRepository.deleteAll();
+				restaurantCuisineRepository.deleteAll();
 				stageRepository.deleteAll();
 				venueRepository.deleteAll();
 				tagRepository.deleteAll();
 				imageRepository.deleteAll();
+				cuisineRepository.deleteAll();
 				log.info("PID 9-740 : DATABASE CLEANED !");
 			}
 
@@ -97,12 +100,20 @@ public class EventsApplication {
 				tags.add(new Tag("Webinar"));
 				tags.add(new Tag("Startup"));
 				tags.add(new Tag("Culture"));
-				tags.add(new Tag("Finnish Traditional"));
-				tags.add(new Tag("Fine-Dine"));
 
 				tagRepository.saveAll(tags);
 
-				log.info("PID 9-740 : TAG SAVED !");
+				log.info("PID 9-739 : TAG SAVED !");
+
+				/************************************************************************************************************/
+
+				List<Cuisine> cuisines = new ArrayList<>();
+				cuisines.add(new Cuisine("Finnish Traditional"));
+				cuisines.add(new Cuisine("Fine-Dine"));
+
+				cuisineRepository.saveAll(cuisines);
+
+				log.info("PID 9-740 : CUISINE SAVED !");
 
 				/************************************************************************************************************/
 
@@ -364,31 +375,31 @@ public class EventsApplication {
 				log.info("PID 9-751 : EVENT-RESTAURANT SAVED !");
 
 				/************************************************************************************************************/
-				List<Restaurant_Tag> restaurant_tags = new ArrayList<>();
+				List<Restaurant_Cuisine> restaurant_cuisines = new ArrayList<>();
 
-				Restaurant_Tag res_tag1 = new Restaurant_Tag();
-				res_tag1.setRestaurant(restaurants.get(0));
-				res_tag1.setTag(tagRepository.findByName("Finnish Traditional"));
-				restaurant_tags.add(res_tag1);
+				Restaurant_Cuisine res_cuisine1 = new Restaurant_Cuisine();
+				res_cuisine1.setRestaurant(restaurants.get(0));
+				res_cuisine1.setCuisine(cuisineRepository.findByName("Finnish Traditional"));
+				restaurant_cuisines.add(res_cuisine1);
 
-				Restaurant_Tag res_tag2 = new Restaurant_Tag();
-				res_tag2.setRestaurant(restaurants.get(1));
-				res_tag2.setTag(tagRepository.findByName("Finnish Traditional"));
-				restaurant_tags.add(res_tag2);
+				Restaurant_Cuisine res_cuisine2 = new Restaurant_Cuisine();
+				res_cuisine2.setRestaurant(restaurants.get(1));
+				res_cuisine2.setCuisine(cuisineRepository.findByName("Finnish Traditional"));
+				restaurant_cuisines.add(res_cuisine2);
 
-				Restaurant_Tag res_tag4 = new Restaurant_Tag();
-				res_tag4.setRestaurant(restaurants.get(1));
-				res_tag4.setTag(tagRepository.findByName("Fine-Dine"));
-				restaurant_tags.add(res_tag4);
+				Restaurant_Cuisine res_cuisine4 = new Restaurant_Cuisine();
+				res_cuisine4.setRestaurant(restaurants.get(1));
+				res_cuisine4.setCuisine(cuisineRepository.findByName("Fine-Dine"));
+				restaurant_cuisines.add(res_cuisine4);
 
-				Restaurant_Tag res_tag3 = new Restaurant_Tag();
-				res_tag3.setRestaurant(restaurants.get(2));
-				res_tag3.setTag(tagRepository.findByName("Fine-Dine"));
-				restaurant_tags.add(res_tag3);
+				Restaurant_Cuisine res_cuisine3 = new Restaurant_Cuisine();
+				res_cuisine3.setRestaurant(restaurants.get(2));
+				res_cuisine3.setCuisine(cuisineRepository.findByName("Fine-Dine"));
+				restaurant_cuisines.add(res_cuisine3);
 
-				restaurantTagRepository.saveAll(restaurant_tags);
+				restaurantCuisineRepository.saveAll(restaurant_cuisines);
 
-				log.info("PID 9-752 : RESTAURANT-TAG SAVED !");
+				log.info("PID 9-752 : RESTAURANT-CUISINE SAVED !");
 
 				/***********************************************************************************************************
 				 * List<Event_Venue> event_venues = new ArrayList<>(); for (int i = 0; i <

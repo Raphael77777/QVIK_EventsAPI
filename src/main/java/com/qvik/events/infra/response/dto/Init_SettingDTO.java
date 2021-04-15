@@ -9,9 +9,11 @@ import lombok.Data;
 @Data
 public class Init_SettingDTO extends Event_BaseDTO {
 	private List<String> eventTags = new ArrayList<>();
-	private List<String> allEventTags = new ArrayList<>();
+
 	private String venue;
 	private ImageDTO image;
 
-	private List<String> allRestaurantTags = new ArrayList<>();
+	private List<String> allEventTags = new ArrayList<>();
+	private List<String> allRestaurantCuisines = new ArrayList<>();
+
 }

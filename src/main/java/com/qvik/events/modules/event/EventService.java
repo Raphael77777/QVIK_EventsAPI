@@ -52,11 +52,11 @@ public class EventService {
 
 		/* ADD RESTAURANT TAGS */
 		List<Restaurant> restaurants = restaurantRepository.findAll();
-		List<String> restaurantTags = new ArrayList<>();
-		restaurants.forEach(r -> r.getRestaurantTags().forEach(tag -> restaurantTags.add(tag.getTag().getName())));
+		List<String> restaurantCuisines = new ArrayList<>();
+		restaurants.forEach(r -> r.getRestaurantCuisines().forEach(cuisine -> restaurantCuisines.add(cuisine.getCuisine().getName())));
 
-		List<String> allRestaurantTagsWithoutDuplicate = removeDuplicates(restaurantTags);
-		initData.setAllRestaurantTags(allRestaurantTagsWithoutDuplicate);
+		List<String> allRestaurantCuisinesWithoutDuplicate = removeDuplicates(restaurantCuisines);
+		initData.setAllRestaurantCuisines(allRestaurantCuisinesWithoutDuplicate);
 
 		return initData;
 	}

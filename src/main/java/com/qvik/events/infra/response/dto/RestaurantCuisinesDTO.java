@@ -6,7 +6,6 @@ import java.util.Set;
 import lombok.Data;
 
 @Data
-public class RestaurantTagsDTO {
-
-	private Set <Restaurant_TagDTO> restaurantTags = new HashSet<>();
+public class RestaurantCuisinesDTO {
+	private Set<Restaurant_CuisineDTO> restaurantCuisines = new HashSet<>();
 }

@@ -27,5 +27,5 @@ public class Restaurant_DetailsDTO extends RestaurantDTO{
     private String shortDescription;
     private String fullDescription;
     private VenueDTO venue;    
-    private List<String> allTags = new ArrayList<>();
+    private List<String> allCuisines = new ArrayList<>();
 }
