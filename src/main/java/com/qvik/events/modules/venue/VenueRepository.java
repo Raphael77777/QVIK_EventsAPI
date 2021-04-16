@@ -8,5 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RepositoryRestResource
 public interface VenueRepository extends JpaRepository<Venue, Long> {
 
+	@Transactional
 	Venue findByName(String name);
 }

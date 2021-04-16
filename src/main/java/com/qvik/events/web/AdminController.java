@@ -1,7 +1,9 @@
 package com.qvik.events.web;
 
+import com.qvik.events.EventsApplication;
 import com.qvik.events.infra.cache.ProxyCache;
 import com.qvik.events.infra.response.ResponseMessage;
+import com.qvik.events.infra.response.dto.AdminResponseDTO;
 import com.qvik.events.infra.response.dto.LinkToDTO;
 import com.qvik.events.modules.cuisine.Cuisine;
 import com.qvik.events.modules.cuisine.CuisineRepository;
@@ -26,7 +28,10 @@ import com.qvik.events.modules.restaurant.Restaurant;
 import com.qvik.events.modules.restaurant.RestaurantRepository;
 import com.qvik.events.modules.stage.Stage;
 import com.qvik.events.modules.stage.StageRepository;
-import com.qvik.events.modules.tag.*;
+import com.qvik.events.modules.tag.EventTagRepository;
+import com.qvik.events.modules.tag.Event_Tag;
+import com.qvik.events.modules.tag.Tag;
+import com.qvik.events.modules.tag.TagRepository;
 import com.qvik.events.modules.venue.Venue;
 import com.qvik.events.modules.venue.VenueRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.TransactionScoped;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,8 +75,15 @@ public class AdminController {
 	 */
 	@Transactional
 	@PostMapping(value = "/events", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long createEvent(@RequestBody Event event) {
+	ResponseMessage createEvent(@RequestBody Event event) {
 		proxy.resetData();
+
+		if (event.isMainEvent()){
+			Event e = eventRepository.findEventByIsMainEventTrue();
+			if (e != null){
+				return badRequestErrorHandling(new Exception("Cannot create main event! Try to modify the existing event [n°"+e.getEventId()+"]"));
+			}
+		}
 
 		event.setHasExhibitor(false);
 		event.setHasRestaurant(false);
@@ -81,80 +92,80 @@ public class AdminController {
 
 		if (event.isMainEvent()){
 			//SET NO VENUE
-		 	Venue venue = venueRepository.findByName("No Venue");
+		 	Long venueId = venueRepository.findByName("No Venue").getVenueId();
 		 	LinkToDTO linkToDTO = new LinkToDTO();
 		 	linkToDTO.setSourceId(event.getEventId());
-		 	linkToDTO.setDestinationId(venue.getVenueId());
+		 	linkToDTO.setDestinationId(venueId);
 		 	linkEventVenue(linkToDTO, "CREATE");
 		}else {
 			//SET NO STAGE
-			Stage stage = stageRepository.findByName("No Stage");
+			Long stageId = stageRepository.findByName("No Stage").getStageId();
 			LinkToDTO linkToDTO = new LinkToDTO();
 			linkToDTO.setSourceId(event.getEventId());
-			linkToDTO.setDestinationId(stage.getStageId());
+			linkToDTO.setDestinationId(stageId);
 			linkEventStage(linkToDTO, "CREATE");
 		}
 
-		return id;
+		return convertToResponseMessage(id, "CREATE");
 	}
 
 	@PostMapping(value = "/exhibitors", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long createExhibitor(@RequestBody Exhibitor exhibitor) {
+	ResponseMessage createExhibitor(@RequestBody Exhibitor exhibitor) {
 		proxy.resetData();
 
-		return exhibitorRepository.save(exhibitor).getExhibitorId();
+		return convertToResponseMessage(exhibitorRepository.save(exhibitor).getExhibitorId(), "CREATE");
 	}
 
 	@PostMapping(value = "/presenters", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long createPresenter(@RequestBody Presenter presenter) {
+	ResponseMessage createPresenter(@RequestBody Presenter presenter) {
 		proxy.resetData();
 
-		return presenterRepository.save(presenter).getPresenterId();
+		return convertToResponseMessage(presenterRepository.save(presenter).getPresenterId(), "CREATE");
 	}
 
 	@PostMapping(value = "/restaurants", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long createRestaurant(@RequestBody Restaurant restaurant) {
+	ResponseMessage createRestaurant(@RequestBody Restaurant restaurant) {
 		proxy.resetData();
 
-		return restaurantRepository.save(restaurant).getRestaurantId();
+		return convertToResponseMessage(restaurantRepository.save(restaurant).getRestaurantId(), "CREATE");
 	}
 
 	@PostMapping(value = "/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long createTag(@RequestBody Tag tag) {
+	ResponseMessage createTag(@RequestBody Tag tag) {
 		proxy.resetData();
 
-		return tagRepository.save(tag).getTagId();
+		return convertToResponseMessage(tagRepository.save(tag).getTagId(), "CREATE");
 	}
 
 	@PostMapping(value = "/cuisines", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long createCuisine(@RequestBody Cuisine cuisine) {
+	ResponseMessage createCuisine(@RequestBody Cuisine cuisine) {
 		proxy.resetData();
 
-		return cuisineRepository.save(cuisine).getCuisineId();
+		return convertToResponseMessage(cuisineRepository.save(cuisine).getCuisineId(), "CREATE");
 	}
 
 	@PostMapping(value = "/stages", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long createStage(@RequestBody Stage stage) {
+	ResponseMessage createStage(@RequestBody Stage stage) {
 		proxy.resetData();
 
-		return stageRepository.save(stage).getStageId();
+		return convertToResponseMessage(stageRepository.save(stage).getStageId(), "CREATE");
 	}
 
 	@PostMapping(value = "/venues", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long createVenue(@RequestBody Venue venue) {
+	ResponseMessage createVenue(@RequestBody Venue venue) {
 		proxy.resetData();
 
-		return venueRepository.save(venue).getVenueId();
+		return convertToResponseMessage(venueRepository.save(venue).getVenueId(), "CREATE");
 	}
 
 	/*
 	 * UPDATE Methods
 	 */
 	@PutMapping(value = "/events/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long updateEvent(@RequestBody Event event, @PathVariable Long id) {
+	ResponseMessage updateEvent(@RequestBody Event event, @PathVariable Long id) {
 		proxy.resetData();
 
-		return eventRepository.findById(id)
+		return convertToResponseMessage(eventRepository.findById(id)
 				.map(eventDb -> {
 					eventDb.setStartDate(event.getStartDate());
 					eventDb.setStartTime(event.getStartTime());
@@ -170,14 +181,14 @@ public class AdminController {
 				.orElseGet(() -> {
 					event.setEventId(id);
 					return eventRepository.save(event).getEventId();
-				});
+				}), "UPDATE");
 	}
 
 	@PutMapping(value = "/exhibitors/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long updateExhibitor(@RequestBody Exhibitor exhibitor, @PathVariable Long id) {
+	ResponseMessage updateExhibitor(@RequestBody Exhibitor exhibitor, @PathVariable Long id) {
 		proxy.resetData();
 
-		return exhibitorRepository.findById(id)
+		return convertToResponseMessage(exhibitorRepository.findById(id)
 				.map(exhibitorDb -> {
 					exhibitorDb.setName(exhibitor.getName());
 					exhibitorDb.setLocation(exhibitor.getLocation());
@@ -189,14 +200,14 @@ public class AdminController {
 				.orElseGet(() -> {
 					exhibitor.setExhibitorId(id);
 					return exhibitorRepository.save(exhibitor).getExhibitorId();
-				});
+				}), "UPDATE");
 	}
 
 	@PutMapping(value = "/presenters/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long updatePresenter(@RequestBody Presenter presenter, @PathVariable Long id) {
+	ResponseMessage updatePresenter(@RequestBody Presenter presenter, @PathVariable Long id) {
 		proxy.resetData();
 
-		return presenterRepository.findById(id)
+		return convertToResponseMessage(presenterRepository.findById(id)
 				.map(presenterDb -> {
 					presenterDb.setName(presenter.getName());
 					presenterDb.setContact(presenter.getContact());
@@ -207,14 +218,14 @@ public class AdminController {
 				.orElseGet(() -> {
 					presenter.setPresenterId(id);
 					return presenterRepository.save(presenter).getPresenterId();
-				});
+				}), "UPDATE");
 	}
 
 	@PutMapping(value = "/restaurants/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long updateRestaurant(@RequestBody Restaurant restaurant, @PathVariable Long id) {
+	ResponseMessage updateRestaurant(@RequestBody Restaurant restaurant, @PathVariable Long id) {
 		proxy.resetData();
 
-		return restaurantRepository.findById(id)
+		return convertToResponseMessage(restaurantRepository.findById(id)
 				.map(restaurantDb -> {
 					restaurantDb.setName(restaurant.getName());
 					restaurantDb.setLocation(restaurant.getLocation());
@@ -227,14 +238,14 @@ public class AdminController {
 				.orElseGet(() -> {
 					restaurant.setRestaurantId(id);
 					return restaurantRepository.save(restaurant).getRestaurantId();
-				});
+				}), "UPDATE");
 	}
 
 	@PutMapping(value = "/stages/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long updateStage(@RequestBody Stage stage, @PathVariable Long id) {
+	ResponseMessage updateStage(@RequestBody Stage stage, @PathVariable Long id) {
 		proxy.resetData();
 
-		return stageRepository.findById(id)
+		return convertToResponseMessage(stageRepository.findById(id)
 				.map(stageDb -> {
 					stageDb.setName(stage.getName());
 					stageDb.setLocation(stage.getLocation());
@@ -245,14 +256,14 @@ public class AdminController {
 				.orElseGet(() -> {
 					stage.setStageId(id);
 					return stageRepository.save(stage).getStageId();
-				});
+				}), "UPDATE");
 	}
 
 	@PutMapping(value = "/tags/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long updateTag(@RequestBody Tag tag, @PathVariable Long id) {
+	ResponseMessage updateTag(@RequestBody Tag tag, @PathVariable Long id) {
 		proxy.resetData();
 
-		return tagRepository.findById(id)
+		return convertToResponseMessage(tagRepository.findById(id)
 				.map(tagDb -> {
 					tagDb.setName(tag.getName());
 					return tagRepository.save(tagDb).getTagId();
@@ -260,14 +271,14 @@ public class AdminController {
 				.orElseGet(() -> {
 					tag.setTagId(id);
 					return tagRepository.save(tag).getTagId();
-				});
+				}), "UPDATE");
 	}
 
 	@PutMapping(value = "/cuisines/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long updateCuisine(@RequestBody Cuisine cuisine, @PathVariable Long id) {
+	ResponseMessage updateCuisine(@RequestBody Cuisine cuisine, @PathVariable Long id) {
 		proxy.resetData();
 
-		return cuisineRepository.findById(id)
+		return convertToResponseMessage(cuisineRepository.findById(id)
 				.map(cuisineDb -> {
 					cuisineDb.setName(cuisine.getName());
 					return cuisineRepository.save(cuisineDb).getCuisineId();
@@ -275,14 +286,14 @@ public class AdminController {
 				.orElseGet(() -> {
 					cuisine.setCuisineId(id);
 					return cuisineRepository.save(cuisine).getCuisineId();
-				});
+				}), "UPDATE");
 	}
 
 	@PutMapping(value = "/venues/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long updateVenue(@RequestBody Venue venue, @PathVariable Long id) {
+	ResponseMessage updateVenue(@RequestBody Venue venue, @PathVariable Long id) {
 		proxy.resetData();
 
-		return venueRepository.findById(id)
+		return convertToResponseMessage(venueRepository.findById(id)
 				.map(venueDb -> {
 					venueDb.setName(venue.getName());
 					venueDb.setCity(venue.getCity());
@@ -295,62 +306,69 @@ public class AdminController {
 				.orElseGet(() -> {
 					venue.setVenueId(id);
 					return venueRepository.save(venue).getVenueId();
-				});
+				}), "UPDATE");
 	}
 
 	/*
 	 * DELETE Methods
 	 */
 	@DeleteMapping(value = "/events/{id}")
-	void deleteEvent(@PathVariable Long id) {
+	ResponseMessage deleteEvent(@PathVariable Long id) {
 		proxy.resetData();
 
 		Event event = eventRepository.findById(id).get();
 
 		if (event.isMainEvent()){
-			return;
+			return badRequestErrorHandling(new Exception("Cannot delete main event! Try to modify the existing event [n°"+event.getEventId()+"]"));
 		}
 
 		eventRepository.deleteById(id);
+
+		return convertToResponseMessage(id, "DELETE");
 	}
 
 	@DeleteMapping(value = "/exhibitors/{id}")
-	void deleteExhibitor(@PathVariable Long id) {
+	ResponseMessage deleteExhibitor(@PathVariable Long id) {
 		proxy.resetData();
 
 		exhibitorRepository.deleteById(id);
+		return convertToResponseMessage(id, "DELETE");
 	}
 
 	@DeleteMapping(value = "/presenters/{id}")
-	void deletePresenter(@PathVariable Long id) {
+	ResponseMessage deletePresenter(@PathVariable Long id) {
 		proxy.resetData();
 
 		presenterRepository.deleteById(id);
+		return convertToResponseMessage(id, "DELETE");
 	}
 
 	@DeleteMapping(value = "/restaurants/{id}")
-	void deleteRestaurant(@PathVariable Long id) {
+	ResponseMessage deleteRestaurant(@PathVariable Long id) {
 		proxy.resetData();
 
 		restaurantRepository.deleteById(id);
+		return convertToResponseMessage(id, "DELETE");
 	}
 
 	@DeleteMapping(value = "/tags/{id}")
-	void deleteTag(@PathVariable Long id) {
+	ResponseMessage deleteTag(@PathVariable Long id) {
 		proxy.resetData();
 
 		tagRepository.deleteById(id);
+		return convertToResponseMessage(id, "DELETE");
 	}
 
 	@DeleteMapping(value = "/cuisines/{id}")
-	void deleteCuisine(@PathVariable Long id) {
+	ResponseMessage deleteCuisine(@PathVariable Long id) {
 		proxy.resetData();
 
 		cuisineRepository.deleteById(id);
+		return convertToResponseMessage(id, "DELETE");
 	}
 
 	@DeleteMapping(value = "/stages/{id}")
-	void deleteStage(@PathVariable Long id) {
+	ResponseMessage deleteStage(@PathVariable Long id) {
 		proxy.resetData();
 
 		Stage stage = stageRepository.findById(id).get();
@@ -363,10 +381,11 @@ public class AdminController {
 		eventRepository.saveAll(events);
 
 		stageRepository.delete(stage);
+		return convertToResponseMessage(id, "DELETE");
 	}
 
 	@DeleteMapping(value = "/venues/{id}")
-	void deleteVenue(@PathVariable Long id) {
+	ResponseMessage deleteVenue(@PathVariable Long id) {
 		proxy.resetData();
 
 		Venue venue = venueRepository.findById(id).get();
@@ -393,10 +412,11 @@ public class AdminController {
 		stageRepository.saveAll(stages);
 
 		venueRepository.deleteById(id);
+		return convertToResponseMessage(id, "DELETE");
 	}
 
 	@DeleteMapping(value = "/images/{id}")
-	void deleteImage(@PathVariable Long id) {
+	ResponseMessage deleteImage(@PathVariable Long id) {
 		proxy.resetData();
 		proxy.resetImage();
 
@@ -410,13 +430,41 @@ public class AdminController {
 		eventRepository.saveAll(events);
 
 		imageRepository.deleteById(id);
+		return convertToResponseMessage(id, "DELETE");
+	}
+
+	@DeleteMapping(value = "/deleteAll/{credentials}")
+	ResponseMessage deleteAll(@PathVariable String credentials) {
+		proxy.resetData();
+		proxy.resetImage();
+
+		if (credentials.equals(EventsApplication.KEY_DeleteALL)){
+			eventExhibitorRepository.deleteAll();
+			eventPresenterRepository.deleteAll();
+			eventRepository.deleteAll();
+			eventRestaurantRepository.deleteAll();
+			eventTagRepository.deleteAll();
+			exhibitorRepository.deleteAll();
+			presenterRepository.deleteAll();
+			restaurantRepository.deleteAll();
+			restaurantCuisineRepository.deleteAll();
+			stageRepository.deleteAll();
+			venueRepository.deleteAll();
+			tagRepository.deleteAll();
+			imageRepository.deleteAll();
+			cuisineRepository.deleteAll();
+
+			return convertToResponseMessage(0L, "DELETE ALL");
+		}
+
+		return badRequestErrorHandling(new Exception("Cannot delete all data! Please contact admin"));
 	}
 
 	/*
 	 * LINK Methods
 	 */
 	@PostMapping(value = "/link-event-exhibitor", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkEventExhibitor(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkEventExhibitor(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
@@ -427,17 +475,17 @@ public class AdminController {
 				Event_Exhibitor event_exhibitor = new Event_Exhibitor();
 				event_exhibitor.setEvent(event);
 				event_exhibitor.setExhibitor(exhibitor);
-				return eventExhibitorRepository.save(event_exhibitor).getEventExhibitorId();
+				return convertToResponseMessage(eventExhibitorRepository.save(event_exhibitor).getEventExhibitorId(), "CREATE LINK");
 			case "DELETE":
 				List<Event_Exhibitor> event_exhibitors = eventExhibitorRepository.findByEventEqualsAndExhibitorEquals(event, exhibitor);
 				eventExhibitorRepository.deleteAll(event_exhibitors);
-				break;
+				return convertToResponseMessage(event.getEventId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-event-presenter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkEventPresenter(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkEventPresenter(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
@@ -448,17 +496,17 @@ public class AdminController {
 				Event_Presenter event_presenter = new Event_Presenter();
 				event_presenter.setEvent(event);
 				event_presenter.setPresenter(presenter);
-				return eventPresenterRepository.save(event_presenter).getEventPresenterId();
+				return convertToResponseMessage(eventPresenterRepository.save(event_presenter).getEventPresenterId(), "CREATE LINK");
 			case "DELETE":
 				List<Event_Presenter> event_presenters = eventPresenterRepository.findByEventEqualsAndPresenterEquals(event, presenter);
 				eventPresenterRepository.deleteAll(event_presenters);
-				break;
+				return convertToResponseMessage(event.getEventId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-event-restaurant", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkEventRestaurant(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkEventRestaurant(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
@@ -469,17 +517,17 @@ public class AdminController {
 				Event_Restaurant event_restaurant = new Event_Restaurant();
 				event_restaurant.setEvent(event);
 				event_restaurant.setRestaurant(restaurant);
-				return eventRestaurantRepository.save(event_restaurant).getEventRestaurantId();
+				return convertToResponseMessage(eventRestaurantRepository.save(event_restaurant).getEventRestaurantId(), "CREATE LINK");
 			case "DELETE":
 				List<Event_Restaurant> event_restaurants = eventRestaurantRepository.findByEventEqualsAndRestaurantEquals(event, restaurant);
 				eventRestaurantRepository.deleteAll(event_restaurants);
-				break;
+				return convertToResponseMessage(event.getEventId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-event-tag", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkEventTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkEventTag(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
@@ -490,17 +538,17 @@ public class AdminController {
 				Event_Tag event_tag = new Event_Tag();
 				event_tag.setEvent(event);
 				event_tag.setTag(tag);
-				return eventTagRepository.save(event_tag).getEventTagId();
+				return convertToResponseMessage(eventTagRepository.save(event_tag).getEventTagId(), "CREATE LINK");
 			case "DELETE":
 				List<Event_Tag> event_tags = eventTagRepository.findByEventEqualsAndTagEquals(event, tag);
 				eventTagRepository.deleteAll(event_tags);
-				break;
+				return convertToResponseMessage(event.getEventId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-restaurant-cuisine", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkRestaurantCuisine(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkRestaurantCuisine(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
@@ -511,17 +559,17 @@ public class AdminController {
 				Restaurant_Cuisine restaurant_cuisine = new Restaurant_Cuisine();
 				restaurant_cuisine.setRestaurant(restaurant);
 				restaurant_cuisine.setCuisine(cuisine);
-				return restaurantCuisineRepository.save(restaurant_cuisine).getRestaurantCuisineId();
+				return convertToResponseMessage(restaurantCuisineRepository.save(restaurant_cuisine).getRestaurantCuisineId(), "CREATE LINK");
 			case "DELETE":
 				List<Restaurant_Cuisine> restaurant_cuisines = restaurantCuisineRepository.findByRestaurantEqualsAndCuisineEquals(restaurant, cuisine);
 				restaurantCuisineRepository.deleteAll(restaurant_cuisines);
-				break;
+				return convertToResponseMessage(restaurant.getRestaurantId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-event-stage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkEventStage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkEventStage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
@@ -530,16 +578,16 @@ public class AdminController {
 			case "CREATE":
 				Stage stage = stageRepository.findById(linkToDTO.getDestinationId()).get();
 				event.setStage(stage);
-				return eventRepository.save(event).getEventId();
+				return convertToResponseMessage(eventRepository.save(event).getEventId(), "CREATE LINK");
 			case "DELETE":
 				event.setStage(null);
-				return eventRepository.save(event).getEventId();
+				return convertToResponseMessage(eventRepository.save(event).getEventId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-event-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkEventVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkEventVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Event event = eventRepository.findById(linkToDTO.getSourceId()).get();
@@ -548,16 +596,16 @@ public class AdminController {
 			case "CREATE":
 				Venue venue = venueRepository.findById(linkToDTO.getDestinationId()).get();
 				event.setVenue(venue);
-				return eventRepository.save(event).getEventId();
+				return convertToResponseMessage(eventRepository.save(event).getEventId(), "CREATE LINK");
 			case "DELETE":
 				event.setVenue(null);
-				return eventRepository.save(event).getEventId();
+				return convertToResponseMessage(eventRepository.save(event).getEventId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-restaurant-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkRestaurantVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkRestaurantVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Restaurant restaurant = restaurantRepository.findById(linkToDTO.getSourceId()).get();
@@ -566,16 +614,16 @@ public class AdminController {
 			case "CREATE":
 				Venue venue = venueRepository.findById(linkToDTO.getDestinationId()).get();
 				restaurant.setVenue(venue);
-				return restaurantRepository.save(restaurant).getRestaurantId();
+				return convertToResponseMessage(restaurantRepository.save(restaurant).getRestaurantId(), "CREATE LINK");
 			case "DELETE":
 				restaurant.setVenue(null);
-				return restaurantRepository.save(restaurant).getRestaurantId();
+				return convertToResponseMessage(restaurantRepository.save(restaurant).getRestaurantId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-stage-venue", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkStageVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkStageVenue(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 
 		Stage stage = stageRepository.findById(linkToDTO.getSourceId()).get();
@@ -584,16 +632,16 @@ public class AdminController {
 			case "CREATE":
 				Venue venue = venueRepository.findById(linkToDTO.getDestinationId()).get();
 				stage.setVenue(venue);
-				return stageRepository.save(stage).getStageId();
+				return convertToResponseMessage(stageRepository.save(stage).getStageId(), "CREATE LINK");
 			case "DELETE":
 				stage.setVenue(null);
-				return stageRepository.save(stage).getStageId();
+				return convertToResponseMessage(stageRepository.save(stage).getStageId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	@PostMapping(value = "/link-event-image", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	Long linkEventImage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
+	ResponseMessage linkEventImage(@RequestBody LinkToDTO linkToDTO, @RequestHeader("operation") String operation){
 		proxy.resetData();
 		proxy.resetImage();
 
@@ -603,30 +651,30 @@ public class AdminController {
 			case "CREATE":
 				Image image = imageRepository.findById(linkToDTO.getDestinationId()).get();
 				event.setImage(image);
-				return eventRepository.save(event).getEventId();
+				return convertToResponseMessage(eventRepository.save(event).getEventId(), "CREATE LINK");
 			case "DELETE":
 				event.setImage(null);
-				return eventRepository.save(event).getEventId();
+				return convertToResponseMessage(eventRepository.save(event).getEventId(), "DELETE LINK");
 		}
-		return 0L;
+		return badRequestErrorHandling(new Exception("Cannot link/unlink. Caused by : Wrong operation!"));
 	}
 
 	/*
 	 * IMAGE Method
 	 */
 	@PostMapping(path = "/upload-image")
-	Long uploadImage(@RequestParam MultipartFile file) throws Exception {
+	ResponseMessage uploadImage(@RequestParam MultipartFile file) throws Exception {
 		proxy.resetData();
 		proxy.resetImage();
 
-		return imageService.uploadImage(file);
+		return convertToResponseMessage(imageService.uploadImage(file), "UPLOAD");
 	}
 
 	/*
 	 * DUPLICATE Method
 	 */
 	@PostMapping(value = "/duplicate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Long duplicateEvent(@RequestBody Event event) {
+	ResponseMessage duplicateEvent(@RequestBody Event event) {
 		proxy.resetData();
 
 		Long idToDuplicate = event.getEventId();
@@ -634,7 +682,7 @@ public class AdminController {
 		Event eventDb = eventRepository.findEventWithVenueAndStageAndImageAndParentEventByEventId(idToDuplicate);
 
 		if (eventDb.isMainEvent()){
-			return 0L;
+			return badRequestErrorHandling(new Exception("Cannot duplicate main event!"));
 		}
 
 		event.setVenue(eventDb.getVenue());
@@ -690,15 +738,15 @@ public class AdminController {
 		}
 		eventTagRepository.saveAll(newEventTags);
 
-		return newId;
+		return convertToResponseMessage(newId, "DUPLICATE");
 	}
 
 	/*
 	 * Convert Data to ResponseMessage.class
 	 */
-	private ResponseMessage convertToResponseMessage(Object object) {
+	private ResponseMessage convertToResponseMessage(Long id, String transaction) {
 		ResponseMessage message = new ResponseMessage(HttpStatus.OK);
-		message.add(object);
+		message.add(new AdminResponseDTO(id, transaction));
 		return message;
 	}
 

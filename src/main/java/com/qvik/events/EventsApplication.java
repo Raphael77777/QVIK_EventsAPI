@@ -52,6 +52,8 @@ import org.springframework.web.multipart.MultipartFile;
 @EnableTransactionManagement
 public class EventsApplication {
 
+	public static final String KEY_DeleteALL = "QVIK2021DeleteAll";
+
 	private static final Logger log = LoggerFactory.getLogger(EventsApplication.class);
 
 	public static void main(String[] args) {
