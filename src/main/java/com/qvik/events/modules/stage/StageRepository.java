@@ -1,6 +1,7 @@
 package com.qvik.events.modules.stage;
 import java.util.List;
 
+import com.qvik.events.modules.cuisine.Cuisine;
 import com.qvik.events.modules.restaurant.Restaurant;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,6 @@ public interface StageRepository extends JpaRepository<Stage, Long> {
 
     @EntityGraph(attributePaths = {"venue"})
     List<Stage> findStagesWithVenueByVenue(Venue venue);
+
+    Stage findByName(String name);
 }

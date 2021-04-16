@@ -32,9 +32,11 @@ import com.qvik.events.modules.venue.VenueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.TransactionScoped;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +69,7 @@ public class AdminController {
 	/*
 	 * CREATE Methods
 	 */
+	@Transactional
 	@PostMapping(value = "/events", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Long createEvent(@RequestBody Event event) {
 		proxy.resetData();
@@ -74,7 +77,25 @@ public class AdminController {
 		event.setHasExhibitor(false);
 		event.setHasRestaurant(false);
 		event.setHasPresenter(false);
-		return eventRepository.save(event).getEventId();
+		Long id = eventRepository.save(event).getEventId();
+
+		if (event.isMainEvent()){
+			//SET NO VENUE
+		 	Venue venue = venueRepository.findByName("No Venue");
+		 	LinkToDTO linkToDTO = new LinkToDTO();
+		 	linkToDTO.setSourceId(event.getEventId());
+		 	linkToDTO.setDestinationId(venue.getVenueId());
+		 	linkEventVenue(linkToDTO, "CREATE");
+		}else {
+			//SET NO STAGE
+			Stage stage = stageRepository.findByName("No Stage");
+			LinkToDTO linkToDTO = new LinkToDTO();
+			linkToDTO.setSourceId(event.getEventId());
+			linkToDTO.setDestinationId(stage.getStageId());
+			linkEventStage(linkToDTO, "CREATE");
+		}
+
+		return id;
 	}
 
 	@PostMapping(value = "/exhibitors", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

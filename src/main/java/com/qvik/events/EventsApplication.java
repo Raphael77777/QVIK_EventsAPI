@@ -123,6 +123,7 @@ public class EventsApplication {
 				venues.add(new Venue("Messukeskuksen ", "Helsinki", "Messuaukio 1", "+358 52 45 78 96", fullDescription, fullDescription));
 				venues.add(new Venue("Finlandia-talo", "Helsinki", "Mannerheimintie 13", "+358 52 45 78 96", fullDescription, fullDescription));
 				venues.add(new Venue("Temppeliaukio Church", "Helsinki", "Temppeliaukio  13", "+358 52 45 78 96", fullDescription, fullDescription));
+				venues.add(new Venue("No Venue", "", "", "", "", ""));
 				venueRepository.saveAll(venues);
 
 				for (Venue v : venueRepository.findAll()) {
@@ -143,6 +144,8 @@ public class EventsApplication {
 				stages.get(stages.size() - 1).setVenue(venues.get(0));
 				stages.add(new Stage("Glass Gallary", "Helsinki", 500, "Big Gallary"));
 				stages.get(stages.size() - 1).setVenue(venues.get(0));
+				stages.add(new Stage("No Stage", "", 0, ""));
+				stages.get(stages.size() - 1).setVenue(venues.get(5));
 				stageRepository.saveAll(stages);
 
 				for (Stage s : stageRepository.findAll()) {
