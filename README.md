@@ -3,7 +3,8 @@ This project is a Spring Boot application built using Maven.
   ## Learn more about:
   * [Spring Boot](https://spring.io/projects/spring-boot)
   * [Maven](https://maven.apache.org/)
-
+  
+## Deplyed API
 * This project can be accessed by [Deployed URL](https://qvik.herokuapp.com/api/v1/)
 * API Definiation can be found at [Swagger API Definition](https://qvik.herokuapp.com/swagger-ui/index.html?configUrl=/api-docs/swagger-config)
 * API Doc can be found at [API Doc](https://qvik.herokuapp.com/swagger-ui/index.html?configUrl=/api-docs/swagger-config)
