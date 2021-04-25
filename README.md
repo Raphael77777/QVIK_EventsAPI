@@ -11,7 +11,6 @@ This project is a Spring Boot application built using Maven.
 
 
 ## Running locally
-This project is a Spring Boot application built using [Maven](https://spring.io/guides/gs/maven/).
 You can build a jar file and run it from the command line:
 
 ```
