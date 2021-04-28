@@ -39,4 +39,4 @@ git clone https://github.com/Raphael77777/QVIK_EventsAPI.git
 
 ## Database
 This project is based on the relational database. 
-<img width="70%", src="https://user-images.githubusercontent.com/69889362/116440284-fff88e80-a858-11eb-9be4-a40c3ca27ed1.png">
+<img width="80%" src="https://user-images.githubusercontent.com/69889362/116440284-fff88e80-a858-11eb-9be4-a40c3ca27ed1.png"/>
