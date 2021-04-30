@@ -42,5 +42,5 @@ git clone https://github.com/Raphael77777/QVIK_EventsAPI.git
 * The ERD looks like below:
 <img width="80%" src="https://user-images.githubusercontent.com/69889362/116440284-fff88e80-a858-11eb-9be4-a40c3ca27ed1.png"/>
 * During the project, sample data were produced to test GET API calls for mobile application. 
-* Sample data can be seen, updated or deleted in the main class (i.e., EventsApplication.java)
+* Sample data can be seen, updated or deleted in the main class (i.e., EventsApplication.java)  
 
