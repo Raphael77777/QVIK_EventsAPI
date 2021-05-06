@@ -16,7 +16,7 @@ You can build a jar file and run it from the command line:
 ```
 git clone https://github.com/Raphael77777/QVIK_EventsAPI.git
 cd QVIK_EventsAPI
-./mvnw package
+./mvnw spring-boot:run
 java -jar target/*.jar
 ```
 
