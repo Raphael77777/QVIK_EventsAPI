@@ -1,4 +1,4 @@
-package com.qvik.events.infra.response.dto;
+package com.qvik.events.infra.response.admindto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
