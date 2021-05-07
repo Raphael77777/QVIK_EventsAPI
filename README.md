@@ -56,3 +56,10 @@ spring.datasource.url=jdbc:
 spring.datasource.username=
 spring.datasource.password=
 ```
+
+
+
+## Contirubutor
+Design:Jaakko Junttila 
+Front end: @nkzinovyeva @ColineFardel @pthambirajah
+Bacn end: @Raphael77777 @taeheelee90
