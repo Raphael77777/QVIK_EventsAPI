@@ -45,3 +45,14 @@ git clone https://github.com/Raphael77777/QVIK_EventsAPI.git
 <img width="80%" src="https://user-images.githubusercontent.com/69889362/116440284-fff88e80-a858-11eb-9be4-a40c3ca27ed1.png"/>
 
 
+### Setup Database
+* This projoect used JPA and all the configuration can be found at application.properties 
+* To be specific, you can change database by changing below:
+```
+server.port=
+spring.jpa.database=
+spring.datasource.platform=
+spring.datasource.url=jdbc:
+spring.datasource.username=
+spring.datasource.password=
+```
