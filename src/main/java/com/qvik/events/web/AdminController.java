@@ -120,6 +120,12 @@ public class AdminController {
 				linkToDTO.setOperation("CREATE");
 				linkEventStage(linkToDTO);
 			}
+
+			// LINK MAIN EVENT
+			Event subEvent = eventRepository.findById(id).get();
+			Event mainEvent = eventRepository.findEventByIsMainEventTrue();
+			subEvent.setParentEvent(mainEvent);
+			eventRepository.save(subEvent);
 		}
 
 		// LINK EVENT-IMAGE
