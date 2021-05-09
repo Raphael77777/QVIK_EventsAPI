@@ -1,5 +1,6 @@
 package com.qvik.events.web;
 
+import com.qvik.events.DemoData;
 import com.qvik.events.EventsApplication;
 import com.qvik.events.infra.cache.ProxyCache;
 import com.qvik.events.infra.response.ResponseMessage;
@@ -40,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -652,33 +654,6 @@ public class AdminController {
 		return convertToResponseMessage(id, "DELETE");
 	}
 
-	@DeleteMapping(value = "/deleteAll/{credentials}")
-	ResponseMessage deleteAll(@PathVariable String credentials) {
-		proxy.resetData();
-		proxy.resetImage();
-
-		if (credentials.equals(EventsApplication.KEY_DeleteALL)){
-			eventExhibitorRepository.deleteAll();
-			eventPresenterRepository.deleteAll();
-			eventRepository.deleteAll();
-			eventRestaurantRepository.deleteAll();
-			eventTagRepository.deleteAll();
-			exhibitorRepository.deleteAll();
-			presenterRepository.deleteAll();
-			restaurantRepository.deleteAll();
-			restaurantCuisineRepository.deleteAll();
-			stageRepository.deleteAll();
-			venueRepository.deleteAll();
-			tagRepository.deleteAll();
-			imageRepository.deleteAll();
-			cuisineRepository.deleteAll();
-
-			return convertToResponseMessage(0L, "DELETE ALL");
-		}
-
-		return badRequestErrorHandling(new Exception("Cannot delete all data! Please contact admin"));
-	}
-
 	/*
 	 * LINK Methods
 	 */
@@ -987,6 +962,71 @@ public class AdminController {
 		eventTagRepository.saveAll(newEventTags);
 
 		return convertToResponseMessage(newId, "DUPLICATE");
+	}
+
+	/*
+	 * SPECIAL CALL - SUPER ADMIN ONLY
+	 */
+	@DeleteMapping(value = "/reset-proxy/{key}")
+	ResponseMessage resetProxy (@PathVariable String key) {
+
+		if (key.equals(EventsApplication.ADMIN_KEY)){
+			proxy.resetData();
+			proxy.resetImage();
+			return convertToResponseMessage(0L, "PROXY RESET !");
+		}
+
+		return badRequestErrorHandling(new Exception("Cannot reset the proxy! Please contact admin"));
+	}
+
+	@DeleteMapping(value = "/clean-db/{key}")
+	ResponseMessage cleanDB (@PathVariable String key) {
+		proxy.resetData();
+		proxy.resetImage();
+
+		if (key.equals(EventsApplication.ADMIN_KEY)){
+			DemoData.clean(EventsApplication.log, eventExhibitorRepository,
+					eventPresenterRepository, eventRepository,
+					eventRestaurantRepository, eventTagRepository,
+					exhibitorRepository, presenterRepository,
+					restaurantRepository, restaurantCuisineRepository,
+					stageRepository, venueRepository, tagRepository,
+					imageRepository, cuisineRepository);
+			return convertToResponseMessage(0L, "DATABASE CLEANED !");
+		}
+
+		return badRequestErrorHandling(new Exception("Cannot delete all data! Please contact admin"));
+	}
+
+	@PostMapping(value = "/populate-db/{key}")
+	ResponseMessage populateDB (@PathVariable String key) {
+		proxy.resetData();
+		proxy.resetImage();
+
+		if (key.equals(EventsApplication.ADMIN_KEY)){
+			try {
+				DemoData.clean(EventsApplication.log, eventExhibitorRepository,
+						eventPresenterRepository, eventRepository,
+						eventRestaurantRepository, eventTagRepository,
+						exhibitorRepository, presenterRepository,
+						restaurantRepository, restaurantCuisineRepository,
+						stageRepository, venueRepository, tagRepository,
+						imageRepository, cuisineRepository);
+
+				DemoData.populate(EventsApplication.log, eventExhibitorRepository,
+						eventPresenterRepository, eventRepository,
+						eventRestaurantRepository, eventTagRepository,
+						exhibitorRepository, presenterRepository,
+						restaurantRepository, restaurantCuisineRepository,
+						stageRepository, venueRepository, tagRepository,
+						imageRepository, cuisineRepository);
+			} catch (IOException e) {
+				return badRequestErrorHandling(new Exception("Cannot populate database! Please contact admin"));
+			}
+			return convertToResponseMessage(0L, "DATABASE POPULATED !");
+		}
+
+		return badRequestErrorHandling(new Exception("Cannot populate database! Please contact admin"));
 	}
 
 	/*
