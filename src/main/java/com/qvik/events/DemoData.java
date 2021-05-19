@@ -235,7 +235,7 @@ public class DemoData {
         /************************************************************************************************************/
 
         List<Event> events = new ArrayList<>();
-        LocalDate testDate = LocalDate.parse("2021-05-10");
+        LocalDate testDate = LocalDate.parse("2021-06-07");
         LocalTime testTime = LocalTime.parse("10:00:00");
 
         events.add(new Event(testDate.minusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(7),
@@ -247,9 +247,9 @@ public class DemoData {
         events.add(new Event(testDate.minusDays(1), testTime.plusHours(2), testDate.minusDays(1),
                 testTime.plusHours(3), "Art Business", "This is short Description", LocalDateTime.now(),
                 true, false, true, true, true));
-        events.add(new Event(testDate, testTime, testDate, testTime.plusHours(2), "Paint the streets",
+        events.add(new Event(testDate.minusDays(5), testTime.plusHours(1), testDate, testTime.plusHours(2), "Paint the streets",
                 "This is short Description", LocalDateTime.now(), true, false, true, true, true));
-        events.add(new Event(testDate.plusDays(1), testTime, testDate.plusDays(1), testTime.plusHours(1),
+        events.add(new Event(testDate.minusDays(5), testTime, testDate.plusDays(1), testTime.plusHours(1),
                 "Design in IT industry", "This is short Description", LocalDateTime.now(), false, false, true,
                 true, true));
 

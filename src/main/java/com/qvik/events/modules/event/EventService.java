@@ -164,8 +164,7 @@ public class EventService {
 		return listOfMap;
 	}
 
-	private void groupByDate(Event_DetailsDTO event_detailsDTO, Map<String, Map<String, Object>> mapOfMap,
-			List<LocalDate> mapKeys) {
+	private void groupByDate(Event_DetailsDTO event_detailsDTO, Map<String, Map<String, Object>> mapOfMap, List<LocalDate> mapKeys) {
 		String date = event_detailsDTO.getStartDate().toString();
 		Map<String, Object> eventsMap = mapOfMap.get(date);
 		if (eventsMap == null) {
@@ -176,6 +175,7 @@ public class EventService {
 			// Collect list of event_details
 			List<Event_DetailsDTO> list = new ArrayList<>();
 			list.add(event_detailsDTO);
+			Collections.sort(list, new EventsComparator());
 			eventsMap.put("data", list);
 
 		} else {
@@ -282,6 +282,11 @@ public class EventService {
 
 	private void orderByNone(List<Map<String, Object>> listOfMap, Map<String, Map<String, Object>> mapOfMap) {
 		Map<String, Object> maps = mapOfMap.get("None");
+		List<Event_DetailsDTO> subevents = (List<Event_DetailsDTO>) maps.get("data");
+
+		Collections.sort(subevents, new EventsComparator());
+
+		maps.put("data", subevents);
 		listOfMap.add(maps);
 	}
 
