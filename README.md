@@ -62,4 +62,4 @@ spring.datasource.password=
 ## Contirubutor
 * Design:Jaakko Junttila 
 * Front end: @nkzinovyeva @ColineFardel @pthambirajah
-* Bacn end: @Raphael77777 @taeheelee90
+* Back end: @Raphael77777 @taeheelee90
