@@ -46,7 +46,7 @@ public class EventsApplication {
 		return (args) -> {
 
 			/** Switch to statement with FALSE to disable the CLEANING of all data ! */
-			if (false) {
+			if (true) {
 				DemoData.clean(log, eventExhibitorRepository,
 						eventPresenterRepository, eventRepository,
 						eventRestaurantRepository, eventTagRepository,
@@ -57,7 +57,7 @@ public class EventsApplication {
 			}
 
 			/** Switch to statement with FALSE to disable the INSERTION of demo data ! */
-			if (false) {
+			if (true) {
 				DemoData.populate(log, eventExhibitorRepository,
 						eventPresenterRepository, eventRepository,
 						eventRestaurantRepository, eventTagRepository,

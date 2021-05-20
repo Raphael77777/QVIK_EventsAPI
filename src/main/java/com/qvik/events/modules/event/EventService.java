@@ -282,9 +282,12 @@ public class EventService {
 
 	private void orderByNone(List<Map<String, Object>> listOfMap, Map<String, Map<String, Object>> mapOfMap) {
 		Map<String, Object> maps = mapOfMap.get("None");
-		List<Event_DetailsDTO> subevents = (List<Event_DetailsDTO>) maps.get("data");
+		List<Event_DetailsDTO> subevents = new ArrayList<>();
 
-		Collections.sort(subevents, new EventsComparator());
+		if (maps != null) {
+			subevents = (List<Event_DetailsDTO>) maps.get("data");
+			Collections.sort(subevents, new EventsComparator());
+		}
 
 		maps.put("data", subevents);
 		listOfMap.add(maps);
